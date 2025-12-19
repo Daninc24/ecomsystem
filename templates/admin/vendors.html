@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+        <h1 style="background: linear-gradient(135deg, var(--primary-600), var(--secondary-600)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: var(--text-4xl); font-weight: var(--font-black);">
+            🏪 Vendor Management
+        </h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Vendor Statistics -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">✅</span>
+                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">VERIFIED</span>
+            </div>
+            <div class="stat-number">{{ vendors|selectattr('is_verified', 'equalto', true)|list|length }}</div>
+            <div class="stat-label">Verified Vendors</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">⏳</span>
+                <span style="background: var(--warning-100); color: var(--warning-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">PENDING</span>
+            </div>
+            <div class="stat-number">{{ vendors|selectattr('is_verified', 'equalto', false)|list|length }}</div>
+            <div class="stat-label">Pending Approval</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">💰</span>
+                <span style="background: var(--accent-100); color: var(--accent-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">SALES</span>
+            </div>
+            <div class="stat-number">${{ "%.0f"|format(vendors|sum(attribute='total_sales') or 0) }}</div>
+            <div class="stat-label">Total Sales</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">📊</span>
+                <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">TOTAL</span>
+            </div>
+            <div class="stat-number">{{ vendors|length }}</div>
+            <div class="stat-label">Total Vendors</div>
+        </div>
+    </div>
+
+    <!-- Vendors List -->
+    <div style="background: var(--bg-card); border-radius: var(--radius-2xl); box-shadow: var(--shadow-lg); border: 1px solid var(--border-light); overflow: hidden;">
+        <div style="padding: var(--space-6); border-bottom: 1px solid var(--border-light);">
+            <h2 style="color: var(--text-primary); font-size: var(--text-xl); font-weight: var(--font-bold); margin: 0;">
+                All Vendors
+            </h2>
+        </div>
+        
+        {% if vendors %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--bg-secondary);">
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">ID</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Business</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Owner</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Contact</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Sales</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Rating</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Status</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Joined</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vendor in vendors %}
+                    <tr style="border-bottom: 1px solid var(--border-light); transition: var(--transition-all);" onmouseover="this.style.backgroundColor='var(--bg-secondary)'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: var(--space-4); color: var(--text-primary); font-weight: var(--font-medium);">#{{ vendor.id }}</td>
+                        <td style="padding: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--secondary-500), var(--accent-500)); border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; color: white; font-weight: var(--font-bold); font-size: var(--text-lg);">
+                                    {{ vendor.business_name[0].upper() }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: var(--font-bold); color: var(--text-primary); margin-bottom: var(--space-1);">{{ vendor.business_name }}</div>
+                                    <div style="font-size: var(--text-sm); color: var(--text-muted);">{{ vendor.business_description[:50] }}{% if vendor.business_description and vendor.business_description|length > 50 %}...{% endif %}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--text-secondary);">{{ vendor.user.username }}</td>
+                        <td style="padding: var(--space-4);">
+                            <div style="font-size: var(--text-sm); color: var(--text-secondary);">
+                                <div>📧 {{ vendor.business_email or vendor.user.email }}</div>
+                                {% if vendor.business_phone %}
+                                <div>📞 {{ vendor.business_phone }}</div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--success-600); font-weight: var(--font-semibold);">${{ "%.0f"|format(vendor.total_sales or 0) }}</td>
+                        <td style="padding: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-1);">
+                                <span style="color: var(--accent-500);">⭐</span>
+                                <span style="font-weight: var(--font-semibold); color: var(--text-primary);">{{ "%.1f"|format(vendor.rating or 0) }}</span>
+                                <span style="font-size: var(--text-sm); color: var(--text-muted);">({{ vendor.total_reviews or 0 }})</span>
+                            </div>
+                        </td>
+                        <td style="padding: var(--space-4);">
+                            {% if vendor.is_verified %}
+                                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">✅ VERIFIED</span>
+                            {% else %}
+                                <span style="background: var(--warning-100); color: var(--warning-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">⏳ PENDING</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--text-muted); font-size: var(--text-sm);">{{ vendor.created_at.strftime('%b %d, %Y') }}</td>
+                        <td style="padding: var(--space-4);">
+                            <div style="display: flex; gap: var(--space-2);">
+                                {% if not vendor.is_verified %}
+                                <form method="POST" action="{{ url_for('verify_vendor', id=vendor.id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Verify this vendor?')">
+                                        ✅ Verify
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <button onclick="viewVendor({{ vendor.id }})" class="btn btn-sm btn-outline">
+                                    View
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: var(--space-16); text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: var(--space-4); opacity: 0.3;">🏪</div>
+            <h3 style="color: var(--text-primary); margin-bottom: var(--space-2);">No Vendors Found</h3>
+            <p style="color: var(--text-muted);">Vendor applications will appear here once users apply to become vendors.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function viewVendor(vendorId) {
+    // Implement view vendor functionality
+    alert(`View vendor ${vendorId} - to be implemented`);
+}
+</script>
+{% endblock %}

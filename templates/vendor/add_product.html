@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Add Product - Vendor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <a href="{{ url_for('vendor_products') }}" class="btn btn-secondary">
+                ← Back to Products
+            </a>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Add New Product
+            </h1>
+        </div>
+
+        <div class="form-container">
+            <form method="POST">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="name">Product Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Home & Kitchen">Home & Kitchen</option>
+                            <option value="Sports & Fitness">Sports & Fitness</option>
+                            <option value="Office Supplies">Office Supplies</option>
+                            <option value="Books">Books</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Beauty & Health">Beauty & Health</option>
+                            <option value="Toys & Games">Toys & Games</option>
+                            <option value="Automotive">Automotive</option>
+                            <option value="Garden & Outdoor">Garden & Outdoor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Describe your product..."></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="price">Price ($) *</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stock">Stock Quantity *</label>
+                        <input type="number" id="stock" name="stock" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discount_percentage">Discount (%)</label>
+                        <input type="number" id="discount_percentage" name="discount_percentage" step="0.01" min="0" max="100" value="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url">Product Image URL</label>
+                    <input type="url" id="image_url" name="image_url" placeholder="https://example.com/image.jpg">
+                    <small style="color: var(--text-muted);">Enter a direct link to your product image</small>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" name="brand" placeholder="Product brand">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="dimensions">Dimensions (L x W x H)</label>
+                        <input type="text" id="dimensions" name="dimensions" placeholder="e.g., 10 x 5 x 3 cm">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <input type="text" id="tags" name="tags" placeholder="tag1, tag2, tag3">
+                        <small style="color: var(--text-muted);">Separate tags with commas</small>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span>💾</span> Add Product
+                    </button>
+                    <a href="{{ url_for('vendor_products') }}" class="btn btn-secondary btn-large">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Preview image when URL is entered
+document.getElementById('image_url').addEventListener('blur', function() {
+    const url = this.value;
+    if (url) {
+        // Create a small preview (optional enhancement)
+        console.log('Image URL entered:', url);
+    }
+});
+
+// Auto-generate tags based on category and name
+document.getElementById('category').addEventListener('change', function() {
+    const category = this.value;
+    const tagsField = document.getElementById('tags');
+    if (category && !tagsField.value) {
+        tagsField.value = category.toLowerCase().replace(' & ', ', ');
+    }
+});
+</script>
+{% endblock %}

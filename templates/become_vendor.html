@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Become a Vendor - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container" style="max-width: 800px; margin: 2rem auto;">
+        <h1 style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            Become a Vendor
+        </h1>
+        
+        <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem; border-left: 4px solid var(--primary-color);">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Why Sell With Us?</h3>
+            <ul style="color: var(--text-secondary); line-height: 1.8;">
+                <li>✨ Reach thousands of customers</li>
+                <li>💰 Competitive commission rates (starting at 5%)</li>
+                <li>📊 Advanced analytics and reporting</li>
+                <li>🚀 Easy product management tools</li>
+                <li>💳 Multiple payment options</li>
+                <li>🛡️ Secure and reliable platform</li>
+            </ul>
+        </div>
+        
+        <form method="POST" id="vendorForm">
+            <div class="form-group">
+                <label for="business_name">Business Name *</label>
+                <input type="text" id="business_name" name="business_name" required 
+                       placeholder="Enter your business name">
+            </div>
+            
+            <div class="form-group">
+                <label for="business_description">Business Description *</label>
+                <textarea id="business_description" name="business_description" rows="4" required
+                          placeholder="Describe your business, products, and what makes you unique..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="business_email">Business Email *</label>
+                <input type="email" id="business_email" name="business_email" required
+                       placeholder="business@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="business_phone">Business Phone *</label>
+                <input type="tel" id="business_phone" name="business_phone" required
+                       placeholder="+1 (555) 123-4567">
+            </div>
+            
+            <div class="form-group">
+                <label for="business_address">Business Address *</label>
+                <textarea id="business_address" name="business_address" rows="3" required
+                          placeholder="Enter your complete business address..."></textarea>
+            </div>
+            
+            <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-lg); margin: 2rem 0;">
+                <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Terms & Conditions</h4>
+                <div style="max-height: 200px; overflow-y: auto; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                    <p><strong>Commission Structure:</strong> We charge a 5% commission on each sale (negotiable for high-volume sellers).</p>
+                    <p><strong>Payment Terms:</strong> Payments are processed weekly and transferred to your account within 3-5 business days.</p>
+                    <p><strong>Product Guidelines:</strong> All products must comply with our quality standards and legal requirements.</p>
+                    <p><strong>Customer Service:</strong> Vendors are responsible for handling customer inquiries and returns for their products.</p>
+                    <p><strong>Account Verification:</strong> All vendor accounts require admin approval before products can be listed.</p>
+                </div>
+                
+                <label style="display: flex; align-items: center; margin-top: 1rem; cursor: pointer;">
+                    <input type="checkbox" required style="margin-right: 0.5rem;">
+                    <span style="color: var(--text-primary);">I agree to the terms and conditions</span>
+                </label>
+            </div>
+            
+            <div style="text-align: center;">
+                <button type="submit" class="btn btn-primary btn-large">
+                    Submit Vendor Application
+                </button>
+                <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                    Your application will be reviewed within 24-48 hours
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('vendorForm').addEventListener('submit', function(e) {
+    const businessName = document.getElementById('business_name').value.trim();
+    const businessDescription = document.getElementById('business_description').value.trim();
+    const businessEmail = document.getElementById('business_email').value.trim();
+    const businessPhone = document.getElementById('business_phone').value.trim();
+    const businessAddress = document.getElementById('business_address').value.trim();
+    
+    if (businessName.length < 2) {
+        alert('Business name must be at least 2 characters long');
+        e.preventDefault();
+        return;
+    }
+    
+    if (businessDescription.length < 50) {
+        alert('Business description must be at least 50 characters long');
+        e.preventDefault();
+        return;
+    }
+    
+    if (!isValidEmail(businessEmail)) {
+        alert('Please enter a valid business email address');
+        e.preventDefault();
+        return;
+    }
+    
+    if (businessPhone.length < 10) {
+        alert('Please enter a valid phone number');
+        e.preventDefault();
+        return;
+    }
+    
+    if (businessAddress.length < 20) {
+        alert('Please enter a complete business address');
+        e.preventDefault();
+        return;
+    }
+});
+</script>
+{% endblock %}

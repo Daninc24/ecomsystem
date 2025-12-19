@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Cancelled - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 600px; margin: 4rem auto; text-align: center;">
+        <div class="form-container">
+            <!-- Cancel Icon -->
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--warning-color), #dd6b20); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+                <svg width="40" height="40" fill="white" viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </div>
+            
+            <h1 style="color: var(--warning-color); margin-bottom: 1rem; font-size: 2rem;">
+                Payment Cancelled
+            </h1>
+            
+            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;">
+                Your payment was cancelled and no charges were made to your account. Your items are still in your cart.
+            </p>
+            
+            <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem; text-align: left;">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">What you can do:</h3>
+                <ul style="color: var(--text-secondary); line-height: 1.8; list-style: none; padding: 0;">
+                    <li style="margin-bottom: 0.5rem;">🛒 Return to your cart to review your items</li>
+                    <li style="margin-bottom: 0.5rem;">💳 Try a different payment method</li>
+                    <li style="margin-bottom: 0.5rem;">📞 Contact support if you experienced technical issues</li>
+                    <li style="margin-bottom: 0.5rem;">🛍️ Continue shopping for more items</li>
+                </ul>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{{ url_for('cart') }}" class="btn btn-primary">
+                    Return to Cart
+                </a>
+                <a href="{{ url_for('checkout') }}" class="btn btn-secondary">
+                    Try Again
+                </a>
+                <a href="{{ url_for('products') }}" class="btn btn-outline">
+                    Continue Shopping
+                </a>
+            </div>
+            
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    Having trouble? <a href="{{ url_for('contact') }}" style="color: var(--primary-color);">Contact our support team</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

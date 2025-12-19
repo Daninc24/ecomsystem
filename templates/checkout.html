@@ -1,0 +1,429 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="text-align: center; margin-bottom: 2rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+        Secure Checkout
+    </h1>
+    
+    <div class="checkout-container" style="display: grid; grid-template-columns: 1fr 400px; gap: 3rem; margin-top: 2rem;">
+        <!-- Order Summary -->
+        <div>
+            <div class="form-container">
+                <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">Order Summary</h2>
+                
+                {% for vendor_id, vendor_group in vendor_groups.items() %}
+                <div style="margin-bottom: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-lg);">
+                    <h4 style="color: var(--primary-color); margin-bottom: 1rem;">
+                        🏪 {{ vendor_group.vendor_name }}
+                    </h4>
+                    
+                    {% for item in vendor_group.vendor_items %}
+                    <div class="checkout-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-light);">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <img src="{{ item.Product.image_url or '/static/images/placeholder.jpg' }}" 
+                                 alt="{{ item.Product.name }}" 
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius-md);">
+                            <div>
+                                <span class="item-name" style="font-weight: 600;">{{ item.Product.name }}</span>
+                                <span class="item-quantity" style="color: var(--text-secondary); font-size: 0.9rem; display: block;">Qty: {{ item.Cart.quantity }}</span>
+                            </div>
+                        </div>
+                        <span class="item-price" style="font-weight: 600; color: var(--success-color);">
+                            ${{ "%.2f"|format(item.Cart.quantity * item.Product.price) }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                    
+                    <div style="text-align: right; margin-top: 1rem; font-weight: 600; color: var(--text-primary);">
+                        Vendor Subtotal: ${{ "%.2f"|format(vendor_group.subtotal) }}
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Order Totals -->
+                <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-lg); margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Subtotal:</span>
+                        <span>${{ "%.2f"|format(subtotal) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Shipping:</span>
+                        <span>${{ "%.2f"|format(shipping_cost) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <span>Tax (8%):</span>
+                        <span>${{ "%.2f"|format(tax_amount) }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; color: var(--primary-color); border-top: 2px solid var(--border-color); padding-top: 1rem;">
+                        <span>Total:</span>
+                        <span>${{ "%.2f"|format(total) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Checkout Form -->
+        <div>
+            <div class="form-container">
+                <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">Shipping Information</h2>
+                <form id="checkoutForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Street Address *</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="zipCode">ZIP Code *</label>
+                            <input type="text" id="zipCode" name="zipCode" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method Selection -->
+                    <h3 style="margin: 2rem 0 1rem 0; color: var(--text-primary);">Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method" data-method="stripe">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe">
+                            <h4>Credit/Debit Card</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Visa, Mastercard, Amex</p>
+                        </div>
+                        
+                        <div class="payment-method" data-method="paypal">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png" alt="PayPal">
+                            <h4>PayPal</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Pay with PayPal account</p>
+                        </div>
+                        
+                        <div class="payment-method" data-method="mpesa">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" alt="M-Pesa">
+                            <h4>M-Pesa</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Mobile money payment</p>
+                        </div>
+                    </div>
+                    
+                    <!-- M-Pesa Phone Number (hidden by default) -->
+                    <div id="mpesaPhone" class="form-group" style="display: none;">
+                        <label for="phoneNumber">M-Pesa Phone Number *</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="254712345678">
+                        <small style="color: var(--text-muted);">Enter your M-Pesa registered phone number</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 2rem;" id="placeOrderBtn">
+                        <span id="btnText">Place Order - ${{ "%.2f"|format(total) }}</span>
+                        <span id="btnLoader" style="display: none;">Processing...</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Processing Modal -->
+<div id="paymentModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div id="paymentContent">
+            <div class="loading-spinner"></div>
+            <p id="paymentMessage">Processing your payment...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe Elements Container -->
+<div id="stripe-elements" style="display: none;">
+    <div id="card-element" style="padding: 1rem; border: 2px solid var(--border-color); border-radius: var(--radius-lg); margin: 1rem 0;"></div>
+    <div id="card-errors" style="color: var(--error-color); margin-top: 0.5rem;"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Stripe JS -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+let selectedPaymentMethod = null;
+let stripe = null;
+let elements = null;
+let cardElement = null;
+
+// Initialize Stripe
+if (typeof Stripe !== 'undefined') {
+    stripe = Stripe('{{ config.STRIPE_PUBLISHABLE_KEY }}'); // You'll need to pass this from the backend
+    elements = stripe.elements();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Payment method selection
+    const paymentMethods = document.querySelectorAll('.payment-method');
+    const mpesaPhone = document.getElementById('mpesaPhone');
+    const stripeElements = document.getElementById('stripe-elements');
+    
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            // Remove selected class from all methods
+            paymentMethods.forEach(m => m.classList.remove('selected'));
+            
+            // Add selected class to clicked method
+            this.classList.add('selected');
+            selectedPaymentMethod = this.getAttribute('data-method');
+            
+            // Show/hide relevant fields
+            if (selectedPaymentMethod === 'mpesa') {
+                mpesaPhone.style.display = 'block';
+                stripeElements.style.display = 'none';
+            } else if (selectedPaymentMethod === 'stripe') {
+                mpesaPhone.style.display = 'none';
+                stripeElements.style.display = 'block';
+                initializeStripeElements();
+            } else {
+                mpesaPhone.style.display = 'none';
+                stripeElements.style.display = 'none';
+            }
+        });
+    });
+    
+    // Form submission
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!selectedPaymentMethod) {
+            alert('Please select a payment method');
+            return;
+        }
+        
+        processOrder();
+    });
+});
+
+function initializeStripeElements() {
+    if (!stripe || cardElement) return;
+    
+    cardElement = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                    color: '#aab7c4',
+                },
+            },
+        },
+    });
+    
+    cardElement.mount('#card-element');
+    
+    cardElement.on('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+}
+
+async function processOrder() {
+    const btn = document.getElementById('placeOrderBtn');
+    const btnText = document.getElementById('btnText');
+    const btnLoader = document.getElementById('btnLoader');
+    
+    // Show loading state
+    btn.disabled = true;
+    btnText.style.display = 'none';
+    btnLoader.style.display = 'inline';
+    
+    try {
+        // First, create the order
+        const orderData = {
+            shipping_address: getShippingAddress(),
+            billing_address: getShippingAddress(), // Same as shipping for now
+            payment_method: selectedPaymentMethod
+        };
+        
+        const orderResponse = await fetch('/place_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData)
+        });
+        
+        const orderResult = await orderResponse.json();
+        
+        if (!orderResult.success) {
+            throw new Error(orderResult.message || 'Failed to create order');
+        }
+        
+        // Process payment based on selected method
+        if (selectedPaymentMethod === 'stripe') {
+            await processStripePayment(orderResult.order_id, orderResult.total);
+        } else if (selectedPaymentMethod === 'paypal') {
+            await processPayPalPayment(orderResult.order_id, orderResult.total);
+        } else if (selectedPaymentMethod === 'mpesa') {
+            await processMpesaPayment(orderResult.order_id, orderResult.total);
+        }
+        
+    } catch (error) {
+        console.error('Payment error:', error);
+        alert('Payment failed: ' + error.message);
+        
+        // Reset button state
+        btn.disabled = false;
+        btnText.style.display = 'inline';
+        btnLoader.style.display = 'none';
+    }
+}
+
+async function processStripePayment(orderId, amount) {
+    if (!stripe || !cardElement) {
+        throw new Error('Stripe not initialized');
+    }
+    
+    // Create payment intent
+    const response = await fetch('/process_payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            payment_method: 'stripe',
+            order_id: orderId,
+            amount: amount
+        })
+    });
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+        throw new Error(result.error || 'Payment failed');
+    }
+    
+    // Confirm payment with Stripe
+    const {error} = await stripe.confirmCardPayment(result.client_secret, {
+        payment_method: {
+            card: cardElement,
+            billing_details: {
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+            },
+        }
+    });
+    
+    if (error) {
+        throw new Error(error.message);
+    } else {
+        // Payment succeeded
+        window.location.href = '/payment/success?order_id=' + orderId;
+    }
+}
+
+async function processPayPalPayment(orderId, amount) {
+    const response = await fetch('/process_payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            payment_method: 'paypal',
+            order_id: orderId,
+            amount: amount
+        })
+    });
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+        throw new Error(result.error || 'PayPal payment failed');
+    }
+    
+    // Redirect to PayPal
+    window.location.href = result.approval_url;
+}
+
+async function processMpesaPayment(orderId, amount) {
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    
+    if (!phoneNumber) {
+        throw new Error('Please enter your M-Pesa phone number');
+    }
+    
+    const response = await fetch('/process_payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            payment_method: 'mpesa',
+            order_id: orderId,
+            amount: amount,
+            phone_number: phoneNumber
+        })
+    });
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+        throw new Error(result.error || 'M-Pesa payment failed');
+    }
+    
+    // Show M-Pesa prompt message
+    showPaymentModal('M-Pesa Payment', 'Please check your phone for the M-Pesa payment prompt and enter your PIN to complete the payment.');
+    
+    // Poll for payment status (you'd implement this)
+    pollMpesaPaymentStatus(result.checkout_request_id, orderId);
+}
+
+function getShippingAddress() {
+    return {
+        full_name: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        zip_code: document.getElementById('zipCode').value
+    };
+}
+
+function showPaymentModal(title, message) {
+    const modal = document.getElementById('paymentModal');
+    const content = document.getElementById('paymentContent');
+    
+    content.innerHTML = `
+        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">${title}</h3>
+        <p style="color: var(--text-secondary); line-height: 1.6;">${message}</p>
+    `;
+    
+    modal.style.display = 'flex';
+}
+
+function pollMpesaPaymentStatus(checkoutRequestId, orderId) {
+    // This would poll the server to check M-Pesa payment status
+    // Implementation depends on your backend setup
+    setTimeout(() => {
+        window.location.href = '/payment/success?order_id=' + orderId;
+    }, 30000); // Redirect after 30 seconds for demo
+}
+</script>
+{% endblock %}

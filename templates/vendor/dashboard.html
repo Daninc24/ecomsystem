@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Dashboard - {{ vendor.business_name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                {{ vendor.business_name }}
+            </h1>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                {% if vendor.is_verified %}
+                    <span style="color: var(--success-color); font-weight: 600;">✓ Verified Vendor</span>
+                {% else %}
+                    <span style="color: var(--warning-color); font-weight: 600;">⏳ Pending Verification</span>
+                {% endif %}
+            </p>
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <a href="{{ url_for('vendor_add_product') }}" class="btn btn-primary">
+                <i class="icon-plus"></i> Add Product
+            </a>
+            <a href="{{ url_for('vendor_products') }}" class="btn btn-secondary">
+                <i class="icon-package"></i> My Products
+            </a>
+        </div>
+    </div>
+    
+    <!-- Vendor Stats -->
+    <div class="vendor-stats">
+        <div class="stat-card">
+            <h3 style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Products</h3>
+            <div class="stat-number">{{ total_products }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3 style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Orders</h3>
+            <div class="stat-number">{{ total_orders }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3 style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Earnings</h3>
+            <div class="stat-number">${{ "%.2f"|format(total_earnings) }}</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3 style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Rating</h3>
+            <div class="stat-number">{{ "%.1f"|format(vendor.rating) }}⭐</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <div class="form-container">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Quick Actions</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{{ url_for('vendor_add_product') }}" class="btn btn-primary">
+                    📦 Add New Product
+                </a>
+                <a href="{{ url_for('vendor_products') }}" class="btn btn-secondary">
+                    📋 Manage Products
+                </a>
+                <a href="{{ url_for('vendor_orders') }}" class="btn btn-secondary">
+                    🛒 View Orders
+                </a>
+                <a href="{{ url_for('profile') }}" class="btn btn-outline">
+                    ⚙️ Account Settings
+                </a>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Business Info</h3>
+            <div style="color: var(--text-secondary); line-height: 1.8;">
+                <p><strong>Email:</strong> {{ vendor.business_email }}</p>
+                <p><strong>Phone:</strong> {{ vendor.business_phone }}</p>
+                <p><strong>Commission Rate:</strong> {{ vendor.commission_rate }}%</p>
+                <p><strong>Member Since:</strong> {{ vendor.created_at.strftime('%B %Y') }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Orders -->
+    {% if recent_orders %}
+    <div class="form-container">
+        <h2 style="margin-bottom: 1.5rem; color: var(--text-primary);">Recent Orders</h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="padding: 1rem; text-align: left; color: var(--text-secondary); font-weight: 600;">Order #</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--text-secondary); font-weight: 600;">Date</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--text-secondary); font-weight: 600;">Total</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--text-secondary); font-weight: 600;">Status</th>
+                        <th style="padding: 1rem; text-align: left; color: var(--text-secondary); font-weight: 600;">Your Earnings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order, order_item in recent_orders %}
+                    <tr style="border-bottom: 1px solid var(--border-light);">
+                        <td style="padding: 1rem; font-weight: 600;">#{{ order.id }}</td>
+                        <td style="padding: 1rem; color: var(--text-secondary);">{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td style="padding: 1rem; font-weight: 600; color: var(--success-color);">${{ "%.2f"|format(order.total_price) }}</td>
+                        <td style="padding: 1rem;">
+                            <span class="status-{{ order.order_status }}" style="padding: 0.25rem 0.75rem; border-radius: var(--radius-md); font-size: 0.8rem; font-weight: 600;">
+                                {{ order.order_status.title() }}
+                            </span>
+                        </td>
+                        <td style="padding: 1rem; font-weight: 600; color: var(--primary-color);">${{ "%.2f"|format(order_item.vendor_earnings) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <a href="{{ url_for('vendor_orders') }}" class="btn btn-outline">View All Orders</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="form-container" style="text-align: center; padding: 3rem;">
+        <h3 style="color: var(--text-muted); margin-bottom: 1rem;">No Orders Yet</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Start by adding some products to your store!</p>
+        <a href="{{ url_for('vendor_add_product') }}" class="btn btn-primary">Add Your First Product</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.status-pending { background-color: var(--warning-color); color: white; }
+.status-processing { background-color: var(--info-color); color: white; }
+.status-shipped { background-color: var(--secondary-color); color: white; }
+.status-delivered { background-color: var(--success-color); color: white; }
+.status-cancelled { background-color: var(--error-color); color: white; }
+</style>
+{% endblock %}

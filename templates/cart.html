@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - E-Commerce Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Shopping Cart</h1>
+    
+    {% if cart_items %}
+    <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item" data-cart-id="{{ item.Cart.id }}">
+            <img src="{{ item.Product.image_url or '/static/images/placeholder.jpg' }}" alt="{{ item.Product.name }}">
+            <div class="item-info">
+                <h3>{{ item.Product.name }}</h3>
+                <p class="item-price">${{ "%.2f"|format(item.Product.price) }}</p>
+            </div>
+            <div class="quantity-controls">
+                <button class="quantity-btn" onclick="updateQuantity({{ item.Cart.id }}, {{ item.Cart.quantity - 1 }})">-</button>
+                <span class="quantity">{{ item.Cart.quantity }}</span>
+                <button class="quantity-btn" onclick="updateQuantity({{ item.Cart.id }}, {{ item.Cart.quantity + 1 }})">+</button>
+            </div>
+            <div class="item-total">
+                ${{ "%.2f"|format(item.Cart.quantity * item.Product.price) }}
+            </div>
+            <button class="remove-btn" onclick="removeFromCart({{ item.Cart.id }})">Remove</button>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="cart-summary">
+        <div class="total-section">
+            <h3>Total: $<span id="cartTotal">{{ "%.2f"|format(total) }}</span></h3>
+            <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-large">Proceed to Checkout</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <p>Your cart is empty.</p>
+        <a href="{{ url_for('products') }}" class="btn btn-primary">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateQuantity(cartId, newQuantity) {
+    if (newQuantity < 1) {
+        removeFromCart(cartId);
+        return;
+    }
+    
+    fetch('/update_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            cart_id: cartId,
+            quantity: newQuantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error updating cart');
+        }
+    });
+}
+
+function removeFromCart(cartId) {
+    if (confirm('Remove this item from cart?')) {
+        fetch('/remove_from_cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                cart_id: cartId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error removing item');
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

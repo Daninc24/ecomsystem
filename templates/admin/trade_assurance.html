@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Trade Assurance Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+        <h1 style="background: linear-gradient(135deg, var(--primary-600), var(--secondary-600)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: var(--text-4xl); font-weight: var(--font-black);">
+            🛡️ Trade Assurance Management
+        </h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Trade Assurance Overview -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">🛡️</span>
+                <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">ACTIVE</span>
+            </div>
+            <div class="stat-number">{{ assurances|selectattr('status', 'equalto', 'active')|list|length }}</div>
+            <div class="stat-label">Active Protections</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">⚠️</span>
+                <span style="background: var(--warning-100); color: var(--warning-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">CLAIMS</span>
+            </div>
+            <div class="stat-number">{{ assurances|selectattr('status', 'equalto', 'claimed')|list|length }}</div>
+            <div class="stat-label">Pending Claims</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">✅</span>
+                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">RESOLVED</span>
+            </div>
+            <div class="stat-number">{{ assurances|selectattr('status', 'equalto', 'resolved')|list|length }}</div>
+            <div class="stat-label">Resolved Cases</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">💰</span>
+                <span style="background: var(--accent-100); color: var(--accent-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">VALUE</span>
+            </div>
+            <div class="stat-number">${{ "%.0f"|format(assurances|sum(attribute='amount') or 0) }}</div>
+            <div class="stat-label">Total Protected</div>
+        </div>
+    </div>
+
+    <!-- Trade Assurance List -->
+    <div style="background: var(--bg-card); border-radius: var(--radius-2xl); box-shadow: var(--shadow-lg); border: 1px solid var(--border-light); overflow: hidden;">
+        <div style="padding: var(--space-6); border-bottom: 1px solid var(--border-light);">
+            <h2 style="color: var(--text-primary); font-size: var(--text-xl); font-weight: var(--font-bold); margin: 0;">
+                All Trade Assurance Cases
+            </h2>
+        </div>
+        
+        {% if assurances %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--bg-secondary);">
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Case ID</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Order</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Customer</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Vendor</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Type</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Amount</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Status</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Created</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assurance in assurances %}
+                    <tr style="border-bottom: 1px solid var(--border-light); transition: var(--transition-all);" onmouseover="this.style.backgroundColor='var(--bg-secondary)'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: var(--space-4); color: var(--text-primary); font-weight: var(--font-medium);">#{{ assurance.id }}</td>
+                        <td style="padding: var(--space-4); color: var(--text-secondary);">
+                            <a href="#" style="color: var(--primary-600); text-decoration: none; font-weight: var(--font-medium);">
+                                Order #{{ assurance.order.order_number or assurance.order_id }}
+                            </a>
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--text-secondary);">{{ assurance.customer.username }}</td>
+                        <td style="padding: var(--space-4); color: var(--text-secondary);">{{ assurance.vendor.business_name }}</td>
+                        <td style="padding: var(--space-4);">
+                            <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold); text-transform: uppercase;">
+                                {{ assurance.protection_type }}
+                            </span>
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--success-600); font-weight: var(--font-semibold);">${{ "%.2f"|format(assurance.amount) }}</td>
+                        <td style="padding: var(--space-4);">
+                            {% if assurance.status == 'active' %}
+                                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">🛡️ ACTIVE</span>
+                            {% elif assurance.status == 'claimed' %}
+                                <span style="background: var(--warning-100); color: var(--warning-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">⚠️ CLAIMED</span>
+                            {% elif assurance.status == 'resolved' %}
+                                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">✅ RESOLVED</span>
+                            {% elif assurance.status == 'expired' %}
+                                <span style="background: var(--gray-100); color: var(--gray-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">⏰ EXPIRED</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--text-muted); font-size: var(--text-sm);">{{ assurance.created_at.strftime('%b %d, %Y') }}</td>
+                        <td style="padding: var(--space-4);">
+                            {% if assurance.status == 'claimed' %}
+                            <button onclick="openResolveModal({{ assurance.id }}, '{{ assurance.claim_reason }}', '{{ assurance.customer.username }}', '{{ assurance.vendor.business_name }}')" class="btn btn-sm btn-primary">
+                                Resolve
+                            </button>
+                            {% else %}
+                            <button onclick="viewDetails({{ assurance.id }})" class="btn btn-sm btn-outline">
+                                View
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: var(--space-16); text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: var(--space-4); opacity: 0.3;">🛡️</div>
+            <h3 style="color: var(--text-primary); margin-bottom: var(--space-2);">No Trade Assurance Cases</h3>
+            <p style="color: var(--text-muted);">Trade assurance cases will appear here when customers file claims.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Resolve Modal -->
+<div id="resolveModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 600px;">
+        <h3 style="margin-bottom: var(--space-4); color: var(--text-primary);">Resolve Trade Assurance Claim</h3>
+        
+        <form id="resolveForm" method="POST">
+            <div style="background: var(--bg-secondary); padding: var(--space-4); border-radius: var(--radius-lg); margin-bottom: var(--space-4);">
+                <h4 style="margin-bottom: var(--space-2); color: var(--text-primary);">Claim Details</h4>
+                <div id="claimDetails"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="resolution">Resolution Notes *</label>
+                <textarea id="resolution" name="resolution" rows="4" required placeholder="Describe how this case was resolved..."></textarea>
+            </div>
+            
+            <div style="display: flex; gap: var(--space-4); justify-content: center; margin-top: var(--space-6);">
+                <button type="submit" name="action" value="approve_claim" class="btn btn-success">
+                    ✅ Approve Claim
+                </button>
+                <button type="submit" name="action" value="reject_claim" class="btn btn-danger">
+                    ❌ Reject Claim
+                </button>
+                <button type="button" onclick="closeResolveModal()" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openResolveModal(assuranceId, claimReason, customer, vendor) {
+    const modal = document.getElementById('resolveModal');
+    const form = document.getElementById('resolveForm');
+    const details = document.getElementById('claimDetails');
+    
+    form.action = `/admin/trade_assurance/${assuranceId}/resolve`;
+    details.innerHTML = `
+        <p><strong>Customer:</strong> ${customer}</p>
+        <p><strong>Vendor:</strong> ${vendor}</p>
+        <p><strong>Claim Reason:</strong> ${claimReason || 'No reason provided'}</p>
+    `;
+    
+    modal.style.display = 'flex';
+}
+
+function closeResolveModal() {
+    document.getElementById('resolveModal').style.display = 'none';
+}
+
+function viewDetails(assuranceId) {
+    // Implement view details functionality
+    alert('View details functionality - to be implemented');
+}
+
+// Close modal when clicking outside
+document.getElementById('resolveModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeResolveModal();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Product - Vendor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <a href="{{ url_for('vendor_products') }}" class="btn btn-secondary">
+                ← Back to Products
+            </a>
+            <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Edit Product
+            </h1>
+        </div>
+
+        <div class="form-container">
+            <form method="POST">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="name">Product Name *</label>
+                        <input type="text" id="name" name="name" value="{{ product.name }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category *</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics" {% if product.category == 'Electronics' %}selected{% endif %}>Electronics</option>
+                            <option value="Home & Kitchen" {% if product.category == 'Home & Kitchen' %}selected{% endif %}>Home & Kitchen</option>
+                            <option value="Sports & Fitness" {% if product.category == 'Sports & Fitness' %}selected{% endif %}>Sports & Fitness</option>
+                            <option value="Office Supplies" {% if product.category == 'Office Supplies' %}selected{% endif %}>Office Supplies</option>
+                            <option value="Books" {% if product.category == 'Books' %}selected{% endif %}>Books</option>
+                            <option value="Clothing" {% if product.category == 'Clothing' %}selected{% endif %}>Clothing</option>
+                            <option value="Beauty & Health" {% if product.category == 'Beauty & Health' %}selected{% endif %}>Beauty & Health</option>
+                            <option value="Toys & Games" {% if product.category == 'Toys & Games' %}selected{% endif %}>Toys & Games</option>
+                            <option value="Automotive" {% if product.category == 'Automotive' %}selected{% endif %}>Automotive</option>
+                            <option value="Garden & Outdoor" {% if product.category == 'Garden & Outdoor' %}selected{% endif %}>Garden & Outdoor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4">{{ product.description or '' }}</textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="price">Price ($) *</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" value="{{ product.price }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stock">Stock Quantity *</label>
+                        <input type="number" id="stock" name="stock" min="0" value="{{ product.stock }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discount_percentage">Discount (%)</label>
+                        <input type="number" id="discount_percentage" name="discount_percentage" step="0.01" min="0" max="100" value="{{ product.discount_percentage or 0 }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url">Product Image URL</label>
+                    <input type="url" id="image_url" name="image_url" value="{{ product.image_url or '' }}">
+                    {% if product.image_url %}
+                    <div style="margin-top: 0.5rem;">
+                        <img src="{{ product.image_url }}" alt="Current image" style="max-width: 200px; max-height: 150px; object-fit: cover; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" name="brand" value="{{ product.brand or '' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.01" min="0" value="{{ product.weight or '' }}">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label for="dimensions">Dimensions (L x W x H)</label>
+                        <input type="text" id="dimensions" name="dimensions" value="{{ product.dimensions or '' }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tags">Tags</label>
+                        <input type="text" id="tags" name="tags" value="{{ product.tags or '' }}">
+                        <small style="color: var(--text-muted);">Separate tags with commas</small>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-lg); margin: 1.5rem 0;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">Product Information</h4>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        <div>SKU: {{ product.sku or 'Not assigned' }}</div>
+                        <div>Created: {{ product.created_at.strftime('%B %d, %Y at %I:%M %p') if product.created_at else 'Unknown' }}</div>
+                        <div>Last Updated: {{ product.updated_at.strftime('%B %d, %Y at %I:%M %p') if product.updated_at else 'Never' }}</div>
+                        <div>Status: <span style="color: {% if product.status == 'active' %}var(--success-color){% else %}var(--warning-color){% endif %};">{{ product.status.title() if product.status else 'Active' }}</span></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <span>💾</span> Update Product
+                    </button>
+                    <a href="{{ url_for('vendor_products') }}" class="btn btn-secondary btn-large">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

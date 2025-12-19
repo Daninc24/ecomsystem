@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Orders - Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Manage Orders</h1>
+    
+    {% if orders %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>User ID</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>#{{ order.id }}</td>
+                <td>{{ order.user_id }}</td>
+                <td>${{ "%.2f"|format(order.total_price) }}</td>
+                <td>
+                    <select class="status-select" data-order-id="{{ order.id }}">
+                        <option value="pending" {% if order.order_status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="processing" {% if order.order_status == 'processing' %}selected{% endif %}>Processing</option>
+                        <option value="shipped" {% if order.order_status == 'shipped' %}selected{% endif %}>Shipped</option>
+                        <option value="delivered" {% if order.order_status == 'delivered' %}selected{% endif %}>Delivered</option>
+                        <option value="cancelled" {% if order.order_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary update-status-btn" data-order-id="{{ order.id }}">
+                        Update Status
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No orders found.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const updateButtons = document.querySelectorAll('.update-status-btn');
+    
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = this.getAttribute('data-order-id');
+            const statusSelect = document.querySelector(`select[data-order-id="${orderId}"]`);
+            const newStatus = statusSelect.value;
+            
+            fetch('/admin/update_order_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    status: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Order status updated successfully');
+                } else {
+                    alert('Error updating order status');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}My Products - Vendor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            My Products
+        </h1>
+        <a href="{{ url_for('vendor_add_product') }}" class="btn btn-primary">
+            <span>➕</span> Add New Product
+        </a>
+    </div>
+
+    {% if vendor %}
+    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem; border: 1px solid var(--border-light);">
+        <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">{{ vendor.business_name }}</h3>
+        <p style="color: var(--text-secondary);">{{ vendor.business_description or 'No description available' }}</p>
+        {% if vendor.is_verified %}
+            <span style="background: var(--success-color); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-md); font-size: 0.8rem; font-weight: 600;">✓ Verified Vendor</span>
+        {% else %}
+            <span style="background: var(--warning-color); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-md); font-size: 0.8rem; font-weight: 600;">⏳ Pending Verification</span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if products %}
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ product.image_url or '/static/images/placeholder.jpg' }}" alt="{{ product.name }}">
+            
+            <div class="product-info">
+                <div class="product-category">{{ product.category or 'Uncategorized' }}</div>
+                <h3>{{ product.name }}</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
+                    <span class="product-stock" style="color: {% if product.stock > 10 %}var(--success-color){% elif product.stock > 0 %}var(--warning-color){% else %}var(--error-color){% endif %};">
+                        Stock: {{ product.stock }}
+                    </span>
+                </div>
+                
+                {% if product.discount_percentage > 0 %}
+                <div style="background: var(--accent-color); color: white; padding: 0.25rem 0.5rem; border-radius: var(--radius-md); font-size: 0.8rem; margin-bottom: 1rem; display: inline-block;">
+                    {{ product.discount_percentage }}% OFF
+                </div>
+                {% endif %}
+                
+                <div class="product-actions">
+                    <a href="{{ url_for('vendor_edit_product', id=product.id) }}" class="btn btn-secondary btn-sm">
+                        ✏️ Edit
+                    </a>
+                    <a href="{{ url_for('product_detail', id=product.id) }}" class="btn btn-outline btn-sm">
+                        👁️ View
+                    </a>
+                </div>
+                
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light); font-size: 0.8rem; color: var(--text-muted);">
+                    <div>SKU: {{ product.sku or 'N/A' }}</div>
+                    <div>Status: <span style="color: {% if product.status == 'active' %}var(--success-color){% else %}var(--warning-color){% endif %};">{{ product.status.title() }}</span></div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
+        <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📦</div>
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">No Products Yet</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Start building your store by adding your first product.</p>
+        <a href="{{ url_for('vendor_add_product') }}" class="btn btn-primary btn-large">
+            <span>➕</span> Add Your First Product
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

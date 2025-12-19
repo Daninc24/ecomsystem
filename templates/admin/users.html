@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+        <h1 style="background: linear-gradient(135deg, var(--primary-600), var(--secondary-600)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: var(--text-4xl); font-weight: var(--font-black);">
+            👥 User Management
+        </h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- User Statistics -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">👤</span>
+                <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">USERS</span>
+            </div>
+            <div class="stat-number">{{ users|selectattr('role', 'equalto', 'user')|list|length }}</div>
+            <div class="stat-label">Regular Users</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">🏪</span>
+                <span style="background: var(--secondary-100); color: var(--secondary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">VENDORS</span>
+            </div>
+            <div class="stat-number">{{ users|selectattr('role', 'equalto', 'vendor')|list|length }}</div>
+            <div class="stat-label">Vendor Users</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">⚙️</span>
+                <span style="background: var(--accent-100); color: var(--accent-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">ADMINS</span>
+            </div>
+            <div class="stat-number">{{ users|selectattr('role', 'equalto', 'admin')|list|length }}</div>
+            <div class="stat-label">Administrators</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-2);">
+                <span style="font-size: var(--text-2xl);">📊</span>
+                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">TOTAL</span>
+            </div>
+            <div class="stat-number">{{ users|length }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+    </div>
+
+    <!-- Users List -->
+    <div style="background: var(--bg-card); border-radius: var(--radius-2xl); box-shadow: var(--shadow-lg); border: 1px solid var(--border-light); overflow: hidden;">
+        <div style="padding: var(--space-6); border-bottom: 1px solid var(--border-light);">
+            <h2 style="color: var(--text-primary); font-size: var(--text-xl); font-weight: var(--font-bold); margin: 0;">
+                All Users
+            </h2>
+        </div>
+        
+        {% if users %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--bg-secondary);">
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">ID</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Username</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Email</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Role</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Joined</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Status</th>
+                        <th style="padding: var(--space-4); text-align: left; font-weight: var(--font-semibold); color: var(--text-primary); border-bottom: 1px solid var(--border-light);">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr style="border-bottom: 1px solid var(--border-light); transition: var(--transition-all);" onmouseover="this.style.backgroundColor='var(--bg-secondary)'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: var(--space-4); color: var(--text-primary); font-weight: var(--font-medium);">#{{ user.id }}</td>
+                        <td style="padding: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-2);">
+                                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary-500), var(--secondary-500)); border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; color: white; font-weight: var(--font-bold); font-size: var(--text-sm);">
+                                    {{ user.username[0].upper() }}
+                                </div>
+                                <div>
+                                    <div style="font-weight: var(--font-semibold); color: var(--text-primary);">{{ user.username }}</div>
+                                    {% if user.role == 'vendor' and user.vendor_profile %}
+                                        <div style="font-size: var(--text-xs); color: var(--text-muted);">{{ user.vendor_profile[0].business_name if user.vendor_profile else '' }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--text-secondary);">{{ user.email }}</td>
+                        <td style="padding: var(--space-4);">
+                            {% if user.role == 'admin' %}
+                                <span style="background: var(--accent-100); color: var(--accent-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">⚙️ ADMIN</span>
+                            {% elif user.role == 'vendor' %}
+                                <span style="background: var(--secondary-100); color: var(--secondary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">🏪 VENDOR</span>
+                            {% else %}
+                                <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">👤 USER</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: var(--space-4); color: var(--text-muted); font-size: var(--text-sm);">{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                        <td style="padding: var(--space-4);">
+                            <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">✅ ACTIVE</span>
+                        </td>
+                        <td style="padding: var(--space-4);">
+                            <div style="display: flex; gap: var(--space-2);">
+                                <button onclick="viewUser({{ user.id }})" class="btn btn-sm btn-outline">
+                                    View
+                                </button>
+                                {% if user.role != 'admin' %}
+                                <button onclick="editUser({{ user.id }})" class="btn btn-sm btn-secondary">
+                                    Edit
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding: var(--space-16); text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: var(--space-4); opacity: 0.3;">👥</div>
+            <h3 style="color: var(--text-primary); margin-bottom: var(--space-2);">No Users Found</h3>
+            <p style="color: var(--text-muted);">Users will appear here once they register.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function viewUser(userId) {
+    // Implement view user functionality
+    alert(`View user ${userId} - to be implemented`);
+}
+
+function editUser(userId) {
+    // Implement edit user functionality
+    alert(`Edit user ${userId} - to be implemented`);
+}
+</script>
+{% endblock %}

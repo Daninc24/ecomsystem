@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - Vendor Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            My Orders
+        </h1>
+        <a href="{{ url_for('vendor_dashboard') }}" class="btn btn-secondary">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    {% if vendor %}
+    <div style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem; border: 1px solid var(--border-light);">
+        <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">{{ vendor.business_name }}</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-color);">{{ orders_data|length }}</div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">Total Orders</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);">
+                    ${{ "%.2f"|format(orders_data|sum(attribute='order_item.vendor_earnings') or 0) }}
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">Total Earnings</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if orders_data %}
+    <div class="orders-list">
+        {% for order_data in orders_data %}
+        <div class="order-card" style="background: var(--bg-card); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); margin-bottom: 1rem;">
+            <div class="order-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light);">
+                <div>
+                    <h3 style="color: var(--text-primary); margin-bottom: 0.25rem;">Order #{{ order_data.order.order_number }}</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0;">
+                        {{ order_data.order.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="order-status status-{{ order_data.order.order_status }}">
+                        {{ order_data.order.order_status.title() }}
+                    </span>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">
+                        Payment: {{ order_data.order.payment_status.title() if order_data.order.payment_status else 'Pending' }}
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 100px 1fr auto; gap: 1rem; align-items: center;">
+                <img src="{{ order_data.product.image_url or '/static/images/placeholder.jpg' }}" 
+                     alt="{{ order_data.product.name }}" 
+                     style="width: 100px; height: 100px; object-fit: cover; border-radius: var(--radius-md);">
+                
+                <div>
+                    <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">{{ order_data.product.name }}</h4>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                        <div>Quantity: {{ order_data.order_item.quantity }}</div>
+                        <div>Unit Price: ${{ "%.2f"|format(order_data.order_item.price) }}</div>
+                        <div>Category: {{ order_data.product.category or 'Uncategorized' }}</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right;">
+                    <div style="font-size: 1.2rem; font-weight: 700; color: var(--success-color); margin-bottom: 0.5rem;">
+                        ${{ "%.2f"|format(order_data.order_item.quantity * order_data.order_item.price) }}
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                        <div>Commission: ${{ "%.2f"|format(order_data.order_item.commission_amount or 0) }}</div>
+                        <div style="color: var(--primary-color); font-weight: 600;">
+                            Your Earnings: ${{ "%.2f"|format(order_data.order_item.vendor_earnings or 0) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if order_data.order.shipping_address %}
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                <h5 style="color: var(--text-primary); margin-bottom: 0.5rem;">Shipping Information</h5>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                    {% set shipping = order_data.order.shipping_address|from_json if order_data.order.shipping_address else {} %}
+                    {% if shipping %}
+                        <div>{{ shipping.full_name or 'N/A' }}</div>
+                        <div>{{ shipping.address or 'N/A' }}, {{ shipping.city or 'N/A' }} {{ shipping.zip_code or 'N/A' }}</div>
+                        <div>Phone: {{ shipping.phone or 'N/A' }}</div>
+                        <div>Email: {{ shipping.email or 'N/A' }}</div>
+                    {% else %}
+                        <div>Shipping information not available</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if order_data.order.tracking_number %}
+            <div style="margin-top: 1rem; padding: 0.75rem; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                <strong>Tracking Number:</strong> {{ order_data.order.tracking_number }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 4rem 2rem; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
+        <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;">📋</div>
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">No Orders Yet</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Orders for your products will appear here once customers start purchasing.</p>
+        <a href="{{ url_for('vendor_products') }}" class="btn btn-primary btn-large">
+            <span>📦</span> Manage Products
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

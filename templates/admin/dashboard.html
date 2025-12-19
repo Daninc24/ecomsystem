@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - {{ store_config.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+        <h1 style="background: linear-gradient(135deg, var(--primary-600), var(--secondary-600)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: var(--text-4xl); font-weight: var(--font-black);">
+            🛡️ Admin Control Center
+        </h1>
+        <div style="display: flex; gap: var(--space-3);">
+            <span style="background: var(--success-50); color: var(--success-700); padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: var(--font-semibold);">
+                ✅ System Online
+            </span>
+        </div>
+    </div>
+    
+    <!-- Key Metrics -->
+    <div class="admin-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-10);">
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">👥</span>
+                <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">USERS</span>
+            </div>
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">🏪</span>
+                <span style="background: var(--secondary-100); color: var(--secondary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">VENDORS</span>
+            </div>
+            <div class="stat-number">{{ total_vendors }}</div>
+            <div class="stat-label">Active Vendors</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">📦</span>
+                <span style="background: var(--accent-100); color: var(--accent-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">PRODUCTS</span>
+            </div>
+            <div class="stat-number">{{ total_products }}</div>
+            <div class="stat-label">Total Products</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">🛒</span>
+                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">ORDERS</span>
+            </div>
+            <div class="stat-number">{{ total_orders }}</div>
+            <div class="stat-label">Total Orders</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">💰</span>
+                <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">REVENUE</span>
+            </div>
+            <div class="stat-number">${{ "%.0f"|format(total_revenue) }}</div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">⏳</span>
+                <span style="background: var(--warning-100); color: var(--warning-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">PENDING</span>
+            </div>
+            <div class="stat-number">{{ pending_orders }}</div>
+            <div class="stat-label">Pending Orders</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">🛡️</span>
+                <span style="background: var(--primary-100); color: var(--primary-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">PROTECTION</span>
+            </div>
+            <div class="stat-number">{{ active_trade_assurances }}</div>
+            <div class="stat-label">Active Protections</div>
+        </div>
+        
+        <div class="stat-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4);">
+                <span style="font-size: var(--text-3xl);">⚠️</span>
+                <span style="background: var(--error-100); color: var(--error-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">CLAIMS</span>
+            </div>
+            <div class="stat-number">{{ pending_claims }}</div>
+            <div class="stat-label">Pending Claims</div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div style="background: var(--bg-card); padding: var(--space-8); border-radius: var(--radius-3xl); box-shadow: var(--shadow-lg); margin-bottom: var(--space-10); border: 1px solid var(--border-light);">
+        <h2 style="margin-bottom: var(--space-6); color: var(--text-primary); font-size: var(--text-2xl); font-weight: var(--font-bold);">
+            🚀 Quick Actions
+        </h2>
+        <div class="admin-actions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+            <a href="{{ url_for('admin_users') }}" class="btn btn-primary">
+                <span>👥</span> Manage Users
+            </a>
+            <a href="{{ url_for('admin_vendors') }}" class="btn btn-secondary">
+                <span>🏪</span> Manage Vendors
+            </a>
+            <a href="{{ url_for('admin_products') }}" class="btn btn-success">
+                <span>📦</span> Manage Products
+            </a>
+            <a href="{{ url_for('admin_orders') }}" class="btn btn-primary">
+                <span>🛒</span> Manage Orders
+            </a>
+            <a href="{{ url_for('admin_trade_assurance') }}" class="btn btn-outline">
+                <span>🛡️</span> Trade Assurance
+            </a>
+            <a href="{{ url_for('admin_analytics') }}" class="btn btn-secondary">
+                <span>📊</span> Analytics
+            </a>
+            <a href="{{ url_for('admin_settings') }}" class="btn btn-outline">
+                <span>⚙️</span> Settings
+            </a>
+            <a href="{{ url_for('admin_logs') }}" class="btn btn-outline">
+                <span>📋</span> Activity Logs
+            </a>
+        </div>
+    </div>
+    
+    <!-- Dashboard Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); margin-bottom: var(--space-10);">
+        <!-- Recent Orders -->
+        <div style="background: var(--bg-card); padding: var(--space-6); border-radius: var(--radius-2xl); box-shadow: var(--shadow-md); border: 1px solid var(--border-light);">
+            <h3 style="margin-bottom: var(--space-4); color: var(--text-primary); font-size: var(--text-xl); font-weight: var(--font-bold); display: flex; align-items: center; gap: var(--space-2);">
+                <span>📋</span> Recent Orders
+            </h3>
+            {% if recent_orders %}
+            <div style="space-y: var(--space-3);">
+                {% for order in recent_orders %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-3); background: var(--bg-secondary); border-radius: var(--radius-lg); margin-bottom: var(--space-2);">
+                    <div>
+                        <div style="font-weight: var(--font-semibold); color: var(--text-primary);">Order #{{ order.order_number or order.id }}</div>
+                        <div style="font-size: var(--text-sm); color: var(--text-muted);">{{ order.created_at.strftime('%B %d, %Y') }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: var(--font-bold); color: var(--success-600);">${{ "%.2f"|format(order.total_price) }}</div>
+                        <span class="status-{{ order.order_status }}">{{ order.order_status.title() }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color: var(--text-muted); text-align: center; padding: var(--space-8);">No recent orders</p>
+            {% endif %}
+        </div>
+        
+        <!-- Recent Users -->
+        <div style="background: var(--bg-card); padding: var(--space-6); border-radius: var(--radius-2xl); box-shadow: var(--shadow-md); border: 1px solid var(--border-light);">
+            <h3 style="margin-bottom: var(--space-4); color: var(--text-primary); font-size: var(--text-xl); font-weight: var(--font-bold); display: flex; align-items: center; gap: var(--space-2);">
+                <span>👥</span> New Users
+            </h3>
+            {% if recent_users %}
+            <div style="space-y: var(--space-3);">
+                {% for user in recent_users %}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-3); background: var(--bg-secondary); border-radius: var(--radius-lg); margin-bottom: var(--space-2);">
+                    <div>
+                        <div style="font-weight: var(--font-semibold); color: var(--text-primary);">{{ user.username }}</div>
+                        <div style="font-size: var(--text-sm); color: var(--text-muted);">{{ user.email }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: var(--text-sm); color: var(--text-muted);">{{ user.created_at.strftime('%b %d') }}</div>
+                        <span style="background: var(--{{ 'success' if user.role == 'vendor' else 'primary' }}-100); color: var(--{{ 'success' if user.role == 'vendor' else 'primary' }}-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">
+                            {{ user.role.upper() }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color: var(--text-muted); text-align: center; padding: var(--space-8);">No recent users</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Recent Vendors -->
+    <div style="background: var(--bg-card); padding: var(--space-6); border-radius: var(--radius-2xl); box-shadow: var(--shadow-md); border: 1px solid var(--border-light);">
+        <h3 style="margin-bottom: var(--space-4); color: var(--text-primary); font-size: var(--text-xl); font-weight: var(--font-bold); display: flex; align-items: center; gap: var(--space-2);">
+            <span>🏪</span> Recent Vendor Applications
+        </h3>
+        {% if recent_vendors %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4);">
+            {% for vendor in recent_vendors %}
+            <div style="padding: var(--space-4); background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-light);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: var(--space-2);">
+                    <div>
+                        <div style="font-weight: var(--font-bold); color: var(--text-primary);">{{ vendor.business_name }}</div>
+                        <div style="font-size: var(--text-sm); color: var(--text-muted);">{{ vendor.created_at.strftime('%B %d, %Y') }}</div>
+                    </div>
+                    {% if vendor.is_verified %}
+                        <span style="background: var(--success-100); color: var(--success-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">✓ VERIFIED</span>
+                    {% else %}
+                        <span style="background: var(--warning-100); color: var(--warning-700); padding: var(--space-1) var(--space-2); border-radius: var(--radius-md); font-size: var(--text-xs); font-weight: var(--font-bold);">⏳ PENDING</span>
+                    {% endif %}
+                </div>
+                <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-3);">{{ vendor.business_description[:100] }}{% if vendor.business_description and vendor.business_description|length > 100 %}...{% endif %}</p>
+                <div style="display: flex; gap: var(--space-2);">
+                    <a href="{{ url_for('admin_vendors') }}" class="btn btn-sm btn-outline">View Details</a>
+                    {% if not vendor.is_verified %}
+                    <form method="POST" action="{{ url_for('verify_vendor', id=vendor.id) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-sm btn-success">Verify</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); text-align: center; padding: var(--space-8);">No recent vendor applications</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
