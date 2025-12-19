@@ -76,22 +76,28 @@ echo ""
 echo "🚀 DEPLOYMENT OPTIONS:"
 echo "====================="
 echo ""
-echo "1. 🌐 HEROKU (Recommended for beginners)"
-echo "   - Fastest deployment"
+echo "1. 🎯 RENDER (Recommended - Easy & Fast)"
+echo "   - 5-minute deployment"
+echo "   - Free tier available"
+echo "   - Automatic HTTPS"
+echo "   - Built-in PostgreSQL"
+echo ""
+echo "2. 🌐 HEROKU"
+echo "   - Popular platform"
 echo "   - Automatic scaling"
 echo "   - Built-in PostgreSQL"
 echo ""
-echo "2. 🖥️  DIGITALOCEAN DROPLET"
+echo "3. 🖥️  DIGITALOCEAN DROPLET"
 echo "   - More control"
 echo "   - Cost-effective"
 echo "   - Custom configuration"
 echo ""
-echo "3. ☁️  AWS EC2"
+echo "4. ☁️  AWS EC2"
 echo "   - Enterprise-grade"
 echo "   - Highly scalable"
 echo "   - Advanced features"
 echo ""
-echo "4. 🐳 DOCKER"
+echo "5. 🐳 DOCKER"
 echo "   - Containerized deployment"
 echo "   - Consistent environments"
 echo "   - Easy scaling"
@@ -99,17 +105,58 @@ echo ""
 
 # Ask user for deployment choice
 echo "Which deployment option would you like to use?"
-echo "1) Heroku"
-echo "2) DigitalOcean"
-echo "3) AWS EC2"
-echo "4) Docker"
-echo "5) Local Production Test"
-echo "6) Exit"
+echo "1) Render (Recommended)"
+echo "2) Heroku"
+echo "3) DigitalOcean"
+echo "4) AWS EC2"
+echo "5) Docker"
+echo "6) Local Production Test"
+echo "7) Exit"
 echo ""
-read -p "Enter your choice (1-6): " choice
+read -p "Enter your choice (1-7): " choice
 
 case $choice in
     1)
+        echo ""
+        print_info "RENDER DEPLOYMENT GUIDE (RECOMMENDED)"
+        echo "====================================="
+        echo ""
+        print_status "Render is the easiest way to deploy your app!"
+        echo ""
+        echo "🚀 QUICK DEPLOY (5 minutes):"
+        echo ""
+        echo "1. Push to GitHub (if not already):"
+        echo "   git add ."
+        echo "   git commit -m 'Deploy to Render'"
+        echo "   git push origin main"
+        echo ""
+        echo "2. Go to render.com and sign up/login"
+        echo "3. Click 'New +' → 'Web Service'"
+        echo "4. Connect your GitHub repository"
+        echo "5. Render auto-detects Python app!"
+        echo ""
+        echo "6. Configure:"
+        echo "   Build Command: pip install -r requirements.txt && python init_data.py"
+        echo "   Start Command: gunicorn app:app"
+        echo ""
+        echo "7. Add Environment Variables:"
+        echo "   FLASK_CONFIG=production"
+        echo "   SECRET_KEY=your-super-secret-key"
+        echo "   STRIPE_SECRET_KEY=sk_test_your_key"
+        echo ""
+        echo "8. Add PostgreSQL database:"
+        echo "   New + → PostgreSQL → Connect to web service"
+        echo ""
+        echo "9. Deploy! Your app will be live at:"
+        echo "   https://your-app-name.onrender.com"
+        echo ""
+        print_status "✅ Free tier available with 750 hours/month"
+        print_status "✅ Automatic HTTPS and custom domains"
+        print_status "✅ Zero-downtime deployments"
+        echo ""
+        print_info "📖 Complete guide: See RENDER_DEPLOYMENT.md"
+        ;;
+    2)
         echo ""
         print_info "HEROKU DEPLOYMENT GUIDE"
         echo "========================"
@@ -127,7 +174,7 @@ case $choice in
         echo ""
         print_warning "Don't forget to set your payment gateway API keys!"
         ;;
-    2)
+    3)
         echo ""
         print_info "DIGITALOCEAN DEPLOYMENT GUIDE"
         echo "=============================="
@@ -139,7 +186,7 @@ case $choice in
         echo ""
         print_info "See DEPLOYMENT.md for complete DigitalOcean setup instructions"
         ;;
-    3)
+    4)
         echo ""
         print_info "AWS EC2 DEPLOYMENT GUIDE"
         echo "========================"
@@ -152,7 +199,7 @@ case $choice in
         echo ""
         print_info "See DEPLOYMENT.md for complete AWS setup instructions"
         ;;
-    4)
+    5)
         echo ""
         print_info "DOCKER DEPLOYMENT"
         echo "=================="
@@ -218,7 +265,7 @@ EOF
         echo "2. docker-compose exec web python init_data.py"
         echo "3. Visit http://localhost:5000"
         ;;
-    5)
+    6)
         echo ""
         print_info "STARTING LOCAL PRODUCTION TEST"
         echo "==============================="
@@ -240,7 +287,7 @@ EOF
         # Start with gunicorn
         gunicorn --bind 0.0.0.0:8000 --workers 2 app:app
         ;;
-    6)
+    7)
         print_info "Deployment cancelled"
         exit 0
         ;;
