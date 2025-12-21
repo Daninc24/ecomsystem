@@ -1,0 +1,583 @@
+{% extends "seo_base.html" %}
+
+{% block title %}About Us - Global Marketplace Leader | {{ store_config.name }}{% endblock %}
+{% block description %}Learn about {{ store_config.name }}, the leading global marketplace connecting millions of buyers and sellers worldwide. Discover our mission, values, and commitment to secure online shopping.{% endblock %}
+{% block keywords %}about us, global marketplace, online shopping platform, e-commerce leader, buyer protection, seller network, company history{% endblock %}
+
+{% block schema_type %}Organization{% endblock %}
+{% block schema_data %},
+"@type": "Organization",
+"name": "{{ store_config.name }}",
+"description": "{{ store_config.description }}",
+"url": "{{ request.url_root }}",
+"logo": "{{ url_for('static', filename='images/logo.png', _external=True) }}",
+"foundingDate": "2020",
+"founders": [
+    {
+        "@type": "Person",
+        "name": "MarketHub Team"
+    }
+],
+"numberOfEmployees": "500+",
+"address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ store_config.contact.address }}",
+    "addressCountry": "US"
+},
+"contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "{{ store_config.contact.phone }}",
+    "contactType": "customer service",
+    "email": "{{ store_config.contact.email }}"
+}{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb-list">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li aria-current="page">About Us</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="about-page">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="about-hero">
+            <h1>About {{ store_config.name }}</h1>
+            <p class="hero-subtitle">{{ store_config.tagline }}</p>
+            <p class="hero-description">We're building the world's most trusted global marketplace, connecting millions of buyers and sellers across the globe with secure, seamless shopping experiences.</p>
+        </div>
+        
+        <!-- Mission & Vision -->
+        <div class="mission-vision">
+            <div class="mission-vision-grid">
+                <div class="mission-card">
+                    <div class="card-icon">🎯</div>
+                    <h2>Our Mission</h2>
+                    <p>To democratize commerce by making it easy for anyone, anywhere to buy and sell online. We believe in creating opportunities for businesses of all sizes to reach global markets while providing consumers with access to the world's best products.</p>
+                </div>
+                
+                <div class="vision-card">
+                    <div class="card-icon">🌟</div>
+                    <h2>Our Vision</h2>
+                    <p>To be the world's most trusted and innovative marketplace, where every transaction is secure, every customer is satisfied, and every seller can thrive in the global economy.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Our Story -->
+        <div class="our-story">
+            <h2>Our Story</h2>
+            <div class="story-content">
+                <div class="story-text">
+                    <p>Founded in 2020, {{ store_config.name }} began with a simple idea: to create a marketplace that truly serves both buyers and sellers. We saw the challenges that small businesses faced in reaching global customers, and the difficulties consumers experienced in finding quality products at fair prices.</p>
+                    
+                    <p>Starting with just a handful of sellers and a vision for better e-commerce, we've grown into a platform that serves millions of customers worldwide. Our success is built on three core principles: trust, innovation, and community.</p>
+                    
+                    <p>Today, we're proud to host thousands of sellers from around the world, offering everything from cutting-edge electronics to handcrafted artisan goods. Every day, we work to make online shopping safer, easier, and more rewarding for everyone.</p>
+                </div>
+                
+                <div class="story-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">10M+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Active Sellers</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">1M+</div>
+                        <div class="stat-label">Products Listed</div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-number">190+</div>
+                        <div class="stat-label">Countries Served</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Our Values -->
+        <div class="our-values">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🛡️</div>
+                    <h3>Trust & Security</h3>
+                    <p>We prioritize the safety and security of every transaction. Our advanced fraud protection, secure payment systems, and buyer protection policies ensure peace of mind for all users.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">🚀</div>
+                    <h3>Innovation</h3>
+                    <p>We continuously invest in cutting-edge technology to improve the shopping experience. From AI-powered recommendations to seamless mobile experiences, we're always innovating.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3>Community</h3>
+                    <p>We believe in building strong relationships with our sellers and customers. Our success is measured by the success of our community members.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">🌍</div>
+                    <h3>Global Reach</h3>
+                    <p>We connect people across borders, cultures, and languages. Our platform breaks down barriers to international trade and cultural exchange.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">⚡</div>
+                    <h3>Excellence</h3>
+                    <p>We strive for excellence in everything we do, from customer service to product quality. We're never satisfied with "good enough."</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">🌱</div>
+                    <h3>Sustainability</h3>
+                    <p>We're committed to sustainable business practices and supporting sellers who prioritize environmental responsibility.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Leadership Team -->
+        <div class="leadership-team">
+            <h2>Leadership Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face" alt="CEO" loading="lazy">
+                    </div>
+                    <h3>Alex Johnson</h3>
+                    <p class="member-title">Chief Executive Officer</p>
+                    <p class="member-bio">With over 15 years in e-commerce and technology, Alex leads our vision of creating the world's most trusted marketplace.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face" alt="CTO" loading="lazy">
+                    </div>
+                    <h3>Sarah Chen</h3>
+                    <p class="member-title">Chief Technology Officer</p>
+                    <p class="member-bio">Sarah drives our technology innovation, ensuring our platform remains secure, scalable, and user-friendly.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-photo">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face" alt="COO" loading="lazy">
+                    </div>
+                    <h3>Michael Rodriguez</h3>
+                    <p class="member-title">Chief Operating Officer</p>
+                    <p class="member-bio">Michael oversees our global operations, ensuring smooth experiences for millions of users worldwide.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Awards & Recognition -->
+        <div class="awards-section">
+            <h2>Awards & Recognition</h2>
+            <div class="awards-grid">
+                <div class="award-item">
+                    <div class="award-icon">🏆</div>
+                    <h3>Best E-commerce Platform 2023</h3>
+                    <p>E-commerce Excellence Awards</p>
+                </div>
+                
+                <div class="award-item">
+                    <div class="award-icon">⭐</div>
+                    <h3>Top Marketplace Innovation</h3>
+                    <p>Tech Innovation Summit 2023</p>
+                </div>
+                
+                <div class="award-item">
+                    <div class="award-icon">🌟</div>
+                    <h3>Customer Choice Award</h3>
+                    <p>Global Shopping Awards 2023</p>
+                </div>
+                
+                <div class="award-item">
+                    <div class="award-icon">🚀</div>
+                    <h3>Fastest Growing Marketplace</h3>
+                    <p>Business Growth Awards 2022</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Join Us -->
+        <div class="join-us-section">
+            <h2>Join Our Journey</h2>
+            <p>Whether you're a buyer looking for amazing products or a seller ready to reach global markets, we invite you to be part of our growing community.</p>
+            
+            <div class="join-actions">
+                <a href="{{ url_for('register') }}" class="join-btn primary">Start Shopping</a>
+                <a href="{{ url_for('become_vendor') }}" class="join-btn secondary">Become a Seller</a>
+                <a href="{{ url_for('careers') }}" class="join-btn tertiary">Join Our Team</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.about-page {
+    padding: var(--spacing-2xl) 0;
+}
+
+.about-hero {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-orange) 100%);
+    color: white;
+    border-radius: var(--radius-xl);
+}
+
+.about-hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: var(--spacing-md);
+}
+
+.hero-subtitle {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.9;
+}
+
+.hero-description {
+    font-size: 18px;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.mission-vision {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.mission-vision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.mission-card, .vision-card {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.card-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.mission-card h2, .vision-card h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-lg);
+}
+
+.mission-card p, .vision-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--gray-600);
+}
+
+.our-story {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.our-story h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.story-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+}
+
+.story-text p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-lg);
+}
+
+.story-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.stat-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary-red);
+    margin-bottom: var(--spacing-sm);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--gray-600);
+    font-weight: 600;
+}
+
+.our-values {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.our-values h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.value-card {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.value-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.value-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.value-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.value-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gray-600);
+}
+
+.leadership-team {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.leadership-team h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.team-member {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.member-photo {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto var(--spacing-lg);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.member-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-member h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.member-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-red);
+    margin-bottom: var(--spacing-md);
+}
+
+.member-bio {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gray-600);
+}
+
+.awards-section {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.awards-section h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.awards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.award-item {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.award-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.award-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.award-item p {
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.join-us-section {
+    background: var(--gray-100);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    text-align: center;
+}
+
+.join-us-section h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-lg);
+}
+
+.join-us-section p {
+    font-size: 18px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.join-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.join-btn {
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition-base);
+}
+
+.join-btn.primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.join-btn.secondary {
+    background: white;
+    color: var(--primary-red);
+    border: 2px solid var(--primary-red);
+}
+
+.join-btn.tertiary {
+    background: transparent;
+    color: var(--gray-700);
+    border: 2px solid var(--gray-300);
+}
+
+.join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+    .story-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .story-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .join-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .about-hero h1 {
+        font-size: 36px;
+    }
+}
+</style>
+{% endblock %}

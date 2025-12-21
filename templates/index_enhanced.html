@@ -1,0 +1,424 @@
+{% extends "seo_base.html" %}
+
+{% block title %}{{ store_config.name }} - {{ store_config.tagline }} | Global Marketplace{% endblock %}
+{% block description %}Shop millions of products from trusted sellers worldwide on {{ store_config.name }}. Find electronics, fashion, home goods, and more with secure payments, buyer protection, and fast shipping.{% endblock %}
+{% block keywords %}online shopping, global marketplace, electronics, fashion, home goods, best deals, secure shopping, buyer protection, fast shipping, trusted sellers{% endblock %}
+
+{% block og_type %}website{% endblock %}
+{% block schema_type %}WebSite{% endblock %}
+{% block schema_data %},
+"potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ url_for('products', _external=True) }}?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Discover Amazing Products from Around the World</h1>
+                <p class="hero-subtitle">{{ store_config.tagline }}</p>
+                
+                <div class="hero-features">
+                    {% for feature in store_config.features %}
+                    <div class="hero-feature">
+                        <span class="hero-feature-icon">✓</span>
+                        <span>{{ feature }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <a href="{{ url_for('products') }}" class="hero-cta">
+                    <span>Start Shopping</span>
+                    <span>→</span>
+                </a>
+            </div>
+            
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop" alt="Shopping Experience" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Flash Deals Section -->
+{% if flash_deals %}
+<section class="flash-deals-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-icon">⚡</span>
+                Flash Deals
+            </h2>
+            
+            <div class="countdown-timer">
+                <div class="timer-unit">
+                    <span class="timer-value" id="hours">12</span>
+                    <span class="timer-label">Hours</span>
+                </div>
+                <span>:</span>
+                <div class="timer-unit">
+                    <span class="timer-value" id="minutes">34</span>
+                    <span class="timer-label">Min</span>
+                </div>
+                <span>:</span>
+                <div class="timer-unit">
+                    <span class="timer-value" id="seconds">56</span>
+                    <span class="timer-label">Sec</span>
+                </div>
+            </div>
+            
+            <a href="{{ url_for('products', category='flash-deals') }}" class="view-all-link">
+                View All <span>→</span>
+            </a>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in flash_deals %}
+            <div class="product-card animate-fade-in-up" onclick="window.location.href='{{ url_for('product_detail', product_id=product._id) }}'">
+                <div class="product-image-wrapper">
+                    <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                    
+                    <div class="product-badges">
+                        {% if product.pricing.discount_percentage > 0 %}
+                        <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                        {% endif %}
+                        {% if product.is_featured %}
+                        <span class="badge badge-featured">Featured</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-actions">
+                        <button class="action-btn" title="Add to Wishlist">
+                            <span>♡</span>
+                        </button>
+                        <button class="action-btn" title="Quick View">
+                            <span>👁</span>
+                        </button>
+                        <button class="action-btn" title="Compare">
+                            <span>⚖</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <div class="product-vendor">
+                        <span>Official Store</span>
+                        <span class="verified-badge">✓</span>
+                    </div>
+                    
+                    <h3 class="product-name">{{ product.basic_info.name }}</h3>
+                    
+                    <div class="product-rating">
+                        <div class="stars">★★★★★</div>
+                        <span class="rating-count">({{ (product.views or 0) // 10 + 1 }})</span>
+                    </div>
+                    
+                    <div class="product-pricing">
+                        {% if product.pricing.discount_percentage > 0 %}
+                        <span class="product-price">${{ "%.2f"|format(product.pricing.price * (1 - product.pricing.discount_percentage / 100)) }}</span>
+                        <span class="product-original-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                        {% else %}
+                        <span class="product-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="product-shipping">Free Shipping</div>
+                    
+                    <button class="add-to-cart-btn" onclick="event.stopPropagation(); dynamicSystem.addToCart('{{ product._id }}')">
+                        <span>🛒</span>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Category Showcase -->
+{% for category_name, category_data in category_products.items() %}
+<section class="category-showcase">
+    <div class="container">
+        <div class="category-showcase-header">
+            <h2 class="category-showcase-title">
+                <span style="color: {{ category_data.category.color }}">{{ category_data.category.icon }}</span>
+                {{ category_name }}
+            </h2>
+            <a href="{{ url_for('products', category=category_name) }}" class="view-all-link">
+                View All <span>→</span>
+            </a>
+        </div>
+        
+        <div class="category-showcase-content">
+            <div class="products-grid">
+                {% for product in category_data.products %}
+                <div class="product-card" onclick="window.location.href='{{ url_for('product_detail', product_id=product._id) }}'">
+                    <div class="product-image-wrapper">
+                        <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                        
+                        <div class="product-badges">
+                            {% if product.pricing.discount_percentage > 0 %}
+                            <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                            {% endif %}
+                            {% if product.is_featured %}
+                            <span class="badge badge-featured">Featured</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="action-btn" title="Add to Wishlist">
+                                <span>♡</span>
+                            </button>
+                            <button class="action-btn" title="Quick View">
+                                <span>👁</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-info">
+                        <div class="product-vendor">
+                            <span>Verified Seller</span>
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        
+                        <h3 class="product-name">{{ product.basic_info.name }}</h3>
+                        
+                        <div class="product-rating">
+                            <div class="stars">★★★★☆</div>
+                            <span class="rating-count">({{ (product.views or 0) // 5 + 1 }})</span>
+                        </div>
+                        
+                        <div class="product-pricing">
+                            {% if product.pricing.discount_percentage > 0 %}
+                            <span class="product-price">${{ "%.2f"|format(product.pricing.price * (1 - product.pricing.discount_percentage / 100)) }}</span>
+                            <span class="product-original-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            <span class="product-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                            {% else %}
+                            <span class="product-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-shipping">
+                            {% if product.pricing.price >= store_config.shipping_info.free_shipping_threshold %}
+                            Free Shipping
+                            {% else %}
+                            +${{ "%.2f"|format(store_config.shipping_info.standard_shipping_cost) }} Shipping
+                            {% endif %}
+                        </div>
+                        
+                        <button class="add-to-cart-btn" onclick="event.stopPropagation(); dynamicSystem.addToCart('{{ product._id }}')">
+                            <span>🛒</span>
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endfor %}
+
+<!-- Top Vendors Section -->
+{% if top_vendors %}
+<section class="vendors-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-icon">🏪</span>
+                Top Rated Sellers
+            </h2>
+            <a href="{{ url_for('vendors') }}" class="view-all-link">
+                View All <span>→</span>
+            </a>
+        </div>
+        
+        <div class="vendors-grid">
+            {% for vendor in top_vendors %}
+            <div class="vendor-card">
+                <img src="{{ vendor.business_info.logo_url or 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=face' }}" 
+                     alt="{{ vendor.business_info.name }}" class="vendor-logo" loading="lazy">
+                
+                <h3 class="vendor-name">{{ vendor.business_info.name }}</h3>
+                
+                <div class="product-rating">
+                    <div class="stars">
+                        {% for i in range(5) %}
+                            {% if i < (vendor.performance.rating or 4) %}★{% else %}☆{% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="rating-count">({{ vendor.performance.total_reviews or 0 }})</span>
+                </div>
+                
+                <div class="vendor-stats">
+                    <div class="vendor-stat">
+                        <span class="vendor-stat-value">{{ vendor.performance.total_orders or 0 }}</span>
+                        <span>Orders</span>
+                    </div>
+                    <div class="vendor-stat">
+                        <span class="vendor-stat-value">{{ vendor.performance.response_rate or 98 }}%</span>
+                        <span>Response</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <div class="newsletter-content">
+            <div class="newsletter-text">
+                <h2>Stay Updated with Latest Deals</h2>
+                <p>Get exclusive offers, flash sale alerts, and new product notifications</p>
+            </div>
+            
+            <div class="newsletter-form">
+                <input type="email" placeholder="Enter your email address" class="newsletter-input">
+                <button class="newsletter-btn">Subscribe</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Additional styles for homepage */
+.vendors-section {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.vendors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.newsletter-section {
+    background: var(--primary-gradient);
+    padding: var(--spacing-2xl) 0;
+    margin-top: var(--spacing-2xl);
+}
+
+.newsletter-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-xl);
+}
+
+.newsletter-text {
+    color: white;
+}
+
+.newsletter-text h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.newsletter-text p {
+    opacity: 0.9;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: var(--spacing-sm);
+    min-width: 400px;
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+}
+
+.newsletter-btn {
+    background: white;
+    color: var(--primary-red);
+    border: none;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.newsletter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+    .newsletter-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .newsletter-form {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .vendors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+
+<script>
+// Flash deals countdown timer
+function updateCountdown() {
+    const now = new Date().getTime();
+    const endTime = now + (12 * 60 * 60 * 1000) + (34 * 60 * 1000) + (56 * 1000); // 12:34:56 from now
+    
+    setInterval(() => {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+        
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+    }, 1000);
+}
+
+// Initialize countdown
+updateCountdown();
+
+// Animate elements on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate-fade-in-up');
+        }
+    });
+}, observerOptions);
+
+// Observe all product cards
+document.querySelectorAll('.product-card').forEach(card => {
+    observer.observe(card);
+});
+</script>
+{% endblock %}

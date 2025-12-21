@@ -1,0 +1,64 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}CSS Test - {{ store_config.name }}{% endblock %}
+
+{% block content %}
+<section style="padding: 2rem 0; background: var(--gray-50, #f9fafb);">
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 2rem; color: var(--gray-900, #111827);">CSS Variables Test</h1>
+        
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-lg, 12px); box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1)); margin-bottom: 2rem;">
+            <h2 style="color: var(--primary-red, #ff4747); margin-bottom: 1rem;">Primary Color Test</h2>
+            <p style="color: var(--gray-600, #6b7280); line-height: 1.6;">
+                This text should be gray. If CSS variables are working, you should see proper colors and styling.
+            </p>
+            
+            <div style="background: var(--primary-gradient, linear-gradient(135deg, #ff4747 0%, #ff6b35 100%)); color: white; padding: 1rem; border-radius: var(--radius-md, 8px); margin: 1rem 0;">
+                <strong>Gradient Test:</strong> This should have a red-orange gradient background.
+            </div>
+            
+            <div class="test-buttons" style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button style="background: var(--primary-red, #ff4747); color: white; border: none; padding: 0.5rem 1rem; border-radius: var(--radius-md, 8px); cursor: pointer;">Primary Button</button>
+                <button style="background: var(--secondary-blue, #0066ff); color: white; border: none; padding: 0.5rem 1rem; border-radius: var(--radius-md, 8px); cursor: pointer;">Secondary Button</button>
+                <button style="background: var(--success, #10b981); color: white; border: none; padding: 0.5rem 1rem; border-radius: var(--radius-md, 8px); cursor: pointer;">Success Button</button>
+            </div>
+        </div>
+        
+        <div style="background: var(--gray-900, #111827); color: white; padding: 2rem; border-radius: var(--radius-lg, 12px);">
+            <h2 style="margin-bottom: 1rem;">Footer Color Test</h2>
+            <p style="color: var(--gray-300, #d1d5db); line-height: 1.6;">
+                This section should have a dark gray background like the footer. If you see this styling, the CSS variables are working correctly.
+            </p>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <span style="background: var(--gray-800, #1f2937); padding: 0.5rem 1rem; border-radius: var(--radius-full, 9999px);">Social Link Style</span>
+                <span style="color: var(--gray-400, #9ca3af);">Muted Text</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background: #fef3c7; border-radius: var(--radius-md, 8px); border-left: 4px solid var(--warning, #f59e0b);">
+            <strong style="color: #92400e;">CSS Loading Status:</strong>
+            <span style="color: #92400e;">If you see proper colors and styling above, CSS is loading correctly. If not, there may be a file loading issue.</span>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Test if CSS variables are available in JavaScript
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primaryRed = rootStyles.getPropertyValue('--primary-red').trim();
+    const grayNine = rootStyles.getPropertyValue('--gray-900').trim();
+    
+    console.log('CSS Variables Test:');
+    console.log('--primary-red:', primaryRed || 'NOT FOUND');
+    console.log('--gray-900:', grayNine || 'NOT FOUND');
+    
+    if (primaryRed && grayNine) {
+        console.log('✅ CSS variables are loading correctly');
+    } else {
+        console.log('❌ CSS variables are not loading - check CSS file paths');
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,468 @@
+{% extends "seo_base.html" %}
+
+{% block title %}New Arrivals - Latest Products | {{ store_config.name }}{% endblock %}
+{% block description %}Discover the latest products and newest arrivals on {{ store_config.name }}. Fresh inventory from top brands and sellers worldwide, updated daily.{% endblock %}
+{% block keywords %}new arrivals, latest products, new items, fresh inventory, newest products, just arrived{% endblock %}
+
+{% block content %}
+<section class="new-arrivals-section">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">✨ New Arrivals</h1>
+            <p class="page-subtitle">Discover the latest products added to our marketplace</p>
+        </div>
+        
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="filter-options">
+                <select class="filter-select" id="category-filter">
+                    <option value="">All Categories</option>
+                    {% for category in product_categories %}
+                    <option value="{{ category.name }}">{{ category.icon }} {{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <select class="filter-select" id="time-filter">
+                    <option value="7">Last 7 days</option>
+                    <option value="14">Last 14 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="60">Last 60 days</option>
+                </select>
+                
+                <select class="filter-select" id="sort-filter">
+                    <option value="newest">Newest First</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="popular">Most Popular</option>
+                </select>
+            </div>
+            
+            <div class="view-options">
+                <button class="view-btn active" data-view="grid">⊞</button>
+                <button class="view-btn" data-view="list">☰</button>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="products-container">
+            <div id="products-grid" class="products-grid">
+                {% for product in arrivals %}
+                <div class="product-card animate-fade-in-up" data-product-url="{{ url_for('product_detail', product_id=product._id) }}">
+                    <div class="product-image-wrapper">
+                        <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                        
+                        <div class="product-badges">
+                            <span class="badge badge-new">New</span>
+                            {% if product.pricing.discount_percentage > 0 %}
+                            <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                            {% endif %}
+                            {% if product.is_featured %}
+                            <span class="badge badge-featured">Featured</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="action-btn" title="Add to Wishlist">
+                                <span>♡</span>
+                            </button>
+                            <button class="action-btn" title="Quick View">
+                                <span>👁</span>
+                            </button>
+                            <button class="action-btn" title="Compare">
+                                <span>⚖</span>
+                            </button>
+                        </div>
+                        
+                        <div class="arrival-date">
+                            <span>Added {{ product.created_at.strftime('%b %d') if product.created_at else 'Recently' }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-info">
+                        <div class="product-vendor">
+                            <span>New Seller</span>
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        
+                        <h3 class="product-name">{{ product.basic_info.name }}</h3>
+                        
+                        <div class="product-rating">
+                            <div class="stars">★★★★☆</div>
+                            <span class="rating-count">New</span>
+                        </div>
+                        
+                        <div class="product-pricing">
+                            {% if product.pricing.discount_percentage > 0 %}
+                            <span class="product-price">${{ "%.2f"|format(product.pricing.price * (1 - product.pricing.discount_percentage / 100)) }}</span>
+                            <span class="product-original-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            {% else %}
+                            <span class="product-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-shipping">
+                            {% if product.pricing.price >= 50 %}
+                            Free Shipping
+                            {% else %}
+                            +$9.99 Shipping
+                            {% endif %}
+                        </div>
+                        
+                        <button class="add-to-cart-btn" data-product-id="{{ product._id }}">
+                            <span>🛒</span>
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if not arrivals %}
+            <div class="no-products">
+                <div class="no-products-icon">📦</div>
+                <h3>No new arrivals found</h3>
+                <p>Check back soon for the latest products!</p>
+                <a href="{{ url_for('products') }}" class="browse-all-btn">Browse All Products</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Newsletter Signup -->
+        <div class="newsletter-signup">
+            <div class="newsletter-content">
+                <h2>Stay Updated on New Arrivals</h2>
+                <p>Be the first to know when new products arrive. Get exclusive early access to the latest items.</p>
+                
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+                
+                <div class="newsletter-benefits">
+                    <div class="benefit">
+                        <span class="benefit-icon">⚡</span>
+                        <span>Early Access</span>
+                    </div>
+                    <div class="benefit">
+                        <span class="benefit-icon">🎯</span>
+                        <span>Personalized Alerts</span>
+                    </div>
+                    <div class="benefit">
+                        <span class="benefit-icon">💰</span>
+                        <span>Exclusive Discounts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.new-arrivals-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--gray-50);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: var(--gray-600);
+}
+
+.filter-bar {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.filter-options {
+    display: flex;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.filter-select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary-red);
+}
+
+.view-options {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.view-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--gray-300);
+    background: white;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all var(--transition-fast);
+}
+
+.view-btn.active,
+.view-btn:hover {
+    border-color: var(--primary-red);
+    background: var(--primary-red);
+    color: white;
+}
+
+.products-container {
+    min-height: 400px;
+}
+
+.arrival-date {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.no-products {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.no-products-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.no-products h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.no-products p {
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.browse-all-btn {
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: all var(--transition-fast);
+}
+
+.browse-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.newsletter-signup {
+    background: var(--primary-gradient);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+    text-align: center;
+    color: white;
+}
+
+.newsletter-content h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.newsletter-content p {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: var(--spacing-xl);
+}
+
+.newsletter-form {
+    display: flex;
+    gap: var(--spacing-sm);
+    max-width: 400px;
+    margin: 0 auto var(--spacing-xl);
+}
+
+.newsletter-input {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+}
+
+.newsletter-btn {
+    background: white;
+    color: var(--primary-red);
+    border: none;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.newsletter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.newsletter-benefits {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+}
+
+.benefit {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 14px;
+}
+
+.benefit-icon {
+    font-size: 20px;
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-options {
+        flex-direction: column;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+    
+    .newsletter-benefits {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // View toggle functionality
+    const viewBtns = document.querySelectorAll('.view-btn');
+    const productsGrid = document.getElementById('products-grid');
+    
+    viewBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            viewBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const view = this.dataset.view;
+            if (view === 'list') {
+                productsGrid.classList.add('list-view');
+            } else {
+                productsGrid.classList.remove('list-view');
+            }
+        });
+    });
+    
+    // Newsletter form
+    document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.querySelector('.newsletter-input').value;
+        
+        // Here you would normally handle the newsletter subscription
+        alert('Newsletter subscription functionality would be implemented here');
+        this.reset();
+    });
+    
+    // Animate products on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in-up');
+            }
+        });
+    }, observerOptions);
+    
+    // Handle product card clicks
+    document.querySelectorAll('.product-card').forEach(card => {
+        observer.observe(card);
+        
+        // Add click handler for navigation
+        card.addEventListener('click', function(e) {
+            // Don't navigate if clicking on buttons
+            if (e.target.closest('button') || e.target.closest('.action-btn')) {
+                return;
+            }
+            
+            const url = this.dataset.productUrl;
+            if (url) {
+                window.location.href = url;
+            }
+        });
+    });
+    
+    // Handle add to cart buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent card click
+            const productId = this.dataset.productId;
+            if (productId && typeof dynamicSystem !== 'undefined') {
+                dynamicSystem.addToCart(productId);
+            } else {
+                console.log('Add to cart:', productId);
+                // Fallback if dynamicSystem is not available
+                alert('Product added to cart!');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

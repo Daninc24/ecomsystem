@@ -1,0 +1,429 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Best Sellers - Top Products | {{ store_config.name }}{% endblock %}
+{% block description %}Discover the most popular and best-selling products on {{ store_config.name }}. Shop customer favorites and trending items with proven quality and satisfaction.{% endblock %}
+{% block keywords %}best sellers, top products, popular items, trending products, customer favorites, most bought{% endblock %}
+
+{% block content %}
+<section class="best-sellers-section">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">🏆 Best Sellers</h1>
+            <p class="page-subtitle">Discover the most popular products loved by our customers</p>
+        </div>
+        
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number">{{ bestsellers|length }}</span>
+                <span class="stat-label">Best Selling Products</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">50K+</span>
+                <span class="stat-label">Happy Customers</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">4.8★</span>
+                <span class="stat-label">Average Rating</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Satisfaction Rate</span>
+            </div>
+        </div>
+        
+        <!-- Category Filters -->
+        <div class="category-filters">
+            <button class="category-filter-btn active" data-category="all">All Categories</button>
+            {% for category in product_categories[:8] %}
+            <button class="category-filter-btn" data-category="{{ category.name }}">
+                {{ category.icon }} {{ category.name }}
+            </button>
+            {% endfor %}
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="products-container">
+            <div id="products-grid" class="products-grid">
+                {% for product in bestsellers %}
+                <div class="product-card bestseller-card animate-fade-in-up" data-category="{{ product.basic_info.category }}" onclick="window.location.href='{{ url_for('product_detail', product_id=product._id) }}'">
+                    <div class="product-image-wrapper">
+                        <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                        
+                        <div class="product-badges">
+                            <span class="badge badge-bestseller">#{{ loop.index }} Best Seller</span>
+                            {% if product.pricing.discount_percentage > 0 %}
+                            <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                            {% endif %}
+                            {% if product.is_featured %}
+                            <span class="badge badge-featured">Featured</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-actions">
+                            <button class="action-btn" title="Add to Wishlist">
+                                <span>♡</span>
+                            </button>
+                            <button class="action-btn" title="Quick View">
+                                <span>👁</span>
+                            </button>
+                            <button class="action-btn" title="Compare">
+                                <span>⚖</span>
+                            </button>
+                        </div>
+                        
+                        <div class="bestseller-rank">
+                            <span class="rank-number">#{{ loop.index }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-info">
+                        <div class="product-vendor">
+                            <span>Top Seller</span>
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        
+                        <h3 class="product-name">{{ product.basic_info.name }}</h3>
+                        
+                        <div class="product-rating">
+                            <div class="stars">★★★★★</div>
+                            <span class="rating-count">({{ (product.views or 0) // 3 + 50 }})</span>
+                        </div>
+                        
+                        <div class="bestseller-stats">
+                            <div class="stat">
+                                <span class="stat-icon">📦</span>
+                                <span class="stat-text">{{ (product.views or 0) // 10 + 100 }}+ sold</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-icon">⚡</span>
+                                <span class="stat-text">Fast shipping</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-pricing">
+                            {% if product.pricing.discount_percentage > 0 %}
+                            <span class="product-price">${{ "%.2f"|format(product.pricing.price * (1 - product.pricing.discount_percentage / 100)) }}</span>
+                            <span class="product-original-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            {% else %}
+                            <span class="product-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-shipping">Free Shipping</div>
+                        
+                        <button class="add-to-cart-btn" onclick="event.stopPropagation(); dynamicSystem.addToCart('{{ product._id }}')">
+                            <span>🛒</span>
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if not bestsellers %}
+            <div class="no-products">
+                <div class="no-products-icon">🏆</div>
+                <h3>No best sellers found</h3>
+                <p>Check back soon for trending products!</p>
+                <a href="{{ url_for('products') }}" class="browse-all-btn">Browse All Products</a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Why These Are Best Sellers -->
+        <div class="bestseller-features">
+            <h2 class="section-title">Why These Products Are Best Sellers</h2>
+            
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Highest Ratings</h3>
+                    <p>Products with consistently high customer ratings and positive reviews</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">📈</div>
+                    <h3>Proven Demand</h3>
+                    <p>Items with the highest sales volume and repeat purchases</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Fast Shipping</h3>
+                    <p>Quick delivery times and reliable shipping from trusted sellers</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">💎</div>
+                    <h3>Quality Assured</h3>
+                    <p>Products that meet our strict quality standards and customer expectations</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <h3>Great Value</h3>
+                    <p>Best price-to-quality ratio with competitive pricing</p>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Easy Returns</h3>
+                    <p>Hassle-free return policy with buyer protection guarantee</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.best-sellers-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--gray-50);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: var(--gray-600);
+}
+
+.stats-bar {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.stat-item {
+    text-align: center;
+    padding: var(--spacing-md);
+}
+
+.stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-red);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.category-filters {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    overflow-x: auto;
+    padding: var(--spacing-sm) 0;
+}
+
+.category-filter-btn {
+    background: white;
+    border: 2px solid var(--gray-300);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.category-filter-btn:hover,
+.category-filter-btn.active {
+    background: var(--primary-gradient);
+    border-color: var(--primary-red);
+    color: white;
+}
+
+.bestseller-card {
+    position: relative;
+}
+
+.badge-bestseller {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: var(--gray-900);
+    font-weight: 700;
+    font-size: 11px;
+}
+
+.bestseller-rank {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    background: var(--primary-gradient);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-md);
+}
+
+.bestseller-stats {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    font-size: 12px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--gray-600);
+}
+
+.stat-icon {
+    font-size: 14px;
+}
+
+.bestseller-features {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-top: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.feature-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.feature-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.feature-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.feature-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.feature-item p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+@media (max-width: 1024px) {
+    .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-bar {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-filters {
+        flex-wrap: wrap;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-number {
+        font-size: 24px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Category filtering
+    const filterBtns = document.querySelectorAll('.category-filter-btn');
+    const productCards = document.querySelectorAll('.bestseller-card');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const category = this.dataset.category;
+            
+            // Filter products
+            productCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.classList.add('animate-fade-in-up');
+                    }, 100);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Animate products on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in-up');
+            }
+        });
+    }, observerOptions);
+    
+    productCards.forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %}

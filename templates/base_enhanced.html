@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block description %}{{ store_config.description }} - Global marketplace with secure payments and buyer protection{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}online shopping, marketplace, global shopping, secure payments, buyer protection{% endblock %}">
+    <meta name="author" content="{{ store_config.name }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts - Inter for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aliexpress-style.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dynamic-styles.css') }}?v=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fixes.css') }}?v=1.0">
+    
+    <!-- Chart.js for dynamic charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <title>{% block title %}{{ store_config.name }} - {{ store_config.tagline }}{% endblock %}</title>
+    
+    <!-- Critical CSS for immediate styling -->
+    <style>
+        :root {
+            --primary-red: #ff4747;
+            --primary-orange: #ff6b35;
+            --primary-gradient: linear-gradient(135deg, #ff4747 0%, #ff6b35 100%);
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--gray-900);
+            background-color: var(--gray-50);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+        }
+        
+        /* Complete Footer Styling - Critical CSS */
+        .footer {
+            background: #111827 !important;
+            background: var(--gray-900) !important;
+            color: white !important;
+            padding: 3rem 0 1.5rem !important;
+            padding: var(--spacing-2xl) 0 var(--spacing-lg) !important;
+            margin-top: 3rem !important;
+            margin-top: var(--spacing-2xl) !important;
+        }
+        
+        .footer-content {
+            display: grid !important;
+            grid-template-columns: 2fr repeat(4, 1fr) !important;
+            gap: 3rem !important;
+            gap: var(--spacing-2xl) !important;
+            margin-bottom: 2rem !important;
+            margin-bottom: var(--spacing-xl) !important;
+        }
+        
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: 1rem !important;
+            margin-bottom: var(--spacing-md) !important;
+            color: white !important;
+        }
+        
+        .footer-title {
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            background: linear-gradient(135deg, #ff4747 0%, #ff6b35 100%) !important;
+            background: var(--primary-gradient) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+        
+        .footer-subtitle {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            color: white !important;
+        }
+        
+        .footer-description {
+            color: #d1d5db !important;
+            color: var(--gray-300) !important;
+            margin-bottom: 1.5rem !important;
+            margin-bottom: var(--spacing-lg) !important;
+            line-height: 1.6 !important;
+        }
+        
+        .social-links {
+            display: flex !important;
+            gap: 1rem !important;
+            gap: var(--spacing-md) !important;
+        }
+        
+        .social-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 40px !important;
+            height: 40px !important;
+            background: #1f2937 !important;
+            background: var(--gray-800) !important;
+            border-radius: 9999px !important;
+            border-radius: var(--radius-full) !important;
+            text-decoration: none !important;
+            font-size: 20px !important;
+            transition: all 0.3s ease !important;
+            transition: all var(--transition-fast) !important;
+        }
+        
+        .social-link:hover {
+            background: #ff4747 !important;
+            background: var(--primary-red) !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .footer-links {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem !important;
+            margin-bottom: var(--spacing-sm) !important;
+        }
+        
+        .footer-links a {
+            color: #d1d5db !important;
+            color: var(--gray-300) !important;
+            text-decoration: none !important;
+            transition: color 0.3s ease !important;
+            transition: color var(--transition-fast) !important;
+        }
+        
+        .footer-links a:hover {
+            color: white !important;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #1f2937 !important;
+            border-top: 1px solid var(--gray-800) !important;
+            padding-top: 1.5rem !important;
+            padding-top: var(--spacing-lg) !important;
+        }
+        
+        .footer-bottom-content {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+        
+        .footer-legal {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1.5rem !important;
+            gap: var(--spacing-lg) !important;
+            color: #9ca3af !important;
+            color: var(--gray-400) !important;
+        }
+        
+        .footer-legal-links {
+            display: flex !important;
+            gap: 1.5rem !important;
+            gap: var(--spacing-lg) !important;
+        }
+        
+        .footer-legal-links a {
+            color: #9ca3af !important;
+            color: var(--gray-400) !important;
+            text-decoration: none !important;
+            transition: color 0.3s ease !important;
+            transition: color var(--transition-fast) !important;
+        }
+        
+        .footer-legal-links a:hover {
+            color: white !important;
+        }
+        
+        .payment-methods {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1rem !important;
+            gap: var(--spacing-md) !important;
+            color: #9ca3af !important;
+            color: var(--gray-400) !important;
+        }
+        
+        .payment-icons {
+            display: flex !important;
+            gap: 0.5rem !important;
+            gap: var(--spacing-sm) !important;
+            font-size: 20px !important;
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10000;
+        }
+        
+        .flash-message {
+            padding: 1rem 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .flash-message > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .flash-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .flash-error {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .flash-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .flash-info {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .flash-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10001;
+            max-width: 400px;
+        }
+        
+        .notification {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.hide {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .notification-success {
+            border-left-color: #10b981;
+        }
+        
+        .notification-error {
+            border-left-color: #ef4444;
+        }
+        
+        .notification-warning {
+            border-left-color: #f59e0b;
+        }
+        
+        .notification-info {
+            border-left-color: #3b82f6;
+        }
+        
+        .notification-content {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-message {
+            flex: 1;
+            font-weight: 500;
+            color: #1f2937;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: all 0.15s ease;
+        }
+        
+        .notification-close:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #ff4747;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 6px;
+        }
+        
+        /* Footer Responsive */
+        @media (max-width: 1024px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 2rem !important;
+                gap: var(--spacing-xl) !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .footer {
+                padding: 2rem 0 1rem !important;
+                padding: var(--spacing-xl) 0 var(--spacing-md) !important;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1.5rem !important;
+                gap: var(--spacing-lg) !important;
+            }
+            
+            .footer-section:first-child {
+                grid-column: 1 / -1 !important;
+                text-align: center !important;
+            }
+            
+            .social-links {
+                justify-content: center !important;
+            }
+            
+            .footer-bottom-content {
+                flex-direction: column !important;
+                gap: 1rem !important;
+                gap: var(--spacing-md) !important;
+                text-align: center !important;
+            }
+            
+            .footer-legal {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+                gap: var(--spacing-sm) !important;
+            }
+            
+            .footer-legal-links {
+                flex-direction: column !important;
+                gap: 0.25rem !important;
+                gap: var(--spacing-xs) !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                text-align: center !important;
+            }
+            
+            .footer-links {
+                text-align: center !important;
+            }
+            
+            .payment-icons {
+                justify-content: center !important;
+            }
+        }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Header Top Bar -->
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-content">
+                <div class="header-links">
+                    <a href="{{ url_for('contact') }}">Customer Service</a>
+                    <a href="#">Help Center</a>
+                    <a href="#">Track Order</a>
+                    <a href="#">Sell on {{ store_config.name }}</a>
+                </div>
+                <div class="header-links">
+                    {% if session.user_id %}
+                        <a href="{{ url_for('profile') }}">Hi, {{ session.username }}!</a>
+                        <a href="{{ url_for('logout') }}">Sign Out</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}">Sign In</a>
+                        <a href="{{ url_for('register') }}">Join Free</a>
+                    {% endif %}
+                    <a href="#">🌐 English</a>
+                    <a href="#">💰 USD</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Header -->
+    <header class="header-main">
+        <div class="container">
+            <div class="header-main-content">
+                <!-- Logo -->
+                <a href="{{ url_for('index') }}" class="logo">
+                    <span class="logo-icon">🛒</span>
+                    <span>{{ store_config.name }}</span>
+                </a>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="search" id="search-input" class="search-input" 
+                               placeholder="Search for products, brands, and more...">
+                        <button class="search-button" type="button">
+                            Search
+                        </button>
+                    </div>
+                    <div id="search-results" class="search-results-dropdown"></div>
+                </div>
+                
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <a href="{{ url_for('orders') if session.user_id else url_for('login') }}" class="header-action-btn">
+                        <span class="header-action-icon">📦</span>
+                        <span class="header-action-label">Orders</span>
+                    </a>
+                    
+                    <a href="#" class="header-action-btn">
+                        <span class="header-action-icon">♡</span>
+                        <span class="header-action-label">Wishlist</span>
+                    </a>
+                    
+                    <a href="{{ url_for('cart') if session.user_id else url_for('login') }}" class="header-action-btn" id="cart-link">
+                        <span class="header-action-icon">🛒</span>
+                        <span class="header-action-label">Cart</span>
+                        <span id="cart-count" class="cart-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Category Navigation -->
+    <nav class="category-nav">
+        <div class="container">
+            <div class="category-nav-content">
+                {% for category in product_categories %}
+                <a href="{{ url_for('products', category=category.name) }}" class="category-item">
+                    <span class="category-icon">{{ category.icon }}</span>
+                    <span class="category-name">{{ category.name }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        <div class="container">
+                            <span>{{ message }}</span>
+                            <button class="flash-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Notification Container for Dynamic Notifications -->
+    <div id="notification-container" class="notification-container"></div>
+    
+    <!-- Main Content -->
+    <main id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <h3 class="footer-title">{{ store_config.name }}</h3>
+                    <p class="footer-description">{{ store_config.description }}</p>
+                    <div class="social-links">
+                        <a href="{{ store_config.social_media.facebook }}" class="social-link">📘</a>
+                        <a href="{{ store_config.social_media.twitter }}" class="social-link">🐦</a>
+                        <a href="{{ store_config.social_media.instagram }}" class="social-link">📷</a>
+                        <a href="{{ store_config.social_media.linkedin }}" class="social-link">💼</a>
+                    </div>
+                </div>
+                
+                <!-- Customer Service -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Customer Service</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('help_center') }}">Help Center</a></li>
+                        <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('track_order') }}">Track Your Order</a></li>
+                        <li><a href="{{ url_for('returns_refunds') }}">Returns & Refunds</a></li>
+                        <li><a href="{{ url_for('size_guide') }}">Size Guide</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Shopping -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Shopping</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('products') }}">All Products</a></li>
+                        <li><a href="{{ url_for('flash_deals') }}">Flash Deals</a></li>
+                        <li><a href="{{ url_for('new_arrivals') }}">New Arrivals</a></li>
+                        <li><a href="{{ url_for('best_sellers') }}">Best Sellers</a></li>
+                        <li><a href="{{ url_for('gift_cards') }}">Gift Cards</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Sell -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Sell with Us</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('become_vendor') }}">Start Selling</a></li>
+                        <li><a href="{{ url_for('seller_center') }}">Seller Center</a></li>
+                        <li><a href="{{ url_for('seller_protection') }}">Seller Protection</a></li>
+                        <li><a href="{{ url_for('advertising') }}">Advertising</a></li>
+                        <li><a href="{{ url_for('success_stories') }}">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <!-- About -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">About</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('careers') }}">Careers</a></li>
+                        <li><a href="{{ url_for('press') }}">Press</a></li>
+                        <li><a href="{{ url_for('investor_relations') }}">Investor Relations</a></li>
+                        <li><a href="{{ url_for('sustainability') }}">Sustainability</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="footer-legal">
+                        <span>&copy; 2024 {{ store_config.name }}. All rights reserved.</span>
+                        <div class="footer-legal-links">
+                            <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+                            <a href="{{ url_for('terms_of_service') }}">Terms of Service</a>
+                            <a href="{{ url_for('cookie_policy') }}">Cookie Policy</a>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <span>We Accept:</span>
+                        <div class="payment-icons">
+                            <span>💳</span>
+                            <span>🏦</span>
+                            <span>📱</span>
+                            <span>💰</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Dynamic E-Commerce System -->
+    <script src="{{ url_for('static', filename='js/dynamic-system.js') }}"></script>
+    
+    <!-- Additional dynamic features -->
+    <script>
+        // Initialize dynamic features based on page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add real-time search to search inputs
+            const searchInputs = document.querySelectorAll('input[type="search"], .search-input');
+            searchInputs.forEach(input => {
+                if (!input.id) {
+                    input.id = 'search-input';
+                }
+            });
+            
+            // Initialize tooltips for elements with data-tooltip
+            const tooltipElements = document.querySelectorAll('[title]');
+            tooltipElements.forEach(element => {
+                element.setAttribute('data-tooltip', element.title);
+                element.removeAttribute('title');
+            });
+            
+            // Flash message auto-hide
+            setTimeout(() => {
+                const flashMessages = document.querySelectorAll('.flash-message');
+                flashMessages.forEach(message => {
+                    message.style.opacity = '0';
+                    setTimeout(() => message.remove(), 300);
+                });
+            }, 5000);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

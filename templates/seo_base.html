@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}{{ store_config.name }} - {{ store_config.tagline }}{% endblock %}</title>
+    <meta name="description" content="{% block description %}{{ store_config.description }} - Global marketplace with secure payments, buyer protection, and fast shipping. Shop electronics, fashion, home goods and more.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}online shopping, marketplace, electronics, fashion, home goods, global shopping, secure payments, buyer protection, fast shipping, best deals{% endblock %}">
+    <meta name="author" content="{{ store_config.name }}">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.url }}{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.description() }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ url_for('static', filename='images/og-image.jpg', _external=True) }}{% endblock %}">
+    <meta property="og:site_name" content="{{ store_config.name }}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.url }}">
+    <meta property="twitter:title" content="{{ self.title() }}">
+    <meta property="twitter:description" content="{{ self.description() }}">
+    <meta property="twitter:image" content="{{ self.og_image() }}">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "{% block schema_type %}WebSite{% endblock %}",
+        "name": "{{ store_config.name }}",
+        "url": "{{ request.url_root }}",
+        "description": "{{ store_config.description }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ url_for('products', _external=True) }}?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "sameAs": [
+            "{{ store_config.social_media.facebook }}",
+            "{{ store_config.social_media.twitter }}",
+            "{{ store_config.social_media.instagram }}",
+            "{{ store_config.social_media.linkedin }}"
+        ]
+        {% block schema_data %}{% endblock %}
+    }
+    </script>
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{% block canonical %}{{ request.url }}{% endblock %}">
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    
+    <!-- Google Fonts - Inter for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aliexpress-style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dynamic-styles.css') }}">
+    
+    <!-- Chart.js for dynamic charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Additional head content -->
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Header Top Bar -->
+    <div class="header-top">
+        <div class="container">
+            <div class="header-top-content">
+                <div class="header-links">
+                    <a href="{{ url_for('contact') }}">Customer Service</a>
+                    <a href="{{ url_for('help_center') }}">Help Center</a>
+                    <a href="{{ url_for('track_order') }}">Track Order</a>
+                    <a href="{{ url_for('become_vendor') }}">Sell on {{ store_config.name }}</a>
+                </div>
+                <div class="header-links">
+                    {% if session.user_id %}
+                        <a href="{{ url_for('profile') }}">Hi, {{ session.username }}!</a>
+                        <a href="{{ url_for('logout') }}">Sign Out</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}">Sign In</a>
+                        <a href="{{ url_for('register') }}">Join Free</a>
+                    {% endif %}
+                    <a href="#">🌐 English</a>
+                    <a href="#">💰 USD</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Header -->
+    <header class="header-main">
+        <div class="container">
+            <div class="header-main-content">
+                <!-- Logo -->
+                <a href="{{ url_for('index') }}" class="logo">
+                    <span class="logo-icon">🛒</span>
+                    <span>{{ store_config.name }}</span>
+                </a>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="search" id="search-input" class="search-input" 
+                               placeholder="Search for products, brands, and more..."
+                               aria-label="Search products">
+                        <button class="search-button" type="button" aria-label="Search">
+                            Search
+                        </button>
+                    </div>
+                    <div id="search-results" class="search-results-dropdown"></div>
+                </div>
+                
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <a href="{{ url_for('orders') if session.user_id else url_for('login') }}" class="header-action-btn">
+                        <span class="header-action-icon">📦</span>
+                        <span class="header-action-label">Orders</span>
+                    </a>
+                    
+                    <a href="#" class="header-action-btn">
+                        <span class="header-action-icon">♡</span>
+                        <span class="header-action-label">Wishlist</span>
+                    </a>
+                    
+                    <a href="{{ url_for('cart') if session.user_id else url_for('login') }}" class="header-action-btn" id="cart-link">
+                        <span class="header-action-icon">🛒</span>
+                        <span class="header-action-label">Cart</span>
+                        <span id="cart-count" class="cart-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Category Navigation -->
+    <nav class="category-nav" role="navigation" aria-label="Product categories">
+        <div class="container">
+            <div class="category-nav-content">
+                {% for category in product_categories %}
+                <a href="{{ url_for('products', category=category.name) }}" class="category-item">
+                    <span class="category-icon">{{ category.icon }}</span>
+                    <span class="category-name">{{ category.name }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        <div class="container">
+                            <span>{{ message }}</span>
+                            <button class="flash-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Notification Container for Dynamic Notifications -->
+    <div id="notification-container" class="notification-container"></div>
+    
+    <!-- Breadcrumbs -->
+    {% block breadcrumbs %}{% endblock %}
+    
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <h3 class="footer-title">{{ store_config.name }}</h3>
+                    <p class="footer-description">{{ store_config.description }}</p>
+                    <div class="social-links">
+                        <a href="{{ store_config.social_media.facebook }}" class="social-link" aria-label="Facebook">📘</a>
+                        <a href="{{ store_config.social_media.twitter }}" class="social-link" aria-label="Twitter">🐦</a>
+                        <a href="{{ store_config.social_media.instagram }}" class="social-link" aria-label="Instagram">📷</a>
+                        <a href="{{ store_config.social_media.linkedin }}" class="social-link" aria-label="LinkedIn">💼</a>
+                    </div>
+                </div>
+                
+                <!-- Customer Service -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Customer Service</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('help_center') }}">Help Center</a></li>
+                        <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('track_order') }}">Track Your Order</a></li>
+                        <li><a href="{{ url_for('returns_refunds') }}">Returns & Refunds</a></li>
+                        <li><a href="{{ url_for('size_guide') }}">Size Guide</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Shopping -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Shopping</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('products') }}">All Products</a></li>
+                        <li><a href="{{ url_for('flash_deals') }}">Flash Deals</a></li>
+                        <li><a href="{{ url_for('new_arrivals') }}">New Arrivals</a></li>
+                        <li><a href="{{ url_for('best_sellers') }}">Best Sellers</a></li>
+                        <li><a href="{{ url_for('gift_cards') }}">Gift Cards</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Sell -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Sell with Us</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('become_vendor') }}">Start Selling</a></li>
+                        <li><a href="{{ url_for('seller_center') }}">Seller Center</a></li>
+                        <li><a href="{{ url_for('seller_protection') }}">Seller Protection</a></li>
+                        <li><a href="{{ url_for('advertising') }}">Advertising</a></li>
+                        <li><a href="{{ url_for('success_stories') }}">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <!-- About -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">About</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('about') }}">About Us</a></li>
+                        <li><a href="{{ url_for('careers') }}">Careers</a></li>
+                        <li><a href="{{ url_for('press') }}">Press</a></li>
+                        <li><a href="{{ url_for('investor_relations') }}">Investor Relations</a></li>
+                        <li><a href="{{ url_for('sustainability') }}">Sustainability</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="footer-legal">
+                        <span>&copy; 2024 {{ store_config.name }}. All rights reserved.</span>
+                        <div class="footer-legal-links">
+                            <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>
+                            <a href="{{ url_for('terms_of_service') }}">Terms of Service</a>
+                            <a href="{{ url_for('cookie_policy') }}">Cookie Policy</a>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <span>We Accept:</span>
+                        <div class="payment-icons">
+                            <span>💳</span>
+                            <span>🏦</span>
+                            <span>📱</span>
+                            <span>💰</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dynamic-system.js') }}"></script>
+    
+    <!-- SEO and Analytics Scripts -->
+    <script>
+        // Initialize dynamic features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add real-time search to search inputs
+            const searchInputs = document.querySelectorAll('input[type="search"], .search-input');
+            searchInputs.forEach(input => {
+                if (!input.id) {
+                    input.id = 'search-input';
+                }
+            });
+            
+            // Flash message auto-hide
+            setTimeout(() => {
+                const flashMessages = document.querySelectorAll('.flash-message');
+                flashMessages.forEach(message => {
+                    message.style.opacity = '0';
+                    setTimeout(() => message.remove(), 300);
+                });
+            }, 5000);
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

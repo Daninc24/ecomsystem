@@ -1,0 +1,232 @@
+[
+  {
+    "username": "admin",
+    "email": "admin@markethubpro.com",
+    "password": "scrypt:32768:8:1$kS1GXqPOfe9mzzVq$0b5f7ed6b68cd99d50fcc016e978189d0dc0599a46be18058951f9a45af23d34acbda6972b046c599d34611ff5339868fb3f15b9e1c8c453a4f448b97d66c859",
+    "role": "admin",
+    "profile": {
+      "first_name": "Admin",
+      "last_name": "User",
+      "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      "phone": "+1-555-0001",
+      "date_of_birth": null,
+      "gender": "other"
+    },
+    "addresses": [],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": false,
+        "push": true
+      }
+    },
+    "created_at": "2025-12-21T17:50:37.319037",
+    "updated_at": "2025-12-21T17:50:37.319083",
+    "last_login": "2025-12-21T18:30:21.694392",
+    "is_active": true,
+    "email_verified": true,
+    "_id": "6948336d3169ac38b8981546"
+  },
+  {
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "scrypt:32768:8:1$Aumh3QnnS6AWLrhM$a590f913b813709779337854d7c552831650c4f21487737ac3a9d209ea8ba8f8fddb0a2b8fc94522a57fb6e0e2ce7d4057c2822db38fa8f087fcdbca43714817",
+    "role": "user",
+    "profile": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "avatar_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      "phone": "+1-555-0002",
+      "date_of_birth": "1990-05-15T00:00:00",
+      "gender": "male"
+    },
+    "addresses": [
+      {
+        "type": "shipping",
+        "street": "123 Main Street",
+        "city": "New York",
+        "state": "NY",
+        "zip_code": "10001",
+        "country": "USA",
+        "is_default": true
+      }
+    ],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": true,
+        "push": true
+      }
+    },
+    "created_at": "2025-11-21T17:50:37.476155",
+    "updated_at": "2025-12-21T17:50:37.476188",
+    "last_login": "2025-12-20T17:50:37.476208",
+    "is_active": true,
+    "email_verified": true,
+    "_id": "6948336d3169ac38b8981547"
+  },
+  {
+    "username": "jane_smith",
+    "email": "jane@example.com",
+    "password": "scrypt:32768:8:1$gyNUuu9i5oa2CAfF$4e0ea069de5ecc280d3b875c1ab3b484f2fc1c9f948a7f894789ffe4a785d8850c44ea431213ce9d8055ca728d02a0108144b055839316fb9828660fa4af994b",
+    "role": "user",
+    "profile": {
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "avatar_url": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+      "phone": "+1-555-0003",
+      "date_of_birth": "1985-08-22T00:00:00",
+      "gender": "female"
+    },
+    "addresses": [
+      {
+        "type": "shipping",
+        "street": "456 Oak Avenue",
+        "city": "Los Angeles",
+        "state": "CA",
+        "zip_code": "90210",
+        "country": "USA",
+        "is_default": true
+      }
+    ],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": false,
+        "push": true
+      }
+    },
+    "created_at": "2025-11-06T17:50:37.618900",
+    "updated_at": "2025-12-21T17:50:37.618924",
+    "last_login": "2025-12-21T15:50:37.618935",
+    "is_active": true,
+    "email_verified": true,
+    "_id": "6948336d3169ac38b8981548"
+  },
+  {
+    "username": "techstore_pro",
+    "email": "contact@techstorepro.com",
+    "password": "scrypt:32768:8:1$kzvfFTTj6sxmLugO$4ba70ac6d0d229be4e1259c2c4ea0c16a889c32d10f910d3a75f0d51156af59e4cc088115658c86564c82653d02a9b73bd50ed5777ddd506798dbad88e1b0c70",
+    "role": "vendor",
+    "profile": {
+      "first_name": "Tech",
+      "last_name": "Store",
+      "avatar_url": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=face",
+      "phone": "+1-555-1001",
+      "date_of_birth": null,
+      "gender": "other"
+    },
+    "addresses": [],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": true,
+        "push": true
+      }
+    },
+    "created_at": "2025-10-22T17:50:38.066253",
+    "updated_at": "2025-12-21T17:50:38.066282",
+    "last_login": "2025-12-21T11:50:38.066298",
+    "is_active": true,
+    "email_verified": true,
+    "_id": "6948336e3169ac38b8981549"
+  },
+  {
+    "username": "homestyle_living",
+    "email": "hello@homestyleliving.com",
+    "password": "scrypt:32768:8:1$1SZ5XZJXqECZeT5r$16aa7189e410422b15ba166ef84ef6831f43f2aa2a6912a3df9d0bb0213d8a8eb92f54e49c48d58f1539848d9d1bc32e7323818ab907a9c3169cbe680b04852a",
+    "role": "vendor",
+    "profile": {
+      "first_name": "Home",
+      "last_name": "Style",
+      "avatar_url": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=100&h=100&fit=crop&crop=face",
+      "phone": "+1-555-1002",
+      "date_of_birth": null,
+      "gender": "other"
+    },
+    "addresses": [],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": true,
+        "push": true
+      }
+    },
+    "created_at": "2025-10-22T17:50:38.067534",
+    "updated_at": "2025-12-21T17:50:38.067549",
+    "last_login": "2025-12-21T11:50:38.067556",
+    "is_active": true,
+    "email_verified": true,
+    "_id": "6948336e3169ac38b898154b"
+  },
+  {
+    "username": "fitness_gear_plus",
+    "email": "support@fitnessgearpus.com",
+    "password": "scrypt:32768:8:1$M1l4DWuc7yJhjd5A$8ef480030553a96d52407ee8c7d562641a602db169b2a016df782b0149f8872409b975136a19c1e4f1359ba6c86348c3c27e1495e24e26457f28496d06c6adbe",
+    "role": "vendor",
+    "profile": {
+      "first_name": "Fitness",
+      "last_name": "Gear",
+      "avatar_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=100&h=100&fit=crop&crop=face",
+      "phone": "+1-555-1003",
+      "date_of_birth": null,
+      "gender": "other"
+    },
+    "addresses": [],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": true,
+        "push": true
+      }
+    },
+    "created_at": "2025-10-22T17:50:38.068767",
+    "updated_at": "2025-12-21T17:50:38.068778",
+    "last_login": "2025-12-21T11:50:38.068785",
+    "is_active": true,
+    "email_verified": true,
+    "_id": "6948336e3169ac38b898154d"
+  },
+  {
+    "username": "deedan",
+    "email": "danmailur8@gmail.com",
+    "password": "pbkdf2:sha256:600000$NR7goJ0ORXHbJStn$902d2e63777f70b3313c1cb731f885a04b2c03b7170052d8399b94f2f9ffb4c4",
+    "role": "user",
+    "profile": {
+      "first_name": "",
+      "last_name": "",
+      "avatar_url": "",
+      "phone": "",
+      "date_of_birth": null,
+      "gender": ""
+    },
+    "addresses": [],
+    "preferences": {
+      "language": "en",
+      "currency": "USD",
+      "notifications": {
+        "email": true,
+        "sms": false,
+        "push": true
+      }
+    },
+    "created_at": "2025-12-21T18:06:49.497966",
+    "updated_at": "2025-12-21T18:06:49.497996",
+    "last_login": "2025-12-21T18:06:54.485204",
+    "is_active": true,
+    "email_verified": false,
+    "_id": "694837390fb674db15a5b498"
+  }
+]

@@ -1,0 +1,614 @@
+[
+  {
+    "basic_info": {
+      "name": "Wireless Bluetooth Headphones Pro Max",
+      "description": "Premium wireless headphones with active noise cancellation, 40-hour battery life, and crystal-clear audio quality. Perfect for music lovers, professionals, and gamers.",
+      "short_description": "Premium wireless headphones with ANC and 40-hour battery",
+      "category": "Electronics",
+      "subcategory": "Audio",
+      "brand": "AudioTech",
+      "model": "AT-WH-Pro-Max",
+      "sku": "SKU-2B0E192F"
+    },
+    "pricing": {
+      "price": 199.99,
+      "compare_price": 249.99,
+      "cost_price": 120.0,
+      "discount_percentage": 20.0,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 50,
+      "low_stock_threshold": 10,
+      "track_inventory": true,
+      "allow_backorders": false
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 0.3,
+      "dimensions": {
+        "length": 20,
+        "width": 18,
+        "height": 8
+      },
+      "color": "Midnight Black",
+      "size": "One Size",
+      "material": "Premium Plastic & Metal",
+      "custom_attributes": {
+        "battery_life": "40 hours",
+        "connectivity": "Bluetooth 5.2",
+        "noise_cancellation": "Active ANC"
+      }
+    },
+    "seo": {
+      "meta_title": "Wireless Bluetooth Headphones Pro Max - Premium Audio",
+      "meta_description": "Experience premium audio with our Wireless Bluetooth Headphones Pro Max featuring ANC and 40-hour battery life.",
+      "tags": [
+        "wireless",
+        "bluetooth",
+        "headphones",
+        "noise-cancelling",
+        "premium",
+        "audio"
+      ],
+      "slug": "wireless-bluetooth-headphones-pro-max"
+    },
+    "shipping": {
+      "free_shipping": true,
+      "shipping_cost": 0.0,
+      "processing_time": 1,
+      "shipping_from": "California, USA"
+    },
+    "status": "active",
+    "is_featured": true,
+    "views": 1252,
+    "favorites": 89,
+    "vendor_id": "6948336e3169ac38b898154a",
+    "created_at": "2025-11-21T17:50:38.070034",
+    "updated_at": "2025-12-21T17:50:38.070116",
+    "_id": "6948336e3169ac38b898154f"
+  },
+  {
+    "basic_info": {
+      "name": "Smartphone Protective Case Ultra Shield",
+      "description": "Military-grade protection with wireless charging compatibility. Drop-tested from 10 feet, scratch-resistant design with premium materials.",
+      "short_description": "Military-grade phone protection with wireless charging",
+      "category": "Electronics",
+      "subcategory": "Accessories",
+      "brand": "ShieldTech",
+      "model": "ST-Ultra-Shield",
+      "sku": "SKU-E6A5D4DC"
+    },
+    "pricing": {
+      "price": 34.99,
+      "compare_price": 49.99,
+      "cost_price": 18.0,
+      "discount_percentage": 30.0,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 100,
+      "low_stock_threshold": 20,
+      "track_inventory": true,
+      "allow_backorders": true
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 0.1,
+      "dimensions": {
+        "length": 16,
+        "width": 8,
+        "height": 1
+      },
+      "color": "Clear Black",
+      "size": "iPhone 14 Pro",
+      "material": "TPU + PC",
+      "custom_attributes": {
+        "drop_protection": "10 feet",
+        "wireless_charging": "Compatible",
+        "screen_protection": "Raised edges"
+      }
+    },
+    "seo": {
+      "meta_title": "Smartphone Protective Case Ultra Shield - Military Grade",
+      "meta_description": "Protect your phone with our military-grade Ultra Shield case featuring wireless charging compatibility.",
+      "tags": [
+        "phone case",
+        "protection",
+        "wireless charging",
+        "military grade",
+        "drop proof"
+      ],
+      "slug": "smartphone-protective-case-ultra-shield"
+    },
+    "shipping": {
+      "free_shipping": false,
+      "shipping_cost": 4.99,
+      "processing_time": 1,
+      "shipping_from": "California, USA"
+    },
+    "status": "active",
+    "is_featured": false,
+    "views": 890,
+    "favorites": 45,
+    "vendor_id": "6948336e3169ac38b898154a",
+    "created_at": "2025-11-21T17:50:38.072051",
+    "updated_at": "2025-12-21T17:50:38.072077",
+    "_id": "6948336e3169ac38b8981550"
+  },
+  {
+    "basic_info": {
+      "name": "Premium Ceramic Coffee Mug Set - Artisan Collection",
+      "description": "Set of 4 handcrafted ceramic mugs with ergonomic handles and beautiful glazed finish. Microwave and dishwasher safe. Perfect for your morning coffee ritual.",
+      "short_description": "Set of 4 handcrafted ceramic mugs with ergonomic design",
+      "category": "Home & Garden",
+      "subcategory": "Kitchen",
+      "brand": "CeramicCraft",
+      "model": "CC-Artisan-Set",
+      "sku": "SKU-E4279113"
+    },
+    "pricing": {
+      "price": 39.99,
+      "compare_price": 59.99,
+      "cost_price": 22.0,
+      "discount_percentage": 33.0,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 75,
+      "low_stock_threshold": 15,
+      "track_inventory": true,
+      "allow_backorders": false
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 1.5,
+      "dimensions": {
+        "length": 10,
+        "width": 10,
+        "height": 12
+      },
+      "color": "Glazed White",
+      "size": "12 oz",
+      "material": "Premium Ceramic",
+      "custom_attributes": {
+        "capacity": "12 oz each",
+        "dishwasher_safe": true,
+        "microwave_safe": true,
+        "set_size": "4 pieces"
+      }
+    },
+    "seo": {
+      "meta_title": "Premium Ceramic Coffee Mug Set - Artisan Collection",
+      "meta_description": "Beautiful handcrafted ceramic coffee mug set perfect for your daily coffee ritual. Dishwasher and microwave safe.",
+      "tags": [
+        "coffee mugs",
+        "ceramic",
+        "handcrafted",
+        "kitchen",
+        "dishwasher safe",
+        "set"
+      ],
+      "slug": "premium-ceramic-coffee-mug-set-artisan"
+    },
+    "shipping": {
+      "free_shipping": false,
+      "shipping_cost": 7.99,
+      "processing_time": 2,
+      "shipping_from": "New York, USA"
+    },
+    "status": "active",
+    "is_featured": true,
+    "views": 567,
+    "favorites": 78,
+    "vendor_id": "6948336e3169ac38b898154c",
+    "created_at": "2025-11-21T17:50:38.073149",
+    "updated_at": "2025-12-21T17:50:38.073174",
+    "_id": "6948336e3169ac38b8981551"
+  },
+  {
+    "basic_info": {
+      "name": "Premium Yoga Mat Pro - Eco-Friendly Non-Slip",
+      "description": "Extra-thick non-slip yoga mat made from eco-friendly TPE material. Perfect grip for all yoga styles and fitness routines. Includes carrying strap.",
+      "short_description": "Extra-thick eco-friendly yoga mat with perfect grip",
+      "category": "Sports & Outdoors",
+      "subcategory": "Fitness",
+      "brand": "YogaPro",
+      "model": "YP-Premium-Mat",
+      "sku": "SKU-B7360CBA"
+    },
+    "pricing": {
+      "price": 49.99,
+      "compare_price": 79.99,
+      "cost_price": 25.0,
+      "discount_percentage": 37.5,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 40,
+      "low_stock_threshold": 8,
+      "track_inventory": true,
+      "allow_backorders": true
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1506629905607-d9b1b2e3d3b1?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 1.8,
+      "dimensions": {
+        "length": 183,
+        "width": 61,
+        "height": 0.6
+      },
+      "color": "Deep Purple",
+      "size": "6mm thick",
+      "material": "Eco-friendly TPE",
+      "custom_attributes": {
+        "thickness": "6mm",
+        "eco_friendly": true,
+        "non_slip": true,
+        "includes_strap": true
+      }
+    },
+    "seo": {
+      "meta_title": "Premium Yoga Mat Pro - Eco-Friendly Non-Slip 6mm",
+      "meta_description": "Professional yoga mat with perfect grip and eco-friendly materials. Extra thick 6mm for ultimate comfort.",
+      "tags": [
+        "yoga mat",
+        "eco-friendly",
+        "non-slip",
+        "fitness",
+        "exercise",
+        "premium"
+      ],
+      "slug": "premium-yoga-mat-pro-eco-friendly"
+    },
+    "shipping": {
+      "free_shipping": true,
+      "shipping_cost": 0.0,
+      "processing_time": 1,
+      "shipping_from": "Texas, USA"
+    },
+    "status": "active",
+    "is_featured": true,
+    "views": 2340,
+    "favorites": 156,
+    "vendor_id": "6948336e3169ac38b898154e",
+    "created_at": "2025-11-21T17:50:38.075339",
+    "updated_at": "2025-12-21T17:50:38.075397",
+    "_id": "6948336e3169ac38b8981552"
+  },
+  {
+    "basic_info": {
+      "name": "Wireless Bluetooth Headphones Pro Max",
+      "description": "Premium wireless headphones with active noise cancellation, 40-hour battery life, and crystal-clear audio quality. Perfect for music lovers, professionals, and gamers.",
+      "short_description": "Premium wireless headphones with ANC and 40-hour battery",
+      "category": "Electronics",
+      "subcategory": "Audio",
+      "brand": "AudioTech",
+      "model": "AT-WH-Pro-Max",
+      "sku": "SKU-A405EA9F"
+    },
+    "pricing": {
+      "price": 199.99,
+      "compare_price": 249.99,
+      "cost_price": 120.0,
+      "discount_percentage": 20.0,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 50,
+      "low_stock_threshold": 10,
+      "track_inventory": true,
+      "allow_backorders": false
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 0.3,
+      "dimensions": {
+        "length": 20,
+        "width": 18,
+        "height": 8
+      },
+      "color": "Midnight Black",
+      "size": "One Size",
+      "material": "Premium Plastic & Metal",
+      "custom_attributes": {
+        "battery_life": "40 hours",
+        "connectivity": "Bluetooth 5.2",
+        "noise_cancellation": "Active ANC"
+      }
+    },
+    "seo": {
+      "meta_title": "Wireless Bluetooth Headphones Pro Max - Premium Audio",
+      "meta_description": "Experience premium audio with our Wireless Bluetooth Headphones Pro Max featuring ANC and 40-hour battery life.",
+      "tags": [
+        "wireless",
+        "bluetooth",
+        "headphones",
+        "noise-cancelling",
+        "premium",
+        "audio"
+      ],
+      "slug": "wireless-bluetooth-headphones-pro-max"
+    },
+    "shipping": {
+      "free_shipping": true,
+      "shipping_cost": 0.0,
+      "processing_time": 1,
+      "shipping_from": "California, USA"
+    },
+    "status": "active",
+    "is_featured": true,
+    "views": 1250,
+    "favorites": 89,
+    "vendor_id": null,
+    "created_at": "2025-11-21T17:51:34.229847",
+    "updated_at": "2025-12-21T17:51:34.229872",
+    "_id": "694833a63169ac3910839fd1"
+  },
+  {
+    "basic_info": {
+      "name": "Smartphone Protective Case Ultra Shield",
+      "description": "Military-grade protection with wireless charging compatibility. Drop-tested from 10 feet, scratch-resistant design with premium materials.",
+      "short_description": "Military-grade phone protection with wireless charging",
+      "category": "Electronics",
+      "subcategory": "Accessories",
+      "brand": "ShieldTech",
+      "model": "ST-Ultra-Shield",
+      "sku": "SKU-64EC97EF"
+    },
+    "pricing": {
+      "price": 34.99,
+      "compare_price": 49.99,
+      "cost_price": 18.0,
+      "discount_percentage": 30.0,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 100,
+      "low_stock_threshold": 20,
+      "track_inventory": true,
+      "allow_backorders": true
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 0.1,
+      "dimensions": {
+        "length": 16,
+        "width": 8,
+        "height": 1
+      },
+      "color": "Clear Black",
+      "size": "iPhone 14 Pro",
+      "material": "TPU + PC",
+      "custom_attributes": {
+        "drop_protection": "10 feet",
+        "wireless_charging": "Compatible",
+        "screen_protection": "Raised edges"
+      }
+    },
+    "seo": {
+      "meta_title": "Smartphone Protective Case Ultra Shield - Military Grade",
+      "meta_description": "Protect your phone with our military-grade Ultra Shield case featuring wireless charging compatibility.",
+      "tags": [
+        "phone case",
+        "protection",
+        "wireless charging",
+        "military grade",
+        "drop proof"
+      ],
+      "slug": "smartphone-protective-case-ultra-shield"
+    },
+    "shipping": {
+      "free_shipping": false,
+      "shipping_cost": 4.99,
+      "processing_time": 1,
+      "shipping_from": "California, USA"
+    },
+    "status": "active",
+    "is_featured": false,
+    "views": 890,
+    "favorites": 45,
+    "vendor_id": null,
+    "created_at": "2025-11-21T17:51:34.230944",
+    "updated_at": "2025-12-21T17:51:34.230957",
+    "_id": "694833a63169ac3910839fd2"
+  },
+  {
+    "basic_info": {
+      "name": "Premium Ceramic Coffee Mug Set - Artisan Collection",
+      "description": "Set of 4 handcrafted ceramic mugs with ergonomic handles and beautiful glazed finish. Microwave and dishwasher safe. Perfect for your morning coffee ritual.",
+      "short_description": "Set of 4 handcrafted ceramic mugs with ergonomic design",
+      "category": "Home & Garden",
+      "subcategory": "Kitchen",
+      "brand": "CeramicCraft",
+      "model": "CC-Artisan-Set",
+      "sku": "SKU-C2921F85"
+    },
+    "pricing": {
+      "price": 39.99,
+      "compare_price": 59.99,
+      "cost_price": 22.0,
+      "discount_percentage": 33.0,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 75,
+      "low_stock_threshold": 15,
+      "track_inventory": true,
+      "allow_backorders": false
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 1.5,
+      "dimensions": {
+        "length": 10,
+        "width": 10,
+        "height": 12
+      },
+      "color": "Glazed White",
+      "size": "12 oz",
+      "material": "Premium Ceramic",
+      "custom_attributes": {
+        "capacity": "12 oz each",
+        "dishwasher_safe": true,
+        "microwave_safe": true,
+        "set_size": "4 pieces"
+      }
+    },
+    "seo": {
+      "meta_title": "Premium Ceramic Coffee Mug Set - Artisan Collection",
+      "meta_description": "Beautiful handcrafted ceramic coffee mug set perfect for your daily coffee ritual. Dishwasher and microwave safe.",
+      "tags": [
+        "coffee mugs",
+        "ceramic",
+        "handcrafted",
+        "kitchen",
+        "dishwasher safe",
+        "set"
+      ],
+      "slug": "premium-ceramic-coffee-mug-set-artisan"
+    },
+    "shipping": {
+      "free_shipping": false,
+      "shipping_cost": 7.99,
+      "processing_time": 2,
+      "shipping_from": "New York, USA"
+    },
+    "status": "active",
+    "is_featured": true,
+    "views": 567,
+    "favorites": 78,
+    "vendor_id": null,
+    "created_at": "2025-11-21T17:51:34.232065",
+    "updated_at": "2025-12-21T17:51:34.232077",
+    "_id": "694833a63169ac3910839fd3"
+  },
+  {
+    "basic_info": {
+      "name": "Premium Yoga Mat Pro - Eco-Friendly Non-Slip",
+      "description": "Extra-thick non-slip yoga mat made from eco-friendly TPE material. Perfect grip for all yoga styles and fitness routines. Includes carrying strap.",
+      "short_description": "Extra-thick eco-friendly yoga mat with perfect grip",
+      "category": "Sports & Outdoors",
+      "subcategory": "Fitness",
+      "brand": "YogaPro",
+      "model": "YP-Premium-Mat",
+      "sku": "SKU-549ABE3B"
+    },
+    "pricing": {
+      "price": 49.99,
+      "compare_price": 79.99,
+      "cost_price": 25.0,
+      "discount_percentage": 37.5,
+      "bulk_pricing": []
+    },
+    "inventory": {
+      "stock": 40,
+      "low_stock_threshold": 8,
+      "track_inventory": true,
+      "allow_backorders": true
+    },
+    "media": {
+      "main_image": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop",
+      "images": [
+        "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1506629905607-d9b1b2e3d3b1?w=600&h=600&fit=crop"
+      ],
+      "videos": []
+    },
+    "attributes": {
+      "weight": 1.8,
+      "dimensions": {
+        "length": 183,
+        "width": 61,
+        "height": 0.6
+      },
+      "color": "Deep Purple",
+      "size": "6mm thick",
+      "material": "Eco-friendly TPE",
+      "custom_attributes": {
+        "thickness": "6mm",
+        "eco_friendly": true,
+        "non_slip": true,
+        "includes_strap": true
+      }
+    },
+    "seo": {
+      "meta_title": "Premium Yoga Mat Pro - Eco-Friendly Non-Slip 6mm",
+      "meta_description": "Professional yoga mat with perfect grip and eco-friendly materials. Extra thick 6mm for ultimate comfort.",
+      "tags": [
+        "yoga mat",
+        "eco-friendly",
+        "non-slip",
+        "fitness",
+        "exercise",
+        "premium"
+      ],
+      "slug": "premium-yoga-mat-pro-eco-friendly"
+    },
+    "shipping": {
+      "free_shipping": true,
+      "shipping_cost": 0.0,
+      "processing_time": 1,
+      "shipping_from": "Texas, USA"
+    },
+    "status": "active",
+    "is_featured": true,
+    "views": 2340,
+    "favorites": 156,
+    "vendor_id": null,
+    "created_at": "2025-11-21T17:51:34.233142",
+    "updated_at": "2025-12-21T17:51:34.233155",
+    "_id": "694833a63169ac3910839fd4"
+  }
+]

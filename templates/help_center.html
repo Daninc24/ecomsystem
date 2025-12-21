@@ -1,0 +1,509 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Help Center - Customer Support | {{ store_config.name }}{% endblock %}
+{% block description %}Get help with your orders, returns, payments, and more. Our comprehensive help center has answers to all your questions about shopping on {{ store_config.name }}.{% endblock %}
+{% block keywords %}help center, customer support, FAQ, order help, return policy, payment help, shipping info, customer service{% endblock %}
+
+{% block schema_type %}FAQPage{% endblock %}
+{% block schema_data %},
+"mainEntity": [
+    {
+        "@type": "Question",
+        "name": "How do I track my order?",
+        "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can track your order by logging into your account and visiting the Orders page, or use our Track Order tool with your order number."
+        }
+    },
+    {
+        "@type": "Question", 
+        "name": "What is your return policy?",
+        "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer a 30-day return policy for most items. Items must be in original condition with tags attached."
+        }
+    }
+]{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb-list">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li aria-current="page">Help Center</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="help-center">
+    <div class="container">
+        <!-- Header -->
+        <div class="help-header">
+            <h1>Help Center</h1>
+            <p>How can we help you today?</p>
+            
+            <!-- Search -->
+            <div class="help-search">
+                <input type="search" placeholder="Search for help topics..." class="help-search-input">
+                <button class="help-search-btn">Search</button>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="actions-grid">
+                <a href="{{ url_for('track_order') }}" class="action-card">
+                    <div class="action-icon">📦</div>
+                    <h3>Track Order</h3>
+                    <p>Check the status of your recent orders</p>
+                </a>
+                
+                <a href="{{ url_for('returns_refunds') }}" class="action-card">
+                    <div class="action-icon">↩️</div>
+                    <h3>Returns & Refunds</h3>
+                    <p>Start a return or check refund status</p>
+                </a>
+                
+                <a href="{{ url_for('contact') }}" class="action-card">
+                    <div class="action-icon">💬</div>
+                    <h3>Contact Support</h3>
+                    <p>Get in touch with our support team</p>
+                </a>
+                
+                <a href="{{ url_for('size_guide') }}" class="action-card">
+                    <div class="action-icon">📏</div>
+                    <h3>Size Guide</h3>
+                    <p>Find the perfect fit for clothing items</p>
+                </a>
+            </div>
+        </div>
+        
+        <!-- FAQ Categories -->
+        <div class="faq-categories">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-grid">
+                <!-- Orders & Shipping -->
+                <div class="faq-category">
+                    <h3>📦 Orders & Shipping</h3>
+                    <div class="faq-items">
+                        <details class="faq-item">
+                            <summary>How do I track my order?</summary>
+                            <div class="faq-answer">
+                                <p>You can track your order in several ways:</p>
+                                <ul>
+                                    <li>Log into your account and visit the "Orders" page</li>
+                                    <li>Use our <a href="{{ url_for('track_order') }}">Track Order</a> tool with your order number</li>
+                                    <li>Check the tracking email sent to your registered email address</li>
+                                </ul>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>How long does shipping take?</summary>
+                            <div class="faq-answer">
+                                <p>Shipping times vary by location and shipping method:</p>
+                                <ul>
+                                    <li><strong>Standard Shipping:</strong> 5-7 business days</li>
+                                    <li><strong>Express Shipping:</strong> 2-3 business days</li>
+                                    <li><strong>Overnight Shipping:</strong> 1 business day</li>
+                                </ul>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>Do you offer free shipping?</summary>
+                            <div class="faq-answer">
+                                <p>Yes! We offer free standard shipping on orders over ${{ store_config.shipping_info.free_shipping_threshold }}. Express and overnight shipping rates apply for faster delivery.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                
+                <!-- Returns & Refunds -->
+                <div class="faq-category">
+                    <h3>↩️ Returns & Refunds</h3>
+                    <div class="faq-items">
+                        <details class="faq-item">
+                            <summary>What is your return policy?</summary>
+                            <div class="faq-answer">
+                                <p>We offer a 30-day return policy for most items:</p>
+                                <ul>
+                                    <li>Items must be in original condition with tags attached</li>
+                                    <li>Original packaging and accessories must be included</li>
+                                    <li>Some items like personalized products are not returnable</li>
+                                </ul>
+                                <p><a href="{{ url_for('returns_refunds') }}">Learn more about returns</a></p>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>How do I start a return?</summary>
+                            <div class="faq-answer">
+                                <p>Starting a return is easy:</p>
+                                <ol>
+                                    <li>Log into your account and go to "Orders"</li>
+                                    <li>Find the order and click "Return Items"</li>
+                                    <li>Select the items you want to return and reason</li>
+                                    <li>Print the prepaid return label</li>
+                                    <li>Package and ship the items back to us</li>
+                                </ol>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>When will I receive my refund?</summary>
+                            <div class="faq-answer">
+                                <p>Refunds are processed within 3-5 business days after we receive your returned items. The refund will be credited to your original payment method.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                
+                <!-- Account & Payment -->
+                <div class="faq-category">
+                    <h3>💳 Account & Payment</h3>
+                    <div class="faq-items">
+                        <details class="faq-item">
+                            <summary>How do I create an account?</summary>
+                            <div class="faq-answer">
+                                <p>Creating an account is free and easy:</p>
+                                <ol>
+                                    <li>Click "Join Free" in the top right corner</li>
+                                    <li>Enter your email address and create a password</li>
+                                    <li>Verify your email address</li>
+                                    <li>Complete your profile information</li>
+                                </ol>
+                                <p><a href="{{ url_for('register') }}">Create your account now</a></p>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>What payment methods do you accept?</summary>
+                            <div class="faq-answer">
+                                <p>We accept all major payment methods:</p>
+                                <ul>
+                                    <li>Credit Cards (Visa, MasterCard, American Express)</li>
+                                    <li>Debit Cards</li>
+                                    <li>PayPal</li>
+                                    <li>Digital Wallets (Apple Pay, Google Pay)</li>
+                                    <li>Bank Transfers</li>
+                                </ul>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>Is my payment information secure?</summary>
+                            <div class="faq-answer">
+                                <p>Yes, your payment information is completely secure. We use industry-standard SSL encryption and never store your full credit card details on our servers.</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                
+                <!-- Selling -->
+                <div class="faq-category">
+                    <h3>🏪 Selling on {{ store_config.name }}</h3>
+                    <div class="faq-items">
+                        <details class="faq-item">
+                            <summary>How do I become a seller?</summary>
+                            <div class="faq-answer">
+                                <p>Becoming a seller is straightforward:</p>
+                                <ol>
+                                    <li>Create a regular account first</li>
+                                    <li>Visit our <a href="{{ url_for('become_vendor') }}">Become a Seller</a> page</li>
+                                    <li>Complete the seller application</li>
+                                    <li>Verify your business information</li>
+                                    <li>Start listing your products</li>
+                                </ol>
+                            </div>
+                        </details>
+                        
+                        <details class="faq-item">
+                            <summary>What are the seller fees?</summary>
+                            <div class="faq-answer">
+                                <p>Our seller fees are competitive and transparent:</p>
+                                <ul>
+                                    <li>No monthly subscription fees</li>
+                                    <li>Commission rates vary by category (typically 5-8%)</li>
+                                    <li>Payment processing fees apply</li>
+                                    <li>Optional advertising and promotion fees</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Support -->
+        <div class="contact-support">
+            <h2>Still Need Help?</h2>
+            <p>Can't find what you're looking for? Our customer support team is here to help.</p>
+            
+            <div class="support-options">
+                <div class="support-option">
+                    <h3>📧 Email Support</h3>
+                    <p>Get detailed help via email</p>
+                    <a href="mailto:{{ store_config.contact.email }}" class="support-btn">Send Email</a>
+                </div>
+                
+                <div class="support-option">
+                    <h3>💬 Live Chat</h3>
+                    <p>Chat with our support team</p>
+                    <button class="support-btn" onclick="openLiveChat()">Start Chat</button>
+                </div>
+                
+                <div class="support-option">
+                    <h3>📞 Phone Support</h3>
+                    <p>Call us for immediate assistance</p>
+                    <a href="tel:{{ store_config.contact.phone }}" class="support-btn">{{ store_config.contact.phone }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.help-center {
+    padding: var(--spacing-2xl) 0;
+}
+
+.help-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.help-header h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.help-header p {
+    font-size: 18px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.help-search {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    gap: var(--spacing-sm);
+}
+
+.help-search-input {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-lg);
+    font-size: 16px;
+}
+
+.help-search-btn {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.quick-actions {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.quick-actions h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.action-card {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.action-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.action-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.action-card p {
+    color: var(--gray-600);
+}
+
+.faq-categories h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.faq-category {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.faq-category h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.faq-item {
+    margin-bottom: var(--spacing-md);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+}
+
+.faq-item summary {
+    padding: var(--spacing-md);
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+}
+
+.faq-item[open] summary {
+    border-bottom: 1px solid var(--gray-200);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.faq-answer {
+    padding: var(--spacing-md);
+}
+
+.faq-answer ul, .faq-answer ol {
+    margin: var(--spacing-sm) 0;
+    padding-left: var(--spacing-xl);
+}
+
+.faq-answer li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.contact-support {
+    background: var(--gray-100);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    margin-top: var(--spacing-2xl);
+}
+
+.contact-support h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.contact-support p {
+    font-size: 18px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.support-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.support-option {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.support-option h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.support-option p {
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-md);
+}
+
+.support-btn {
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border: none;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.support-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+    .faq-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .help-search {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function openLiveChat() {
+    alert('Live chat feature coming soon! Please use email or phone support for now.');
+}
+</script>
+{% endblock %}

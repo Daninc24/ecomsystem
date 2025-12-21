@@ -1,0 +1,585 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Returns & Refunds Policy - {{ store_config.name }}{% endblock %}
+{% block description %}Easy returns and fast refunds. Learn about our 30-day return policy, how to start a return, and get your money back quickly.{% endblock %}
+
+{% block content %}
+<section class="returns-page">
+    <div class="container">
+        <div class="returns-header">
+            <h1>Returns & Refunds</h1>
+            <p>Easy returns, fast refunds - We've got you covered</p>
+        </div>
+        
+        <div class="returns-content">
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="action-card primary">
+                    <div class="action-icon">📦</div>
+                    <h3>Start a Return</h3>
+                    <p>Return items from your recent orders</p>
+                    <button class="action-btn" onclick="startReturn()">Start Return</button>
+                </div>
+                
+                <div class="action-card">
+                    <div class="action-icon">💰</div>
+                    <h3>Check Refund Status</h3>
+                    <p>Track your refund progress</p>
+                    <button class="action-btn" onclick="checkRefund()">Check Status</button>
+                </div>
+                
+                <div class="action-card">
+                    <div class="action-icon">📋</div>
+                    <h3>Return Policy</h3>
+                    <p>Read our complete return policy</p>
+                    <button class="action-btn" onclick="scrollToPolicy()">View Policy</button>
+                </div>
+            </div>
+            
+            <!-- Return Process -->
+            <div class="return-process">
+                <h2>How Returns Work</h2>
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Request Return</h3>
+                            <p>Log into your account and select the items you want to return</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Print Label</h3>
+                            <p>Print the prepaid return shipping label we provide</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Ship Items</h3>
+                            <p>Package your items and drop them off at any shipping location</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Get Refund</h3>
+                            <p>Receive your refund within 3-5 business days after we receive your items</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Return Policy -->
+            <div class="return-policy" id="policy">
+                <h2>Return Policy Details</h2>
+                
+                <div class="policy-grid">
+                    <div class="policy-card">
+                        <div class="policy-icon">⏰</div>
+                        <h3>30-Day Returns</h3>
+                        <p>You have 30 days from delivery to return most items. Some categories may have different return windows.</p>
+                    </div>
+                    
+                    <div class="policy-card">
+                        <div class="policy-icon">✅</div>
+                        <h3>Original Condition</h3>
+                        <p>Items must be in original condition with tags attached and original packaging included.</p>
+                    </div>
+                    
+                    <div class="policy-card">
+                        <div class="policy-icon">🚚</div>
+                        <h3>Free Return Shipping</h3>
+                        <p>We provide prepaid return labels for most returns. No shipping costs for you!</p>
+                    </div>
+                    
+                    <div class="policy-card">
+                        <div class="policy-icon">💳</div>
+                        <h3>Full Refunds</h3>
+                        <p>Get a full refund to your original payment method within 3-5 business days.</p>
+                    </div>
+                </div>
+                
+                <div class="policy-details">
+                    <h3>What Can Be Returned?</h3>
+                    <div class="returnable-items">
+                        <div class="item-category returnable">
+                            <h4>✅ Returnable Items</h4>
+                            <ul>
+                                <li>Clothing and accessories (with tags)</li>
+                                <li>Electronics in original packaging</li>
+                                <li>Home goods and furniture</li>
+                                <li>Books and media</li>
+                                <li>Unopened beauty products</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="item-category non-returnable">
+                            <h4>❌ Non-Returnable Items</h4>
+                            <ul>
+                                <li>Personalized or custom items</li>
+                                <li>Opened beauty products</li>
+                                <li>Perishable goods</li>
+                                <li>Digital downloads</li>
+                                <li>Gift cards</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ -->
+            <div class="returns-faq">
+                <h2>Frequently Asked Questions</h2>
+                
+                <div class="faq-items">
+                    <details class="faq-item">
+                        <summary>How long do refunds take?</summary>
+                        <div class="faq-answer">
+                            <p>Refunds are processed within 3-5 business days after we receive your returned items. The refund will appear on your original payment method.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary>Can I exchange an item instead of returning it?</summary>
+                        <div class="faq-answer">
+                            <p>Currently, we don't offer direct exchanges. Please return the item for a refund and place a new order for the item you want.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary>What if my item arrives damaged?</summary>
+                        <div class="faq-answer">
+                            <p>If your item arrives damaged, please contact our customer service immediately. We'll provide a prepaid return label and process your refund or replacement quickly.</p>
+                        </div>
+                    </details>
+                    
+                    <details class="faq-item">
+                        <summary>Can I return items bought with a discount or coupon?</summary>
+                        <div class="faq-answer">
+                            <p>Yes, you can return items purchased with discounts or coupons. The refund amount will be the actual amount you paid after discounts.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+            
+            <!-- Contact Support -->
+            <div class="support-section">
+                <h2>Need Help with Your Return?</h2>
+                <p>Our customer service team is here to help you with any return questions.</p>
+                
+                <div class="support-options">
+                    <a href="{{ url_for('contact') }}" class="support-option">
+                        <div class="support-icon">💬</div>
+                        <div class="support-text">
+                            <h3>Live Chat</h3>
+                            <p>Chat with our support team</p>
+                        </div>
+                    </a>
+                    
+                    <a href="mailto:{{ store_config.contact.email }}" class="support-option">
+                        <div class="support-icon">📧</div>
+                        <div class="support-text">
+                            <h3>Email Support</h3>
+                            <p>{{ store_config.contact.email }}</p>
+                        </div>
+                    </a>
+                    
+                    <a href="tel:{{ store_config.contact.phone }}" class="support-option">
+                        <div class="support-icon">📞</div>
+                        <div class="support-text">
+                            <h3>Phone Support</h3>
+                            <p>{{ store_config.contact.phone }}</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.returns-page {
+    padding: var(--spacing-2xl) 0;
+}
+
+.returns-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.returns-header h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.returns-header p {
+    font-size: 20px;
+    color: var(--gray-600);
+}
+
+.returns-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.action-card {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-2xl);
+}
+
+.action-card.primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.action-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.action-card h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+}
+
+.action-card p {
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.9;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: inherit;
+    border: 2px solid currentColor;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.action-card:not(.primary) .action-btn {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.return-process {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.return-process h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.step {
+    text-align: center;
+    position: relative;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 auto var(--spacing-lg);
+}
+
+.step-content h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.step-content p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.return-policy {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.return-policy h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.policy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.policy-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+}
+
+.policy-card:hover {
+    border-color: var(--primary-red);
+    transform: translateY(-2px);
+}
+
+.policy-icon {
+    font-size: 40px;
+    margin-bottom: var(--spacing-md);
+}
+
+.policy-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.policy-card p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.policy-details h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.returnable-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.item-category {
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+}
+
+.item-category.returnable {
+    background: rgba(16, 185, 129, 0.1);
+    border: 2px solid var(--success);
+}
+
+.item-category.non-returnable {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid var(--error);
+}
+
+.item-category h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+}
+
+.item-category ul {
+    list-style: none;
+    padding: 0;
+}
+
+.item-category li {
+    padding: var(--spacing-sm) 0;
+    color: var(--gray-700);
+}
+
+.returns-faq {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.returns-faq h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.faq-items {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    margin-bottom: var(--spacing-lg);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.faq-item summary {
+    padding: var(--spacing-lg);
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--gray-50);
+    transition: background-color var(--transition-fast);
+}
+
+.faq-item summary:hover {
+    background: var(--gray-100);
+}
+
+.faq-item[open] summary {
+    background: var(--primary-red);
+    color: white;
+}
+
+.faq-answer {
+    padding: var(--spacing-lg);
+}
+
+.faq-answer p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.support-section {
+    background: var(--gray-100);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    text-align: center;
+}
+
+.support-section h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.support-section p {
+    font-size: 18px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.support-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.support-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-base);
+}
+
+.support-option:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.support-icon {
+    font-size: 32px;
+}
+
+.support-text h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.support-text p {
+    color: var(--gray-600);
+}
+
+@media (max-width: 768px) {
+    .returns-header h1 {
+        font-size: 32px;
+    }
+    
+    .process-steps {
+        grid-template-columns: 1fr;
+    }
+    
+    .returnable-items {
+        grid-template-columns: 1fr;
+    }
+    
+    .support-option {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+function startReturn() {
+    alert('Return process will be available after login. Please log in to your account to start a return.');
+}
+
+function checkRefund() {
+    alert('Refund status checking will be available after login. Please log in to your account to check your refund status.');
+}
+
+function scrollToPolicy() {
+    document.getElementById('policy').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+{% endblock %}

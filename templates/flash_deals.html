@@ -1,0 +1,282 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Flash Deals - Up to 70% Off | {{ store_config.name }}{% endblock %}
+{% block description %}Discover amazing flash deals with up to 70% off on electronics, fashion, home goods and more. Limited time offers on top brands. Shop now before they're gone!{% endblock %}
+{% block keywords %}flash deals, limited time offers, discounts, sales, electronics deals, fashion deals, home deals, clearance, special offers{% endblock %}
+
+{% block og_type %}website{% endblock %}
+{% block og_title %}Flash Deals - Up to 70% Off | {{ store_config.name }}{% endblock %}
+{% block og_description %}Limited time flash deals with massive discounts. Shop electronics, fashion, home goods and more at unbeatable prices.{% endblock %}
+
+{% block schema_type %}CollectionPage{% endblock %}
+{% block schema_data %},
+"mainEntity": {
+    "@type": "ItemList",
+    "name": "Flash Deals",
+    "description": "Limited time offers with massive discounts",
+    "numberOfItems": {{ deals|length }}
+}{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb-list">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li aria-current="page">Flash Deals</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="flash-deals-page">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">⚡ Flash Deals</h1>
+            <p class="page-subtitle">Limited time offers with massive discounts - Shop before they're gone!</p>
+            
+            <div class="countdown-timer">
+                <div class="timer-unit">
+                    <span class="timer-value" id="hours">12</span>
+                    <span class="timer-label">Hours</span>
+                </div>
+                <span>:</span>
+                <div class="timer-unit">
+                    <span class="timer-value" id="minutes">34</span>
+                    <span class="timer-label">Min</span>
+                </div>
+                <span>:</span>
+                <div class="timer-unit">
+                    <span class="timer-value" id="seconds">56</span>
+                    <span class="timer-label">Sec</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Deals Grid -->
+        <div class="deals-grid">
+            {% for deal in deals %}
+            <div class="product-card flash-deal-card" onclick="window.location.href='{{ url_for('product_detail', product_id=deal._id) }}'">
+                <div class="product-image-wrapper">
+                    <img src="{{ deal.media.main_image }}" alt="{{ deal.basic_info.name }}" class="product-image" loading="lazy">
+                    
+                    <div class="product-badges">
+                        <span class="badge badge-flash">⚡ FLASH</span>
+                        <span class="badge badge-discount">-{{ deal.pricing.discount_percentage|int }}%</span>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <button class="action-btn add-to-cart-btn" 
+                                data-product-id="{{ deal._id }}" 
+                                title="Add to Cart">
+                            <span>🛒</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <h3 class="product-name">{{ deal.basic_info.name }}</h3>
+                    
+                    <div class="product-pricing">
+                        <span class="current-price">${{ "%.2f"|format(deal.pricing.price) }}</span>
+                        {% if deal.pricing.compare_price and deal.pricing.compare_price > deal.pricing.price %}
+                        <span class="original-price">${{ "%.2f"|format(deal.pricing.compare_price) }}</span>
+                        <span class="savings">Save ${{ "%.2f"|format(deal.pricing.compare_price - deal.pricing.price) }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="deal-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ (deal.views / 100) * 100 if deal.views < 100 else 100 }}%"></div>
+                        </div>
+                        <span class="progress-text">{{ deal.views }} sold</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if not deals %}
+        <div class="no-deals">
+            <h2>No Flash Deals Available</h2>
+            <p>Check back soon for amazing limited-time offers!</p>
+            <a href="{{ url_for('products') }}" class="shop-all-btn">Shop All Products</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.flash-deals-page {
+    padding: var(--spacing-2xl) 0;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.page-title {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ff4747 0%, #ff6b35 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--spacing-md);
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-xl);
+    display: inline-flex;
+    font-weight: 600;
+}
+
+.timer-unit {
+    text-align: center;
+}
+
+.timer-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.timer-label {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.deals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.flash-deal-card {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, #ff4747, #ff6b35) border-box;
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0%, 100% { border-color: transparent; }
+    50% { border-color: var(--primary-red); }
+}
+
+.badge-flash {
+    background: linear-gradient(135deg, #ff4747, #ff6b35);
+    color: white;
+    font-weight: 700;
+    animation: flash 1.5s infinite;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.deal-progress {
+    margin-top: var(--spacing-md);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-gradient);
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: var(--gray-600);
+    margin-top: var(--spacing-xs);
+}
+
+.no-deals {
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.shop-all-btn {
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: var(--spacing-lg);
+}
+
+.breadcrumbs {
+    background: var(--gray-100);
+    padding: var(--spacing-md) 0;
+}
+
+.breadcrumb-list {
+    display: flex;
+    list-style: none;
+    gap: var(--spacing-sm);
+}
+
+.breadcrumb-list li:not(:last-child)::after {
+    content: '>';
+    margin-left: var(--spacing-sm);
+    color: var(--gray-500);
+}
+
+.breadcrumb-list a {
+    color: var(--gray-600);
+    text-decoration: none;
+}
+
+.breadcrumb-list a:hover {
+    color: var(--primary-red);
+}
+</style>
+
+<script>
+// Countdown timer
+function updateCountdown() {
+    const now = new Date().getTime();
+    const endTime = now + (24 * 60 * 60 * 1000); // 24 hours from now
+    
+    const distance = endTime - now;
+    
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+}
+
+// Update countdown every second
+setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+{% endblock %}

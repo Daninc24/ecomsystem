@@ -1,0 +1,578 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Gift Cards - {{ store_config.name }}{% endblock %}
+{% block description %}Give the perfect gift with {{ store_config.name }} gift cards. Available in multiple denominations, never expire, and can be used on millions of products.{% endblock %}
+{% block keywords %}gift cards, digital gifts, online gift cards, shopping gifts, gift certificates{% endblock %}
+
+{% block content %}
+<section class="gift-cards-section">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">🎁 Gift Cards</h1>
+            <p class="page-subtitle">Give the gift of choice with {{ store_config.name }} gift cards</p>
+        </div>
+        
+        <div class="gift-cards-content">
+            <!-- Gift Card Options -->
+            <div class="gift-card-options">
+                <h2 class="section-title">Choose Your Gift Card</h2>
+                
+                <div class="gift-cards-grid">
+                    <div class="gift-card-option">
+                        <div class="gift-card-design">
+                            <div class="gift-card-visual birthday">
+                                <h3>🎂 Birthday</h3>
+                                <p>Perfect for birthdays</p>
+                            </div>
+                        </div>
+                        <div class="gift-card-amounts">
+                            <div class="amount-option" data-amount="25">$25</div>
+                            <div class="amount-option" data-amount="50">$50</div>
+                            <div class="amount-option" data-amount="100">$100</div>
+                            <div class="amount-option custom">Custom</div>
+                        </div>
+                    </div>
+                    
+                    <div class="gift-card-option">
+                        <div class="gift-card-design">
+                            <div class="gift-card-visual holiday">
+                                <h3>🎄 Holiday</h3>
+                                <p>Festive holiday design</p>
+                            </div>
+                        </div>
+                        <div class="gift-card-amounts">
+                            <div class="amount-option" data-amount="25">$25</div>
+                            <div class="amount-option" data-amount="50">$50</div>
+                            <div class="amount-option" data-amount="100">$100</div>
+                            <div class="amount-option custom">Custom</div>
+                        </div>
+                    </div>
+                    
+                    <div class="gift-card-option">
+                        <div class="gift-card-design">
+                            <div class="gift-card-visual thank-you">
+                                <h3>💝 Thank You</h3>
+                                <p>Show your appreciation</p>
+                            </div>
+                        </div>
+                        <div class="gift-card-amounts">
+                            <div class="amount-option" data-amount="25">$25</div>
+                            <div class="amount-option" data-amount="50">$50</div>
+                            <div class="amount-option" data-amount="100">$100</div>
+                            <div class="amount-option custom">Custom</div>
+                        </div>
+                    </div>
+                    
+                    <div class="gift-card-option">
+                        <div class="gift-card-design">
+                            <div class="gift-card-visual general">
+                                <h3>🛍️ General</h3>
+                                <p>For any occasion</p>
+                            </div>
+                        </div>
+                        <div class="gift-card-amounts">
+                            <div class="amount-option" data-amount="25">$25</div>
+                            <div class="amount-option" data-amount="50">$50</div>
+                            <div class="amount-option" data-amount="100">$100</div>
+                            <div class="amount-option custom">Custom</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gift Card Form -->
+            <div class="gift-card-form-section">
+                <h2 class="section-title">Personalize Your Gift Card</h2>
+                
+                <form class="gift-card-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="recipient-name">Recipient Name</label>
+                            <input type="text" id="recipient-name" name="recipient-name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="recipient-email">Recipient Email</label>
+                            <input type="email" id="recipient-email" name="recipient-email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sender-name">Your Name</label>
+                            <input type="text" id="sender-name" name="sender-name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="custom-amount">Custom Amount ($)</label>
+                            <input type="number" id="custom-amount" name="custom-amount" min="10" max="1000" placeholder="Enter amount">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="personal-message">Personal Message (Optional)</label>
+                        <textarea id="personal-message" name="personal-message" rows="4" placeholder="Write a personal message..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="delivery-date">Delivery Date</label>
+                        <input type="date" id="delivery-date" name="delivery-date">
+                        <small>Leave blank to send immediately</small>
+                    </div>
+                    
+                    <div class="gift-card-summary">
+                        <h3>Order Summary</h3>
+                        <div class="summary-line">
+                            <span>Gift Card Amount:</span>
+                            <span id="selected-amount">$0</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Processing Fee:</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Total:</span>
+                            <span id="total-amount">$0</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="purchase-btn">Purchase Gift Card</button>
+                </form>
+            </div>
+            
+            <!-- Gift Card Benefits -->
+            <div class="gift-card-benefits">
+                <h2 class="section-title">Why Choose Our Gift Cards?</h2>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">⚡</div>
+                        <h3>Instant Delivery</h3>
+                        <p>Digital gift cards delivered instantly via email</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">♾️</div>
+                        <h3>Never Expires</h3>
+                        <p>Our gift cards never expire and retain their full value</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🌍</div>
+                        <h3>Use Anywhere</h3>
+                        <p>Valid on millions of products from thousands of sellers</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🔒</div>
+                        <h3>Secure & Safe</h3>
+                        <p>Protected by our secure payment system</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📱</div>
+                        <h3>Mobile Friendly</h3>
+                        <p>Easy to redeem on any device, anywhere</p>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">💰</div>
+                        <h3>Any Amount</h3>
+                        <p>Choose from preset amounts or enter a custom value</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- FAQ -->
+            <div class="gift-card-faq">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <h3>How do I redeem a gift card?</h3>
+                        <p>Simply enter the gift card code at checkout. The amount will be automatically applied to your order total.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>Can I use multiple gift cards on one order?</h3>
+                        <p>Yes, you can apply multiple gift cards to a single order until the full amount is covered.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>What if my order total is less than my gift card value?</h3>
+                        <p>The remaining balance will stay on your gift card for future purchases.</p>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <h3>Can I check my gift card balance?</h3>
+                        <p>Yes, you can check your gift card balance anytime by entering your gift card code on our balance check page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.gift-cards-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--gray-50);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.page-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: var(--gray-600);
+}
+
+.gift-cards-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
+}
+
+.gift-card-options {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.gift-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.gift-card-option {
+    text-align: center;
+}
+
+.gift-card-visual {
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.gift-card-visual.birthday {
+    background: linear-gradient(135deg, #ff6b6b, #feca57);
+}
+
+.gift-card-visual.holiday {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+}
+
+.gift-card-visual.thank-you {
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+}
+
+.gift-card-visual.general {
+    background: var(--primary-gradient);
+}
+
+.gift-card-visual h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.gift-card-visual p {
+    opacity: 0.9;
+}
+
+.gift-card-amounts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+}
+
+.amount-option {
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+
+.amount-option:hover,
+.amount-option.selected {
+    border-color: var(--primary-red);
+    background: var(--primary-red);
+    color: white;
+}
+
+.gift-card-form-section {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.gift-card-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-red);
+}
+
+.form-group small {
+    color: var(--gray-500);
+    font-size: 12px;
+}
+
+.gift-card-summary {
+    background: var(--gray-50);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.gift-card-summary h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+}
+
+.summary-line.total {
+    font-size: 18px;
+    font-weight: 700;
+    border-top: 2px solid var(--gray-300);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+}
+
+.purchase-btn {
+    width: 100%;
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.purchase-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.gift-card-benefits {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.benefit-item {
+    text-align: center;
+    padding: var(--spacing-lg);
+}
+
+.benefit-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+}
+
+.benefit-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.benefit-item p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.gift-card-faq {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.faq-items {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-item h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.faq-item p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .gift-cards-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const amountOptions = document.querySelectorAll('.amount-option');
+    const customAmountInput = document.getElementById('custom-amount');
+    const selectedAmountSpan = document.getElementById('selected-amount');
+    const totalAmountSpan = document.getElementById('total-amount');
+    
+    let selectedAmount = 0;
+    
+    // Handle amount selection
+    amountOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selected class from all options
+            amountOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            
+            if (this.classList.contains('custom')) {
+                // Show custom amount input
+                customAmountInput.style.display = 'block';
+                customAmountInput.focus();
+            } else {
+                // Hide custom amount input
+                customAmountInput.style.display = 'none';
+                selectedAmount = parseInt(this.dataset.amount);
+                updateSummary();
+            }
+        });
+    });
+    
+    // Handle custom amount input
+    customAmountInput.addEventListener('input', function() {
+        selectedAmount = parseFloat(this.value) || 0;
+        updateSummary();
+    });
+    
+    function updateSummary() {
+        selectedAmountSpan.textContent = `$${selectedAmount}`;
+        totalAmountSpan.textContent = `$${selectedAmount}`;
+    }
+    
+    // Handle form submission
+    document.querySelector('.gift-card-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (selectedAmount === 0) {
+            alert('Please select a gift card amount');
+            return;
+        }
+        
+        // Here you would normally process the gift card purchase
+        alert('Gift card purchase functionality would be implemented here');
+    });
+});
+</script>
+{% endblock %}

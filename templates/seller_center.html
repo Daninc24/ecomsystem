@@ -1,0 +1,627 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Seller Center - Start Selling | {{ store_config.name }}{% endblock %}
+{% block description %}Join thousands of successful sellers on {{ store_config.name }}. Access powerful tools, analytics, and support to grow your business in our global marketplace.{% endblock %}
+{% block keywords %}seller center, start selling, seller tools, marketplace seller, online business, seller dashboard{% endblock %}
+
+{% block content %}
+<section class="seller-center-section">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="seller-hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Start Your Selling Journey</h1>
+                <p class="hero-subtitle">Join millions of sellers worldwide and grow your business on {{ store_config.name }}</p>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-number">2M+</span>
+                        <span class="stat-label">Active Sellers</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-number">50M+</span>
+                        <span class="stat-label">Monthly Buyers</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="stat-number">$10B+</span>
+                        <span class="stat-label">Annual Sales</span>
+                    </div>
+                </div>
+                
+                <div class="hero-actions">
+                    <a href="{{ url_for('become_vendor') }}" class="cta-btn primary">Start Selling Now</a>
+                    <a href="#seller-benefits" class="cta-btn secondary">Learn More</a>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop" alt="Seller Success" loading="lazy">
+            </div>
+        </div>
+        
+        <!-- Seller Benefits -->
+        <div id="seller-benefits" class="seller-benefits">
+            <h2 class="section-title">Why Sell on {{ store_config.name }}?</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🌍</div>
+                    <h3>Global Reach</h3>
+                    <p>Access customers from over 200 countries and territories worldwide</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">💰</div>
+                    <h3>Low Fees</h3>
+                    <p>Competitive selling fees with transparent pricing and no hidden costs</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🛡️</div>
+                    <h3>Seller Protection</h3>
+                    <p>Comprehensive protection against fraudulent claims and chargebacks</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">📊</div>
+                    <h3>Analytics & Insights</h3>
+                    <p>Detailed sales analytics and market insights to grow your business</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Marketing Tools</h3>
+                    <p>Powerful advertising and promotional tools to boost your sales</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Easy Management</h3>
+                    <p>User-friendly seller dashboard to manage inventory, orders, and customers</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seller Tools -->
+        <div class="seller-tools">
+            <h2 class="section-title">Powerful Seller Tools</h2>
+            
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">📈</div>
+                        <h3>Sales Dashboard</h3>
+                    </div>
+                    <ul class="tool-features">
+                        <li>Real-time sales tracking</li>
+                        <li>Revenue analytics</li>
+                        <li>Performance metrics</li>
+                        <li>Trend analysis</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">📦</div>
+                        <h3>Inventory Management</h3>
+                    </div>
+                    <ul class="tool-features">
+                        <li>Stock level monitoring</li>
+                        <li>Automated reorder alerts</li>
+                        <li>Bulk product uploads</li>
+                        <li>SKU management</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🎯</div>
+                        <h3>Marketing Suite</h3>
+                    </div>
+                    <ul class="tool-features">
+                        <li>Sponsored product ads</li>
+                        <li>Promotional campaigns</li>
+                        <li>Coupon management</li>
+                        <li>Social media integration</li>
+                    </ul>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">💬</div>
+                        <h3>Customer Support</h3>
+                    </div>
+                    <ul class="tool-features">
+                        <li>Integrated messaging</li>
+                        <li>Review management</li>
+                        <li>Return handling</li>
+                        <li>24/7 support access</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Success Stories -->
+        <div class="success-stories">
+            <h2 class="section-title">Seller Success Stories</h2>
+            
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-image">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="John Smith" loading="lazy">
+                    </div>
+                    <div class="story-content">
+                        <h4>John Smith</h4>
+                        <p class="story-business">Electronics Store</p>
+                        <p class="story-quote">"Increased my sales by 300% in just 6 months. The platform's tools and global reach are incredible."</p>
+                        <div class="story-stats">
+                            <span>$2M+ Revenue</span>
+                            <span>50K+ Orders</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-image">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face" alt="Sarah Johnson" loading="lazy">
+                    </div>
+                    <div class="story-content">
+                        <h4>Sarah Johnson</h4>
+                        <p class="story-business">Fashion Boutique</p>
+                        <p class="story-quote">"The marketing tools helped me reach customers I never thought possible. My brand is now global!"</p>
+                        <div class="story-stats">
+                            <span>$800K+ Revenue</span>
+                            <span>25K+ Orders</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-image">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" alt="Mike Chen" loading="lazy">
+                    </div>
+                    <div class="story-content">
+                        <h4>Mike Chen</h4>
+                        <p class="story-business">Home & Garden</p>
+                        <p class="story-quote">"Started as a side business, now it's my full-time career. The support team is amazing!"</p>
+                        <div class="story-stats">
+                            <span>$1.5M+ Revenue</span>
+                            <span>35K+ Orders</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Getting Started -->
+        <div class="getting-started">
+            <h2 class="section-title">How to Get Started</h2>
+            
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Create Your Account</h3>
+                    <p>Sign up for a seller account with your business information and verification documents</p>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>List Your Products</h3>
+                    <p>Add your products with high-quality images, detailed descriptions, and competitive pricing</p>
+                </div>
+                
+                <div class="step-arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Start Selling</h3>
+                    <p>Launch your store, manage orders, and grow your business with our powerful tools</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Start Your Success Story?</h2>
+                <p>Join thousands of successful sellers and start growing your business today</p>
+                <a href="{{ url_for('become_vendor') }}" class="cta-btn large">Start Selling Now - It's Free!</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.seller-center-section {
+    padding: var(--spacing-2xl) 0;
+    background: var(--gray-50);
+}
+
+.seller-hero {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+    box-shadow: var(--shadow-lg);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.6;
+}
+
+.hero-stats {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.hero-stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-red);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: var(--gray-600);
+}
+
+.hero-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.cta-btn {
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    display: inline-block;
+}
+
+.cta-btn.primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.cta-btn.secondary {
+    background: transparent;
+    color: var(--primary-red);
+    border: 2px solid var(--primary-red);
+}
+
+.cta-btn.large {
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    font-size: 18px;
+}
+
+.cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hero-image img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+}
+
+.section-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.seller-benefits {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+}
+
+.benefit-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.benefit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.benefit-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.benefit-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.benefit-card p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.seller-tools {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xl);
+}
+
+.tool-card {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    transition: all var(--transition-fast);
+}
+
+.tool-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.tool-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.tool-icon {
+    font-size: 32px;
+}
+
+.tool-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.tool-features {
+    list-style: none;
+}
+
+.tool-features li {
+    padding: var(--spacing-sm) 0;
+    color: var(--gray-600);
+    position: relative;
+    padding-left: var(--spacing-lg);
+}
+
+.tool-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--secondary-green);
+    font-weight: 700;
+}
+
+.success-stories {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.stories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+}
+
+.story-card {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.story-image img {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-md);
+}
+
+.story-content h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.story-business {
+    color: var(--gray-500);
+    font-size: 14px;
+    margin-bottom: var(--spacing-md);
+}
+
+.story-quote {
+    color: var(--gray-600);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.story-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-red);
+}
+
+.getting-started {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    margin-bottom: var(--spacing-2xl);
+    box-shadow: var(--shadow-md);
+}
+
+.steps-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xl);
+}
+
+.step-card {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    flex: 1;
+    max-width: 300px;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 auto var(--spacing-lg);
+}
+
+.step-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.step-card p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+.step-arrow {
+    font-size: 24px;
+    color: var(--gray-400);
+    font-weight: 700;
+}
+
+.cta-section {
+    background: var(--primary-gradient);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    color: white;
+}
+
+.cta-content h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+}
+
+.cta-content p {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: var(--spacing-xl);
+}
+
+.cta-section .cta-btn {
+    background: white;
+    color: var(--primary-red);
+}
+
+@media (max-width: 1024px) {
+    .seller-hero {
+        grid-template-columns: 1fr;
+    }
+    
+    .benefits-grid,
+    .stories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tools-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 36px;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+    }
+    
+    .benefits-grid,
+    .stories-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .steps-container {
+        flex-direction: column;
+    }
+    
+    .step-arrow {
+        transform: rotate(90deg);
+    }
+}
+</style>
+{% endblock %}

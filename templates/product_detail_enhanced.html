@@ -1,0 +1,152 @@
+{% extends "seo_base.html" %}
+
+{% block title %}{{ product.basic_info.name }} - {{ store_config.name }}{% endblock %}
+{% block description %}{{ product.basic_info.description[:160] }}... Buy {{ product.basic_info.name }} from {{ vendor.business_info.name if vendor else 'trusted seller' }} with secure payments and buyer protection.{% endblock %}
+{% block keywords %}{{ product.basic_info.name }}, {{ product.basic_info.category }}, {{ product.basic_info.brand if product.basic_info.brand else '' }}, online shopping, buy {{ product.basic_info.name }}{% endblock %}
+
+{% block og_type %}product{% endblock %}
+{% block og_image %}{{ product.media.main_image }}{% endblock %}
+
+{% block schema_type %}Product{% endblock %}
+{% block schema_data %},
+"@type": "Product",
+"name": "{{ product.basic_info.name }}",
+"description": "{{ product.basic_info.description }}",
+"image": {{ product.media.images | tojson }},
+"brand": {
+    "@type": "Brand",
+    "name": "{{ product.basic_info.brand or 'Generic' }}"
+},
+"category": "{{ product.basic_info.category }}",
+"sku": "{{ product.basic_info.sku }}",
+"offers": {
+    "@type": "Offer",
+    "price": "{{ product.pricing.price }}",
+    "priceCurrency": "USD",
+    "availability": "{% if product.inventory.stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": {
+        "@type": "Organization",
+        "name": "{{ vendor.business_info.name if vendor else store_config.name }}"
+    }
+},
+"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "reviewCount": "{{ reviews|length }}"
+}{% endblock %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <div class="container">
+        <ol class="breadcrumb-list">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('products') }}">Products</a></li>
+            <li><a href="{{ url_for('products', category=product.basic_info.category) }}">{{ product.basic_info.category }}</a></li>
+            <li aria-current="page">{{ product.basic_info.name }}</li>
+        </ol>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<!-- Product Detail Section -->
+<section class="product-detail-section">
+    <div class="container">
+        <div class="product-detail-grid">
+            <!-- Product Images -->
+            <div class="product-images">
+                <div class="main-image">
+                    <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" id="main-product-image">
+                </div>
+                
+                {% if product.media.images|length > 1 %}
+                <div class="image-thumbnails">
+                    {% for image in product.media.images %}
+                    <img src="{{ image }}" alt="Product image" class="thumbnail" onclick="changeMainImage('{{ image }}')">
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Product Info -->
+            <div class="product-info-detail">
+                <div class="product-badges">
+                    {% if product.pricing.discount_percentage > 0 %}
+                    <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                    {% endif %}
+                    {% if product.is_featured %}
+                    <span class="badge badge-featured">Featured</span>
+                    {% endif %}
+                </div>
+                
+                <h1 class="product-title">{{ product.basic_info.name }}</h1>
+                <p class="product-description">{{ product.basic_info.description }}</p>
+                
+                <div class="product-pricing-detail">
+                    <span class="current-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                    {% if product.pricing.compare_price and product.pricing.compare_price > product.pricing.price %}
+                    <span class="original-price">${{ "%.2f"|format(product.pricing.compare_price) }}</span>
+                    <span class="savings">Save ${{ "%.2f"|format(product.pricing.compare_price - product.pricing.price) }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="product-actions-detail">
+                    <div class="quantity-selector">
+                        <label>Quantity:</label>
+                        <div class="quantity-controls">
+                            <button type="button" onclick="changeQuantity(-1)">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="{{ product.inventory.stock }}">
+                            <button type="button" onclick="changeQuantity(1)">+</button>
+                        </div>
+                    </div>
+                    
+                    <button class="add-to-cart-btn-large" data-product-id="{{ product._id }}">
+                        Add to Cart
+                    </button>
+                    
+                    <button class="wishlist-btn">
+                        ♡ Add to Wishlist
+                    </button>
+                </div>
+                
+                <div class="product-meta-detail">
+                    <div class="stock-info">
+                        {% if product.inventory.stock > 0 %}
+                        <span class="in-stock">✓ In Stock ({{ product.inventory.stock }} available)</span>
+                        {% else %}
+                        <span class="out-of-stock">✗ Out of Stock</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="shipping-info">
+                        {% if product.shipping.free_shipping %}
+                        <span class="free-shipping">🚚 Free Shipping</span>
+                        {% else %}
+                        <span class="paid-shipping">🚚 Shipping: ${{ "%.2f"|format(product.shipping.shipping_cost) }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function changeMainImage(imageSrc) {
+    document.getElementById('main-product-image').src = imageSrc;
+}
+
+function changeQuantity(delta) {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    const newValue = currentValue + delta;
+    const maxValue = parseInt(quantityInput.max);
+    
+    if (newValue >= 1 && newValue <= maxValue) {
+        quantityInput.value = newValue;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,467 @@
+{% extends "seo_base.html" %}
+
+{% block title %}Track Your Order - {{ store_config.name }}{% endblock %}
+{% block description %}Track your order status and delivery progress. Enter your order number to get real-time updates on your shipment.{% endblock %}
+
+{% block content %}
+<section class="track-order-page">
+    <div class="container">
+        <div class="track-order-content">
+            <div class="track-header">
+                <h1>Track Your Order</h1>
+                <p>Enter your order number to get real-time updates on your shipment</p>
+            </div>
+            
+            <div class="track-form-container">
+                <form class="track-form" id="trackOrderForm">
+                    <div class="form-group">
+                        <label for="orderNumber">Order Number</label>
+                        <input type="text" id="orderNumber" name="orderNumber" placeholder="Enter your order number (e.g., MH20241221ABC123)" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    
+                    <button type="submit" class="track-btn">Track Order</button>
+                </form>
+            </div>
+            
+            <div class="order-status" id="orderStatus" style="display: none;">
+                <div class="status-header">
+                    <h2>Order Status</h2>
+                    <div class="order-info">
+                        <span class="order-number">Order #<span id="displayOrderNumber"></span></span>
+                        <span class="order-date">Placed on <span id="displayOrderDate"></span></span>
+                    </div>
+                </div>
+                
+                <div class="tracking-timeline">
+                    <div class="timeline-item completed">
+                        <div class="timeline-icon">✓</div>
+                        <div class="timeline-content">
+                            <h3>Order Confirmed</h3>
+                            <p>Your order has been confirmed and is being prepared</p>
+                            <span class="timeline-date">Dec 20, 2024 - 10:30 AM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item completed">
+                        <div class="timeline-icon">✓</div>
+                        <div class="timeline-content">
+                            <h3>Processing</h3>
+                            <p>Your order is being processed and packaged</p>
+                            <span class="timeline-date">Dec 20, 2024 - 2:15 PM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item active">
+                        <div class="timeline-icon">🚚</div>
+                        <div class="timeline-content">
+                            <h3>Shipped</h3>
+                            <p>Your order has been shipped and is on its way</p>
+                            <span class="timeline-date">Dec 21, 2024 - 9:00 AM</span>
+                            <div class="tracking-number">
+                                <strong>Tracking Number:</strong> 1Z999AA1234567890
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-icon">📦</div>
+                        <div class="timeline-content">
+                            <h3>Out for Delivery</h3>
+                            <p>Your package is out for delivery</p>
+                            <span class="timeline-date">Estimated: Dec 22, 2024</span>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-icon">🏠</div>
+                        <div class="timeline-content">
+                            <h3>Delivered</h3>
+                            <p>Your order has been delivered</p>
+                            <span class="timeline-date">Estimated: Dec 22, 2024</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-details">
+                    <h3>Order Details</h3>
+                    <div class="order-items">
+                        <div class="order-item">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80&h=80&fit=crop" alt="Product">
+                            <div class="item-info">
+                                <h4>Wireless Bluetooth Headphones Pro Max</h4>
+                                <p>Quantity: 1</p>
+                                <span class="item-price">$199.99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <h2>Need Help?</h2>
+                <div class="help-options">
+                    <a href="{{ url_for('contact') }}" class="help-option">
+                        <div class="help-icon">💬</div>
+                        <div class="help-text">
+                            <h3>Contact Support</h3>
+                            <p>Get help from our customer service team</p>
+                        </div>
+                    </a>
+                    
+                    <a href="{{ url_for('help_center') }}" class="help-option">
+                        <div class="help-icon">❓</div>
+                        <div class="help-text">
+                            <h3>Help Center</h3>
+                            <p>Find answers to common questions</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.track-order-page {
+    padding: var(--spacing-2xl) 0;
+    min-height: 70vh;
+}
+
+.track-order-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.track-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+}
+
+.track-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.track-header p {
+    font-size: 18px;
+    color: var(--gray-600);
+}
+
+.track-form-container {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.track-form {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.form-group input {
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-lg);
+    font-size: 16px;
+    transition: border-color var(--transition-fast);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-red);
+}
+
+.track-btn {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    border-radius: var(--radius-full);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.track-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.order-status {
+    background: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.status-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.order-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    text-align: right;
+}
+
+.order-number {
+    font-weight: 600;
+    color: var(--primary-red);
+}
+
+.order-date {
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+.tracking-timeline {
+    position: relative;
+    padding-left: var(--spacing-xl);
+}
+
+.tracking-timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gray-300);
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: var(--spacing-2xl);
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: -32px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background: var(--gray-300);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.timeline-item.completed .timeline-icon {
+    background: var(--success);
+}
+
+.timeline-item.active .timeline-icon {
+    background: var(--primary-red);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.timeline-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+}
+
+.timeline-content p {
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-sm);
+}
+
+.timeline-date {
+    font-size: 14px;
+    color: var(--gray-500);
+}
+
+.tracking-number {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+}
+
+.order-details {
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--gray-200);
+}
+
+.order-details h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-lg);
+}
+
+.order-item {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: center;
+    padding: var(--spacing-lg);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+}
+
+.order-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+}
+
+.item-info h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.item-info p {
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xs);
+}
+
+.item-price {
+    font-weight: 600;
+    color: var(--primary-red);
+}
+
+.help-section {
+    text-align: center;
+}
+
+.help-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xl);
+}
+
+.help-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.help-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+    transition: all var(--transition-base);
+}
+
+.help-option:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.help-icon {
+    font-size: 32px;
+}
+
+.help-text h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.help-text p {
+    color: var(--gray-600);
+}
+
+@media (max-width: 768px) {
+    .status-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+    
+    .order-info {
+        text-align: left;
+    }
+    
+    .order-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .help-option {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+
+<script>
+document.getElementById('trackOrderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const orderNumber = document.getElementById('orderNumber').value;
+    const email = document.getElementById('email').value;
+    
+    if (orderNumber && email) {
+        // Show order status
+        document.getElementById('orderStatus').style.display = 'block';
+        document.getElementById('displayOrderNumber').textContent = orderNumber;
+        document.getElementById('displayOrderDate').textContent = 'Dec 20, 2024';
+        
+        // Scroll to results
+        document.getElementById('orderStatus').scrollIntoView({ behavior: 'smooth' });
+    }
+});
+</script>
+{% endblock %}
