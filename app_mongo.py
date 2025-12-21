@@ -54,6 +54,25 @@ def objectid_filter(value):
     """Convert ObjectId to string."""
     return str(value) if value else ''
 
+@app.template_filter('safe_strftime')
+def safe_strftime_filter(value, format_string='%Y-%m-%d'):
+    """Safely format datetime objects, handling strings and None values."""
+    if not value:
+        return 'N/A'
+    
+    # If it's already a string, return it as-is or a default
+    if isinstance(value, str):
+        return 'Recently'
+    
+    # If it's a datetime object, format it
+    try:
+        if hasattr(value, 'strftime'):
+            return value.strftime(format_string)
+        else:
+            return 'Recently'
+    except (AttributeError, TypeError, ValueError):
+        return 'Recently'
+
 # Helper functions
 def login_required(f):
     from functools import wraps
@@ -605,8 +624,14 @@ def orders():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    user_orders = list(mongo.db.orders.find({'user_id': ObjectId(session['user_id'])})
-                      .sort('created_at', -1))
+    try:
+        user_orders = list(mongo.db.orders.find({'user_id': ObjectId(session['user_id'])})
+                          .sort('created_at', -1))
+    except Exception as e:
+        # Handle case when orders collection doesn't exist or other errors
+        print(f"Orders error: {e}")
+        user_orders = []
+    
     return render_template('orders.html', orders=user_orders)
 
 @app.route('/profile')
@@ -615,8 +640,16 @@ def profile():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     
-    user = mongo.db.users.find_one({'_id': ObjectId(session['user_id'])})
-    return render_template('profile.html', user=user)
+    try:
+        user = mongo.db.users.find_one({'_id': ObjectId(session['user_id'])})
+        if not user:
+            flash('User not found. Please log in again.', 'error')
+            return redirect(url_for('login'))
+        return render_template('profile.html', user=user, store_config=store_config)
+    except Exception as e:
+        print(f"Profile route error: {e}")
+        flash('Error loading profile. Please try again.', 'error')
+        return redirect(url_for('index'))
 
 @app.route('/contact')
 def contact():
@@ -775,10 +808,22 @@ def sustainability():
     """Sustainability page."""
     return render_template('sustainability.html')
 
+@app.route('/footer-test')
+def footer_test():
+    """Footer styling test page."""
+    return render_template('footer_test.html')
+
 @app.route('/css-test')
 def css_test():
     """CSS variables test page."""
     return render_template('css_test.html')
+
+@app.route('/css-debug')
+def css_debug():
+    """CSS debug test page."""
+    # Convert STORE_CONFIG dict to object-like access
+    store_config = type('obj', (object,), STORE_CONFIG)()
+    return render_template('css_debug.html', store_config=store_config)
 
 @app.route('/privacy-policy')
 def privacy_policy():

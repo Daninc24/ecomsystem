@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f9fafb;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* FOOTER STYLES - DIRECT CSS */
+        .footer {
+            background: #111827 !important;
+            color: white !important;
+            padding: 48px 0 24px !important;
+            margin-top: 48px !important;
+            border-radius: 12px;
+        }
+        
+        .footer-content {
+            display: grid !important;
+            grid-template-columns: 2fr repeat(4, 1fr) !important;
+            gap: 48px !important;
+            margin-bottom: 32px !important;
+        }
+        
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: 16px !important;
+            color: white !important;
+        }
+        
+        .footer-title {
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            background: linear-gradient(135deg, #ff4747 0%, #ff6b35 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+        
+        .footer-subtitle {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            color: white !important;
+        }
+        
+        .footer-description {
+            color: #d1d5db !important;
+            margin-bottom: 24px !important;
+            line-height: 1.6 !important;
+        }
+        
+        .social-links {
+            display: flex !important;
+            gap: 16px !important;
+        }
+        
+        .social-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 40px !important;
+            height: 40px !important;
+            background: #1f2937 !important;
+            border-radius: 50% !important;
+            text-decoration: none !important;
+            font-size: 20px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .social-link:hover {
+            background: #ff4747 !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        .footer-links {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        .footer-links li {
+            margin-bottom: 8px !important;
+        }
+        
+        .footer-links a {
+            color: #d1d5db !important;
+            text-decoration: none !important;
+            transition: color 0.3s ease !important;
+        }
+        
+        .footer-links a:hover {
+            color: white !important;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #1f2937 !important;
+            padding-top: 24px !important;
+        }
+        
+        .footer-bottom-content {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+        }
+        
+        .footer-legal {
+            display: flex !important;
+            align-items: center !important;
+            gap: 24px !important;
+            color: #9ca3af !important;
+        }
+        
+        .footer-legal-links {
+            display: flex !important;
+            gap: 24px !important;
+        }
+        
+        .footer-legal-links a {
+            color: #9ca3af !important;
+            text-decoration: none !important;
+            transition: color 0.3s ease !important;
+        }
+        
+        .footer-legal-links a:hover {
+            color: white !important;
+        }
+        
+        .payment-methods {
+            display: flex !important;
+            align-items: center !important;
+            gap: 16px !important;
+            color: #9ca3af !important;
+        }
+        
+        .payment-icons {
+            display: flex !important;
+            gap: 8px !important;
+            font-size: 20px !important;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 24px !important;
+            }
+            
+            .footer-section:first-child {
+                grid-column: 1 / -1 !important;
+                text-align: center !important;
+            }
+            
+            .social-links {
+                justify-content: center !important;
+            }
+            
+            .footer-bottom-content {
+                flex-direction: column !important;
+                gap: 16px !important;
+                text-align: center !important;
+            }
+            
+            .footer-legal {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+            
+            .footer-legal-links {
+                flex-direction: column !important;
+                gap: 4px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr !important;
+                text-align: center !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Footer Styling Test</h1>
+    <p>This page tests the footer styling in isolation.</p>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <h3 class="footer-title">MarketHub Pro</h3>
+                    <p class="footer-description">Global Marketplace - Connect, Shop, Thrive</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">📘</a>
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">📷</a>
+                        <a href="#" class="social-link">💼</a>
+                    </div>
+                </div>
+                
+                <!-- Customer Service -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Customer Service</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Track Your Order</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Shopping -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Shopping</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">All Products</a></li>
+                        <li><a href="#">Flash Deals</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                        <li><a href="#">Gift Cards</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Sell -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Sell with Us</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Start Selling</a></li>
+                        <li><a href="#">Seller Center</a></li>
+                        <li><a href="#">Seller Protection</a></li>
+                        <li><a href="#">Advertising</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <!-- About -->
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">About</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Investor Relations</a></li>
+                        <li><a href="#">Sustainability</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="footer-legal">
+                        <span>&copy; 2024 MarketHub Pro. All rights reserved.</span>
+                        <div class="footer-legal-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Terms of Service</a>
+                            <a href="#">Cookie Policy</a>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <span>We Accept:</span>
+                        <div class="payment-icons">
+                            <span>💳</span>
+                            <span>🏦</span>
+                            <span>📱</span>
+                            <span>💰</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

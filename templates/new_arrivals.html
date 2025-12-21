@@ -74,7 +74,7 @@
                         </div>
                         
                         <div class="arrival-date">
-                            <span>Added {{ product.created_at.strftime('%b %d') if product.created_at else 'Recently' }}</span>
+                            <span>Added {{ product.created_at | safe_strftime('%b %d') }}</span>
                         </div>
                     </div>
                     

@@ -1,0 +1,10 @@
+{
+    "name": "MarketHub Pro",
+    "short_name": "MarketHub",
+    "description": "Global Marketplace - Connect, Shop, Thrive",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#111827",
+    "theme_color": "#ff4747",
+    "icons": []
+}

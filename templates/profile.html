@@ -1,31 +1,32 @@
-{% extends "base.html" %}
+{% extends "base_enhanced.html" %}
 
-{% block title %}Profile - E-Commerce Store{% endblock %}
+{% block title %}Profile - {{ store_config.name }}{% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="profile-container">
         <h1>My Profile</h1>
         
+        {% if user %}
         <div class="profile-info">
             <div class="info-group">
                 <label>Username:</label>
-                <span>{{ user.username }}</span>
+                <span>{{ user.username or 'N/A' }}</span>
             </div>
             
             <div class="info-group">
                 <label>Email:</label>
-                <span>{{ user.email }}</span>
+                <span>{{ user.email or 'N/A' }}</span>
             </div>
             
             <div class="info-group">
                 <label>Member Since:</label>
-                <span>{{ user.created_at.strftime('%Y-%m-%d') }}</span>
+                <span>{{ user.created_at | safe_strftime('%Y-%m-%d') }}</span>
             </div>
             
             <div class="info-group">
                 <label>Role:</label>
-                <span>{{ user.role.title() }}</span>
+                <span>{{ user.role.title() if user.role else 'User' }}</span>
             </div>
         </div>
         
@@ -33,6 +34,12 @@
             <a href="{{ url_for('orders') }}" class="btn btn-primary">View Orders</a>
             <a href="{{ url_for('cart') }}" class="btn btn-secondary">View Cart</a>
         </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <p>Unable to load profile information. Please try logging in again.</p>
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

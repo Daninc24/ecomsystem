@@ -1,0 +1,137 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}CSS Debug Test - {{ store_config.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content-header">
+        <h1 class="content-title">CSS Debug Test</h1>
+        <p class="content-subtitle">Testing if CSS classes are properly loaded and applied</p>
+    </div>
+    
+    <div class="content-body">
+        <h2>Button Tests</h2>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+            <button class="btn btn-primary">Primary Button</button>
+            <button class="btn btn-secondary">Secondary Button</button>
+            <button class="btn btn-success">Success Button</button>
+            <button class="btn btn-warning">Warning Button</button>
+            <button class="btn btn-error">Error Button</button>
+        </div>
+        
+        <h2>Card Test</h2>
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h3 class="card-title">Test Card</h3>
+            </div>
+            <div class="card-body">
+                <p>This is a test card to verify card styling is working properly.</p>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary btn-sm">Action</button>
+            </div>
+        </div>
+        
+        <h2>Alert Tests</h2>
+        <div class="alert alert-success">This is a success alert</div>
+        <div class="alert alert-warning">This is a warning alert</div>
+        <div class="alert alert-error">This is an error alert</div>
+        <div class="alert alert-info">This is an info alert</div>
+        
+        <h2>Form Test</h2>
+        <div class="form-container" style="max-width: 500px;">
+            <div class="form-group">
+                <label>Test Input</label>
+                <input type="text" class="form-control" placeholder="Enter text here">
+            </div>
+            <div class="form-group">
+                <label>Test Textarea</label>
+                <textarea class="form-control" rows="3" placeholder="Enter message here"></textarea>
+            </div>
+            <button class="btn btn-primary">Submit</button>
+        </div>
+        
+        <h2>Profile Test</h2>
+        <div class="profile-container" style="max-width: 600px;">
+            <div class="profile-info">
+                <div class="info-group">
+                    <label>Username:</label>
+                    <span>testuser</span>
+                </div>
+                <div class="info-group">
+                    <label>Email:</label>
+                    <span>test@example.com</span>
+                </div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn btn-primary">Edit Profile</button>
+                <button class="btn btn-secondary">View Orders</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Debug styles to check if CSS is loading */
+.debug-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: green;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 9999;
+}
+
+.debug-indicator.css-not-loaded {
+    background: red;
+}
+</style>
+
+<div id="debug-indicator" class="debug-indicator css-not-loaded">CSS NOT LOADED</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if CSS variables are available
+    const testElement = document.createElement('div');
+    testElement.style.color = 'var(--primary-red)';
+    document.body.appendChild(testElement);
+    
+    const computedStyle = window.getComputedStyle(testElement);
+    const color = computedStyle.color;
+    
+    document.body.removeChild(testElement);
+    
+    const debugIndicator = document.getElementById('debug-indicator');
+    
+    if (color && color !== 'var(--primary-red)') {
+        debugIndicator.textContent = 'CSS LOADED ✓';
+        debugIndicator.className = 'debug-indicator';
+        debugIndicator.style.background = 'green';
+    } else {
+        debugIndicator.textContent = 'CSS NOT LOADED ✗';
+        debugIndicator.style.background = 'red';
+    }
+    
+    // Log CSS file loading status
+    const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
+    console.log('CSS Files:', Array.from(cssLinks).map(link => link.href));
+    
+    // Check if specific classes exist
+    const testClasses = ['btn', 'btn-primary', 'container', 'card', 'profile-container'];
+    testClasses.forEach(className => {
+        const element = document.querySelector('.' + className);
+        if (element) {
+            const styles = window.getComputedStyle(element);
+            console.log(`Class .${className}:`, {
+                display: styles.display,
+                background: styles.backgroundColor,
+                padding: styles.padding,
+                margin: styles.margin
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
