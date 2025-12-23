@@ -1,0 +1,65 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# Development files
+.env
+.env.example
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Database files
+instance/
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+
+# Node modules (if any)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Deployment scripts
+docker-deploy.sh
+production-test.py
+
+# SSL certificates (will be mounted)
+ssl/

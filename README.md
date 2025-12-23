@@ -1,361 +1,250 @@
-# 🛒 E-Commerce Multi-Vendor Platform
+# 🛒 MarketHub Pro - E-Commerce Multi-Vendor Platform
 
-A complete, production-ready e-commerce platform with multi-vendor support, multiple payment gateways, and comprehensive admin controls. Built with Python Flask, HTML, CSS, and JavaScript.
+[![Production Ready](https://img.shields.io/badge/Production-Ready-brightgreen.svg)](https://github.com/yourusername/markethub-pro)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
+[![Security](https://img.shields.io/badge/Security-Hardened-red.svg)](./PRODUCTION_SECURITY_CHECKLIST.md)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🚀 Deploy to Production in 5 Minutes
+A modern, scalable e-commerce platform built with Flask and MongoDB, featuring multi-vendor support, multiple payment gateways, and enterprise-grade security.
 
-**Deploy to Render (Recommended):**
+## 🚀 Quick Start (5 Minutes)
 
+### Docker Deployment (Recommended)
 ```bash
-./deploy.sh  # Choose option 1 (Render)
+# 1. Clone the repository
+git clone <your-repo-url> markethub-pro
+cd markethub-pro
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your production values
+
+# 3. Deploy with Docker
+./docker-deploy.sh
+
+# 4. Access your store
+open https://localhost
 ```
 
-**Or quick manual deploy:**
-1. Push to GitHub
-2. Go to [render.com](https://render.com) → Connect repository  
-3. Render auto-detects Python app and deploys!
+### Development Setup
+```bash
+# 1. Setup virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-**Your multi-vendor marketplace will be live at: `https://your-app-name.onrender.com`**
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Initialize database
+python3 init_mongo_data.py
+
+# 4. Start development server
+python3 app_mongo.py
+```
 
 ## ✨ Features
 
-### 🛍️ Complete E-commerce System
-- **Product Catalog**: Browse products with search, filter, and sort functionality
-- **Shopping Cart**: Add/remove items, update quantities with real-time calculations
-- **Checkout System**: Complete order placement with form validation
-- **Order Management**: Track order history and status
-- **User Authentication**: Secure registration and login system
-
 ### 🏪 Multi-Vendor Marketplace
-- **Vendor Registration**: Businesses can register and get verified
-- **Vendor Dashboards**: Analytics, product management, order tracking
-- **Commission System**: Configurable commission rates for vendors
-- **Vendor Earnings**: Automated calculation and tracking
-- **Product Management**: Vendors can add/edit their own products
+- **Vendor Registration & Verification**
+- **Commission Management**
+- **Vendor Analytics Dashboard**
+- **Product Management Tools**
+- **Earnings Tracking**
 
-### 💳 Multiple Payment Gateways
-- **Stripe**: Credit/debit card processing
-- **PayPal**: PayPal payment integration
-- **M-Pesa**: Mobile money payments (Kenya)
-- **Secure Processing**: PCI-compliant payment handling
+### 💳 Payment Integration
+- **Stripe** - Global credit card processing
+- **PayPal** - Worldwide payment solution
+- **M-Pesa** - Mobile money for Kenya/Africa
+- **PCI Compliant** - Secure payment handling
 
-### 🛡️ Trade Assurance System
-- **Customer Protection**: Automated protection for orders
-- **Dispute Handling**: Built-in claim and resolution system
-- **Refund Management**: Automated refund processing
-- **Trust Building**: Increases customer confidence
+### 🛡️ Security Features
+- **SSL/TLS Encryption**
+- **Rate Limiting**
+- **CSRF Protection**
+- **XSS Prevention**
+- **Secure Headers**
+- **Input Validation**
 
-### 👨‍💼 Comprehensive Admin Panel
-- **Dashboard Analytics**: Revenue, orders, users, vendors statistics
-- **User Management**: View and manage all users
-- **Vendor Management**: Verify vendors, manage commissions
-- **Product Management**: Add, edit, delete products
-- **Order Management**: Process orders, update status
-- **Trade Assurance**: Handle claims and disputes
-- **System Settings**: Configure platform settings
-- **Audit Trail**: Complete admin action logging
+### 📱 Modern UI/UX
+- **Responsive Design**
+- **AliExpress-inspired Interface**
+- **Real-time Search**
+- **Dynamic Filtering**
+- **Mobile Optimized**
 
-## 🏗️ Technology Stack
+### 🔧 Admin Features
+- **Comprehensive Dashboard**
+- **User Management**
+- **Order Processing**
+- **Analytics & Reports**
+- **System Configuration**
 
-- **Backend**: Python Flask 2.3.3 with SQLAlchemy 2.0.45 ORM
-- **Database**: SQLite (development) / PostgreSQL (production)
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Authentication**: Session-based with Werkzeug password hashing
-- **Security**: CSRF protection, input validation, SQL injection prevention
-- **Payments**: Stripe, PayPal, M-Pesa API integrations
-- **Deployment**: Render, Heroku, DigitalOcean, AWS, Docker ready
-
-## 🚀 Deployment Options
-
-| Platform | Time | Difficulty | Cost | Best For |
-|----------|------|------------|------|----------|
-| **Render** ⭐ | 5 min | Easy | Free tier | **Recommended** |
-| Heroku | 15 min | Easy | Free tier | Popular choice |
-| DigitalOcean | 30 min | Medium | $5/month | Cost-effective |
-| AWS EC2 | 45 min | Hard | Variable | Enterprise |
-| Docker | 10 min | Medium | Variable | Containers |
-
-## 📖 Documentation
-
-- **[RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)** - Deploy to Render (recommended)
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - All deployment options  
-- **[PRODUCTION_READINESS_ASSESSMENT.md](PRODUCTION_READINESS_ASSESSMENT.md)** - Production readiness report
-- **[TESTING_CHECKLIST.md](TESTING_CHECKLIST.md)** - Testing procedures
-
-## Project Structure
+## 🏗️ Architecture
 
 ```
-ecommerce-flask/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── init_data.py          # Database initialization script
-├── setup.py              # Automated setup script
-├── README.md             # This file
-├── ecommerce.db          # SQLite database (created after setup)
-├── static/
-│   ├── css/
-│   │   └── style.css     # Main stylesheet
-│   ├── js/
-│   │   └── main.js       # JavaScript functionality
-│   └── images/           # Static images
-└── templates/
-    ├── base.html         # Base template
-    ├── index.html        # Homepage
-    ├── login.html        # Login page
-    ├── register.html     # Registration page
-    ├── products.html     # Product catalog
-    ├── product_detail.html # Product details
-    ├── cart.html         # Shopping cart
-    ├── checkout.html     # Checkout page
-    ├── orders.html       # Order history
-    ├── profile.html      # User profile
-    ├── contact.html      # Contact page
-    └── admin/
-        ├── dashboard.html    # Admin dashboard
-        ├── products.html     # Product management
-        ├── add_product.html  # Add product form
-        ├── edit_product.html # Edit product form
-        └── orders.html       # Order management
+Internet → Nginx (SSL/Load Balancer) → Flask App → MongoDB
+                                    ↘ Redis (Sessions)
 ```
 
-## Database Schema
+### Technology Stack
+- **Backend**: Flask 2.3.3, Python 3.9+
+- **Database**: MongoDB with PyMongo
+- **Caching**: Redis
+- **Web Server**: Nginx + Gunicorn
+- **Containerization**: Docker & Docker Compose
+- **Security**: Werkzeug, SSL/TLS, Security Headers
 
-### Users Table
-- `id` (Primary Key)
-- `username` (Unique)
-- `email` (Unique)
-- `password` (Hashed)
-- `role` (admin/user)
-- `created_at`
+## 📋 Production Deployment
 
-### Products Table
-- `id` (Primary Key)
-- `name`
-- `description`
-- `price`
-- `stock`
-- `category`
-- `image_url`
+### Prerequisites
+- Docker 20.10+
+- Docker Compose 2.0+
+- Domain name with SSL certificate
+- 2GB+ RAM, 10GB+ storage
 
-### Cart Table
-- `id` (Primary Key)
-- `user_id` (Foreign Key)
-- `product_id` (Foreign Key)
-- `quantity`
-
-### Orders Table
-- `id` (Primary Key)
-- `user_id` (Foreign Key)
-- `total_price`
-- `order_status`
-- `created_at`
-
-### OrderItems Table
-- `id` (Primary Key)
-- `order_id` (Foreign Key)
-- `product_id` (Foreign Key)
-- `quantity`
-- `price`
-
-## Quick Start
-
-### Option 1: Automated Setup (Recommended)
-
-1. **Clone or download the project files**
-
-2. **Run the setup script**:
-   ```bash
-   python setup.py
-   ```
-   
-3. **Start the application**:
-   ```bash
-   python app.py
-   ```
-
-4. **Open your browser** to `http://localhost:5000`
-
-### Option 2: Manual Setup
-
-1. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Initialize the database**:
-   ```bash
-   python init_data.py
-   ```
-
-3. **Start the application**:
-   ```bash
-   python app.py
-   ```
-
-## Default Login Credentials
-
-After setup, you can use these accounts:
-
-**Admin Account**:
-- Username: `admin`
-- Password: `admin123`
-- Access: Full admin dashboard and user features
-
-**Regular User Account**:
-- Username: `user`
-- Password: `user123`
-- Access: Shopping and user features only
-
-**Vendor Accounts**:
-- Username: `techstore` / Password: `vendor123` (TechStore Pro)
-- Username: `homestyle` / Password: `vendor123` (HomeStyle Living)  
-- Username: `fitnessgear` / Password: `vendor123` (FitnessGear Plus)
-
-## 📊 Sample Data Included
-
-The system comes with comprehensive sample data:
-- **6 Users** (admin, regular users, vendors)
-- **5 Verified Vendors** with complete business profiles
-- **11 Products** across multiple categories with images
-- **Sample orders** demonstrating the complete workflow
-
-## 🔧 Production Configuration
-
-### Environment Variables
+### Environment Configuration
 ```bash
-FLASK_CONFIG=production
-SECRET_KEY=your-super-secret-key
-DATABASE_URL=postgresql://user:pass@host:port/dbname
+# Required Environment Variables
+SECRET_KEY=your-super-secure-secret-key
+MONGO_ROOT_PASSWORD=strong-mongodb-password
 STRIPE_SECRET_KEY=sk_live_your_stripe_key
-PAYPAL_CLIENT_ID=your_paypal_client_id
-PAYPAL_CLIENT_SECRET=your_paypal_client_secret
-MPESA_CONSUMER_KEY=your_mpesa_consumer_key
+PAYPAL_CLIENT_SECRET=your_paypal_secret
+DOMAIN_NAME=yourdomain.com
 ```
 
-### Payment Gateway Setup
-1. **Stripe**: Get keys from [stripe.com/dashboard](https://dashboard.stripe.com)
-2. **PayPal**: Get credentials from [developer.paypal.com](https://developer.paypal.com)  
-3. **M-Pesa**: Get credentials from Safaricom Daraja API
+### Deployment Options
+1. **Docker** (Recommended) - `./docker-deploy.sh`
+2. **Render** - One-click deployment
+3. **Heroku** - Platform as a Service
+4. **DigitalOcean** - VPS deployment
+5. **AWS EC2** - Enterprise deployment
 
-## ✅ Production Ready Features
+## 🔒 Security
 
-- **Security**: Password hashing, session management, SQL injection protection
-- **Scalability**: PostgreSQL support, Redis-ready, load balancer compatible
-- **Monitoring**: Comprehensive logging, error handling, health checks
-- **Performance**: Optimized database queries, efficient static file handling
-- **Business Logic**: Multi-vendor commissions, trade assurance, earnings tracking
+### Security Features
+- ✅ **No hardcoded secrets** - All sensitive data in environment variables
+- ✅ **Production-grade encryption** - Modern TLS configuration
+- ✅ **Rate limiting** - API and login protection
+- ✅ **Security headers** - HSTS, CSP, X-Frame-Options
+- ✅ **Input validation** - SQL injection prevention
+- ✅ **Session security** - Secure cookie configuration
 
-## Usage Guide
+### Security Audit
+Run the security checklist:
+```bash
+python3 production-test.py
+```
 
-### For Customers
+See [PRODUCTION_SECURITY_CHECKLIST.md](./PRODUCTION_SECURITY_CHECKLIST.md) for complete security audit.
 
-1. **Browse Products**: Visit the Products page to see all available items
-2. **Search & Filter**: Use the search bar and category filters to find specific products
-3. **Product Details**: Click on any product to see detailed information
-4. **Add to Cart**: Click "Add to Cart" on product pages (requires login)
-5. **Manage Cart**: View and modify your cart items
-6. **Checkout**: Complete your purchase with the checkout form
-7. **Track Orders**: View your order history in the Orders section
+## 📊 Performance
 
-### For Administrators
+### Optimization Features
+- **Nginx caching** for static files
+- **Gzip compression** for faster loading
+- **Redis caching** for sessions
+- **Database indexing** for fast queries
+- **CDN ready** for global distribution
 
-1. **Access Admin Panel**: Login with admin credentials and click "Admin" in navigation
-2. **Manage Products**: Add, edit, or delete products from the catalog
-3. **Process Orders**: View all orders and update their status
-4. **Monitor Analytics**: View store statistics on the dashboard
+### Scalability
+- **Horizontal scaling** with load balancer
+- **Container orchestration** ready
+- **Database clustering** support
+- **Resource monitoring** and limits
 
-## API Endpoints
+## 🔍 Monitoring & Maintenance
 
-### Authentication
-- `GET/POST /register` - User registration
-- `GET/POST /login` - User login
-- `GET /logout` - User logout
+### Health Checks
+```bash
+# Application health
+curl https://yourdomain.com/health
 
-### Products
-- `GET /` - Homepage with featured products
-- `GET /products` - Product catalog with search/filter
-- `GET /product/<id>` - Product details
+# Service status
+docker-compose ps
 
-### Cart & Orders
-- `POST /add_to_cart` - Add item to cart (JSON)
-- `GET /cart` - View shopping cart
-- `POST /update_cart` - Update cart item quantity (JSON)
-- `POST /remove_from_cart` - Remove item from cart (JSON)
-- `GET /checkout` - Checkout page
-- `POST /place_order` - Place order (JSON)
-- `GET /orders` - User order history
+# View logs
+docker-compose logs -f
+```
 
-### Admin (Admin access required)
-- `GET /admin` - Admin dashboard
-- `GET /admin/products` - Product management
-- `GET/POST /admin/add_product` - Add new product
-- `GET/POST /admin/edit_product/<id>` - Edit product
-- `GET /admin/delete_product/<id>` - Delete product
-- `GET /admin/orders` - Order management
-- `POST /admin/update_order_status` - Update order status (JSON)
+### Backup & Recovery
+```bash
+# Database backup
+docker-compose exec mongo mongodump --archive | gzip > backup.gz
 
-## Security Features
+# Restore backup
+gunzip < backup.gz | docker-compose exec -T mongo mongorestore --archive
+```
 
-- **Password Hashing**: Uses Werkzeug's bcrypt for secure password storage
-- **Session Management**: Secure session-based authentication
-- **Input Validation**: Both client-side and server-side validation
-- **SQL Injection Prevention**: SQLAlchemy ORM prevents SQL injection
-- **Role-based Access**: Admin and user roles with appropriate permissions
+## 📚 Documentation
 
-## Customization
+- [🐳 Docker Production Guide](./DOCKER_PRODUCTION_GUIDE.md)
+- [🔒 Security Checklist](./PRODUCTION_SECURITY_CHECKLIST.md)
+- [📋 Deployment Summary](./PRODUCTION_DEPLOYMENT_SUMMARY.md)
+- [🚀 Production Assessment](./PRODUCTION_READINESS_ASSESSMENT.md)
+- [🧪 Testing Checklist](./TESTING_CHECKLIST.md)
 
-### Adding New Product Categories
-1. Add products with new category names through the admin panel
-2. Categories are automatically populated in the filter dropdown
+## 🎯 Default Credentials
 
-### Modifying Styles
-- Edit `static/css/style.css` to customize the appearance
-- The CSS uses CSS Grid and Flexbox for responsive layouts
-- Color scheme and spacing can be easily modified
+**Admin Access**: https://yourdomain.com/admin/dashboard
+- Username: `admin`
+- Password: `admin123` (⚠️ Change immediately!)
 
-### Adding New Features
-- Follow the existing Flask blueprint pattern
-- Add new routes in `app.py`
-- Create corresponding HTML templates
-- Add JavaScript functionality in `static/js/main.js`
+**Test Users**:
+- Customer: `john_doe` / `user123`
+- Vendor: `techstore_pro` / `vendor123`
 
-## Troubleshooting
+## 🛠️ Development
 
-### Common Issues
+### Local Development
+```bash
+# Start development server
+python3 app_mongo.py
 
-1. **Database errors**: Delete `ecommerce.db` and run `python init_data.py` again
-2. **Port already in use**: Change the port in `app.py`: `app.run(debug=True, port=5001)`
-3. **Permission errors**: Make sure you have write permissions in the project directory
-4. **Module not found**: Ensure all dependencies are installed: `pip install -r requirements.txt`
+# Run tests
+python3 production-test.py
 
-### Development Mode
+# Validate deployment
+./validate-deployment.sh
+```
 
-The application runs in debug mode by default. For production:
+### API Endpoints
+- `GET /api/search` - Product search
+- `POST /api/products/filter` - Product filtering
+- `GET /api/cart/count` - Cart item count
+- `POST /add_to_cart` - Add to cart
+- `GET /health` - Health check
 
-1. Set `debug=False` in `app.py`
-2. Change the secret key to a secure random value
-3. Use a production database (PostgreSQL recommended)
-4. Set up proper web server (nginx + gunicorn)
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
+4. Run tests: `python3 production-test.py`
 5. Submit a pull request
 
-## License
+## 📄 License
 
-This project is open source and available under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
+## 🆘 Support
 
-For issues or questions:
-1. Check the troubleshooting section above
-2. Review the code comments for implementation details
-3. Create an issue with detailed error information
+### Troubleshooting
+- Check [DOCKER_PRODUCTION_GUIDE.md](./DOCKER_PRODUCTION_GUIDE.md) for common issues
+- View logs: `docker-compose logs -f`
+- Health check: `curl https://yourdomain.com/health`
+
+### Getting Help
+- 📖 Documentation in `/docs` folder
+- 🐛 Issues on GitHub
+- 💬 Community discussions
+
+## 🎉 Success Stories
+
+**Production Ready**: ✅ Enterprise-grade e-commerce platform  
+**Security Hardened**: ✅ Comprehensive security implementation  
+**Scalable Architecture**: ✅ Ready for high-traffic deployment  
+**Multi-Payment Support**: ✅ Global payment gateway integration  
 
 ---
 
-**Enjoy building your E-commerce store!** 🚀
+**🚀 Ready to launch your e-commerce empire? Deploy now with confidence!**

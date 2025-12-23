@@ -10,7 +10,9 @@ class Config:
     """Base configuration class for MongoDB."""
     
     # Flask Settings
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-change-in-production'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    if not SECRET_KEY:
+        raise ValueError("SECRET_KEY environment variable is required for production")
     
     # MongoDB Settings
     MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://localhost:27017/ecommerce'
@@ -29,19 +31,19 @@ class Config:
     ORDERS_PER_PAGE = 15
     
     # Payment Gateway Settings
-    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY') or 'pk_test_your_stripe_publishable_key'
-    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY') or 'sk_test_your_stripe_secret_key'
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
     
     # PayPal Settings
-    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID') or 'your_paypal_client_id'
-    PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET') or 'your_paypal_client_secret'
+    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+    PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')
     PAYPAL_MODE = os.environ.get('PAYPAL_MODE') or 'sandbox'  # sandbox or live
     
     # M-Pesa Settings (Safaricom)
-    MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY') or 'your_mpesa_consumer_key'
-    MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET') or 'your_mpesa_consumer_secret'
-    MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE') or 'your_mpesa_shortcode'
-    MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY') or 'your_mpesa_passkey'
+    MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY')
+    MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET')
+    MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE')
+    MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY')
     MPESA_ENVIRONMENT = os.environ.get('MPESA_ENVIRONMENT') or 'sandbox'  # sandbox or production
     
     # Store Settings
@@ -62,6 +64,17 @@ class DevelopmentConfig(Config):
     """Development configuration."""
     DEBUG = True
     MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://localhost:27017/ecommerce_dev'
+    
+    # Development fallbacks for payment gateways
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY') or 'pk_test_your_stripe_publishable_key'
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY') or 'sk_test_your_stripe_secret_key'
+    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID') or 'your_paypal_client_id'
+    PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET') or 'your_paypal_client_secret'
+    MPESA_CONSUMER_KEY = os.environ.get('MPESA_CONSUMER_KEY') or 'your_mpesa_consumer_key'
+    MPESA_CONSUMER_SECRET = os.environ.get('MPESA_CONSUMER_SECRET') or 'your_mpesa_consumer_secret'
+    MPESA_SHORTCODE = os.environ.get('MPESA_SHORTCODE') or 'your_mpesa_shortcode'
+    MPESA_PASSKEY = os.environ.get('MPESA_PASSKEY') or 'your_mpesa_passkey'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
 
 class ProductionConfig(Config):
     """Production configuration."""

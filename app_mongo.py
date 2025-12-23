@@ -921,6 +921,25 @@ Sitemap: http://127.0.0.1:5002/sitemap.xml'''
     
     return Response(robots_txt, mimetype='text/plain')
 
+@app.route('/health')
+def health_check():
+    """Health check endpoint for Docker and load balancers."""
+    try:
+        # Test database connection
+        mongo.db.users.find_one()
+        return jsonify({
+            'status': 'healthy',
+            'timestamp': datetime.utcnow().isoformat(),
+            'version': '1.0.0',
+            'database': 'connected'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'timestamp': datetime.utcnow().isoformat(),
+            'error': str(e)
+        }), 503
+
 if __name__ == '__main__':
     # Initialize sample data if needed
     with app.app_context():
@@ -934,10 +953,12 @@ if __name__ == '__main__':
         
         # Create admin user if doesn't exist
         if not mongo.db.users.find_one({'username': 'admin'}):
+            # Get admin password from environment or use default for development
+            admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
             admin_user = {
                 'username': 'admin',
                 'email': 'admin@markethubpro.com',
-                'password': generate_password_hash('admin123'),
+                'password': generate_password_hash(admin_password),
                 'role': 'admin',
                 'profile': {
                     'first_name': 'Admin',
@@ -964,6 +985,6 @@ if __name__ == '__main__':
                 'email_verified': True
             }
             mongo.db.users.insert_one(admin_user)
-            print("✅ Admin user created (username: admin, password: admin123)")
+            print(f"✅ Admin user created (username: admin, password: {admin_password})")
     
     app.run(debug=True, port=5002)
