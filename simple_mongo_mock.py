@@ -83,8 +83,9 @@ class MockCollection:
         self._save_data(data)
         return MockInsertResult(document['_id'])
     
-    def update_one(self, query, update):
+    def update_many(self, query, update):
         data = self._load_data()
+        modified_count = 0
         for item in data:
             if self._matches_query(item, query):
                 if '$set' in update:
@@ -92,9 +93,73 @@ class MockCollection:
                 if '$inc' in update:
                     for key, value in update['$inc'].items():
                         item[key] = item.get(key, 0) + value
-                break
+                if '$unset' in update:
+                    for key in update['$unset']:
+                        if key in item:
+                            del item[key]
+                modified_count += 1
         self._save_data(data)
-        return MockUpdateResult()
+        return MockUpdateResult(modified_count)
+    
+    def update_one(self, query, update, upsert=False):
+        data = self._load_data()
+        found = False
+        for item in data:
+            if self._matches_query(item, query):
+                if '$set' in update:
+                    item.update(update['$set'])
+                if '$inc' in update:
+                    for key, value in update['$inc'].items():
+                        item[key] = item.get(key, 0) + value
+                if '$unset' in update:
+                    for key in update['$unset']:
+                        if key in item:
+                            del item[key]
+                found = True
+                break
+        
+        if not found and upsert:
+            # Create new document with the update data
+            new_doc = {}
+            if '$set' in update:
+                new_doc.update(update['$set'])
+            if '$inc' in update:
+                for key, value in update['$inc'].items():
+                    new_doc[key] = value
+            
+            # Add query fields to the new document
+            for key, value in query.items():
+                if key not in new_doc:
+                    new_doc[key] = value
+            
+            if '_id' not in new_doc:
+                new_doc['_id'] = ObjectId()
+            
+            data.append(new_doc)
+            found = True
+        
+        self._save_data(data)
+        return MockUpdateResult(1 if found else 0)
+    
+    def replace_one(self, query, replacement, upsert=False):
+        data = self._load_data()
+        found = False
+        for i, item in enumerate(data):
+            if self._matches_query(item, query):
+                # Keep the original _id if it exists
+                if '_id' in item and '_id' not in replacement:
+                    replacement['_id'] = item['_id']
+                data[i] = replacement
+                found = True
+                break
+        
+        if not found and upsert:
+            if '_id' not in replacement:
+                replacement['_id'] = ObjectId()
+            data.append(replacement)
+        
+        self._save_data(data)
+        return MockUpdateResult(1 if found else 0)
     
     def delete_many(self, query):
         data = self._load_data()
@@ -242,8 +307,8 @@ class MockInsertResult:
         self.inserted_id = inserted_id
 
 class MockUpdateResult:
-    def __init__(self):
-        self.modified_count = 1
+    def __init__(self, modified_count=1):
+        self.modified_count = modified_count
 
 class MockDeleteResult:
     def __init__(self, deleted_count):
