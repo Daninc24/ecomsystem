@@ -1,0 +1,104 @@
+
+/* Generated Theme CSS - 2025-12-24T13:01:05.946762 */
+:root {
+  --primary-color: #ff6b6b;
+  --secondary-color: #4ecdc4;
+  --accent-color: #45b7d1;
+  --background-color: #2c3e50;
+  --text-color: #ecf0f1;
+  --link-color: #45b7d1;
+  --border-color: #333333;
+  --success-color: #51cf66;
+  --warning-color: #ffd43b;
+  --error-color: #ff6b6b;
+  --font-family: Inter, system-ui, sans-serif;
+  --font-size-base: 16px;
+  --border-radius: 0.5rem;
+  --box-shadow: 0 1px 3px rgba(255,255,255,0.1);
+  --header-height: 80px;
+  --footer-background: #000000;
+}
+
+/* Component Styles */
+
+/* Header Styles */
+.header {
+    height: var(--header-height);
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: white;
+    border-radius: var(--border-radius);
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Footer Styles */
+.footer {
+    background-color: var(--footer-background);
+    color: var(--text-color);
+}
+
+/* Typography */
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+a {
+    color: var(--link-color);
+}
+
+/* Status Colors */
+.text-success { color: var(--success-color); }
+.text-warning { color: var(--warning-color); }
+.text-error { color: var(--error-color); }
+
+
+/* Responsive Styles */
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header {
+        height: calc(var(--header-height) * 0.8);
+    }
+    
+    body {
+        font-size: calc(var(--font-size-base) * 0.9);
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: calc(var(--header-height) * 0.7);
+    }
+    
+    body {
+        font-size: calc(var(--font-size-base) * 0.85);
+    }
+}
+
+
+/* Custom CSS */
+

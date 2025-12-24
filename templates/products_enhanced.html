@@ -81,14 +81,14 @@
 <section class="products-section">
     <div class="container">
         <div id="products-grid" class="products-grid">
-            {% for product in products %}
-            <div class="product-card animate-fade-in-up" onclick="window.location.href='{{ url_for('product_detail', product_id=product._id) }}'">
+            {% for product in products.items %}
+            <div class="product-card animate-fade-in-up" onclick="window.location.href='{{ url_for('product_detail', slug=product.slug) }}'">
                 <div class="product-image-wrapper">
-                    <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                    <img src="{{ product.get_main_image() }}" alt="{{ product.name }}" class="product-image" loading="lazy">
                     
                     <div class="product-badges">
-                        {% if product.pricing.discount_percentage > 0 %}
-                        <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                        {% if product.get_discount_percentage() > 0 %}
+                        <span class="badge badge-discount">-{{ product.get_discount_percentage() }}%</span>
                         {% endif %}
                         {% if product.is_featured %}
                         <span class="badge badge-featured">Featured</span>
@@ -103,7 +103,7 @@
                             <span>👁</span>
                         </button>
                         <button class="action-btn add-to-cart-btn" 
-                                data-product-id="{{ product._id }}" 
+                                onclick="event.stopPropagation(); window.location.href='{{ url_for('add_to_cart', product_id=product.id) }}'" 
                                 title="Add to Cart">
                             <span>🛒</span>
                         </button>
@@ -111,13 +111,13 @@
                 </div>
                 
                 <div class="product-info">
-                    <h3 class="product-name">{{ product.basic_info.name }}</h3>
-                    <p class="product-description">{{ product.basic_info.short_description or product.basic_info.description[:100] + '...' }}</p>
+                    <h3 class="product-name">{{ product.name }}</h3>
+                    <p class="product-description">{{ product.short_description or (product.description[:100] + '...' if product.description else 'No description available') }}</p>
                     
                     <div class="product-pricing">
-                        <span class="current-price">${{ "%.2f"|format(product.pricing.price) }}</span>
-                        {% if product.pricing.compare_price and product.pricing.compare_price > product.pricing.price %}
-                        <span class="original-price">${{ "%.2f"|format(product.pricing.compare_price) }}</span>
+                        <span class="current-price">${{ "%.2f"|format(product.price) }}</span>
+                        {% if product.compare_price and product.compare_price > product.price %}
+                        <span class="original-price">${{ "%.2f"|format(product.compare_price) }}</span>
                         {% endif %}
                     </div>
                     
@@ -127,7 +127,7 @@
                             <span class="rating-text">(4.5)</span>
                         </div>
                         <div class="product-stock">
-                            {% if product.inventory.stock > 0 %}
+                            {% if product.is_in_stock() %}
                             <span class="in-stock">In Stock</span>
                             {% else %}
                             <span class="out-of-stock">Out of Stock</span>
@@ -140,25 +140,29 @@
         </div>
         
         <!-- Pagination -->
-        {% if total_pages > 1 %}
+        {% if products.pages > 1 %}
         <div class="pagination-wrapper">
             <nav class="pagination">
-                {% if has_prev %}
-                <a href="{{ url_for('products', page=prev_num) }}" class="pagination-btn">← Previous</a>
+                {% if products.has_prev %}
+                <a href="{{ url_for('products', page=products.prev_num, search=search_query, category=current_category) }}" class="pagination-btn">← Previous</a>
                 {% endif %}
                 
                 <div class="pagination-numbers">
-                    {% for page_num in range(1, total_pages + 1) %}
-                        {% if page_num == current_page %}
-                        <span class="pagination-number active">{{ page_num }}</span>
+                    {% for page_num in products.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num == products.page %}
+                            <span class="pagination-number active">{{ page_num }}</span>
+                            {% else %}
+                            <a href="{{ url_for('products', page=page_num, search=search_query, category=current_category) }}" class="pagination-number">{{ page_num }}</a>
+                            {% endif %}
                         {% else %}
-                        <a href="{{ url_for('products', page=page_num) }}" class="pagination-number">{{ page_num }}</a>
+                            <span class="pagination-ellipsis">…</span>
                         {% endif %}
                     {% endfor %}
                 </div>
                 
-                {% if has_next %}
-                <a href="{{ url_for('products', page=next_num) }}" class="pagination-btn">Next →</a>
+                {% if products.has_next %}
+                <a href="{{ url_for('products', page=products.next_num, search=search_query, category=current_category) }}" class="pagination-btn">Next →</a>
                 {% endif %}
             </nav>
         </div>

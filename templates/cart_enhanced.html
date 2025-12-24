@@ -22,25 +22,25 @@
                     </div>
                     
                     <div class="cart-item-info">
-                        <h3 class="cart-item-name">{{ item.product.basic_info.name }}</h3>
-                        <p class="cart-item-description">{{ item.product.basic_info.short_description or item.product.basic_info.description[:100] + '...' }}</p>
+                        <h3 class="cart-item-name">{{ item.product.name }}</h3>
+                        <p class="cart-item-description">{{ item.product.short_description or (item.product.description[:100] + '...' if item.product.description else 'No description available') }}</p>
                         <div class="cart-item-price">
-                            <span class="current-price">${{ "%.2f"|format(item.cart_item.price) }}</span>
+                            <span class="current-price">${{ "%.2f"|format(item.product.price) }}</span>
                         </div>
                     </div>
                     
                     <div class="cart-item-controls">
                         <div class="quantity-controls">
-                            <button class="quantity-btn" onclick="updateQuantity('{{ item.cart_item._id }}', {{ item.cart_item.quantity - 1 }})">-</button>
-                            <input type="number" class="quantity-input" value="{{ item.cart_item.quantity }}" min="1" readonly>
-                            <button class="quantity-btn" onclick="updateQuantity('{{ item.cart_item._id }}', {{ item.cart_item.quantity + 1 }})">+</button>
+                            <button class="quantity-btn" onclick="updateQuantity('{{ item.product.id }}', {{ item.quantity - 1 }})">-</button>
+                            <input type="number" class="quantity-input" value="{{ item.quantity }}" min="1" readonly>
+                            <button class="quantity-btn" onclick="updateQuantity('{{ item.product.id }}', {{ item.quantity + 1 }})">+</button>
                         </div>
                         
                         <div class="cart-item-total">
-                            <span class="item-total-price">${{ "%.2f"|format(item.item_total) }}</span>
+                            <span class="item-total-price">${{ "%.2f"|format(item.total) }}</span>
                         </div>
                         
-                        <button class="remove-btn" onclick="removeFromCart('{{ item.cart_item._id }}')">
+                        <button class="remove-btn" onclick="window.location.href='{{ url_for('remove_from_cart', product_id=item.product.id) }}'">
                             <span>🗑️</span>
                         </button>
                     </div>

@@ -1,0 +1,387 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}Dynamic Admin Dashboard - {{ store_config.name }}{% endblock %}
+
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin-frontend.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mobile-admin.css') }}">
+
+<!-- Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Admin Frontend Scripts -->
+<script src="{{ url_for('static', filename='js/admin-components.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-components-extended.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-components-final.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-drag-drop.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-inline-editing.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-mobile.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-theme-preview.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/admin-frontend.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+<body class="admin-page">
+    <!-- Mobile Menu Toggle -->
+    <div class="mobile-menu-toggle" style="display: none;">
+        <button class="btn btn-secondary">
+            <i class="icon-menu"></i>
+        </button>
+    </div>
+
+    <div class="admin-container">
+        <!-- Main Admin Interface -->
+        <div id="admin-dashboard-container">
+            <!-- Dashboard component will be rendered here -->
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="admin-tabs" id="admin-tabs">
+            <nav class="tab-navigation">
+                <button class="tab-btn active" data-tab="dashboard">
+                    <i class="icon-home"></i> Dashboard
+                </button>
+                <button class="tab-btn" data-tab="users">
+                    <i class="icon-users"></i> Users
+                </button>
+                <button class="tab-btn" data-tab="products">
+                    <i class="icon-package"></i> Products
+                </button>
+                <button class="tab-btn" data-tab="orders">
+                    <i class="icon-shopping-cart"></i> Orders
+                </button>
+                <button class="tab-btn" data-tab="content">
+                    <i class="icon-edit"></i> Content
+                </button>
+                <button class="tab-btn" data-tab="theme">
+                    <i class="icon-palette"></i> Theme
+                </button>
+                <button class="tab-btn" data-tab="analytics">
+                    <i class="icon-bar-chart"></i> Analytics
+                </button>
+                <button class="tab-btn" data-tab="system">
+                    <i class="icon-settings"></i> System
+                </button>
+            </nav>
+        </div>
+
+        <!-- Tab Content Panels -->
+        <div class="admin-tab-content">
+            <!-- Dashboard Tab -->
+            <div class="tab-panel active" id="dashboard-panel">
+                <div id="admin-dashboard-container">
+                    <!-- Dashboard component renders here -->
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-panel" id="users-panel">
+                <div id="user-management-container">
+                    <!-- User management component renders here -->
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div class="tab-panel" id="products-panel">
+                <div id="product-management-container">
+                    <!-- Product management component renders here -->
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div class="tab-panel" id="orders-panel">
+                <div id="order-management-container">
+                    <!-- Order management component renders here -->
+                </div>
+            </div>
+
+            <!-- Content Tab -->
+            <div class="tab-panel" id="content-panel">
+                <div id="content-editor-container">
+                    <!-- Content editor component renders here -->
+                </div>
+            </div>
+
+            <!-- Theme Tab -->
+            <div class="tab-panel" id="theme-panel">
+                <div id="theme-customizer-container">
+                    <!-- Theme customizer component renders here -->
+                </div>
+                
+                <!-- Theme Preview Frame -->
+                <div class="theme-preview-section">
+                    <div class="preview-frame" id="preview-frame">
+                        <iframe id="preview-iframe" src="/" frameborder="0"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-panel" id="analytics-panel">
+                <div id="analytics-panel-container">
+                    <!-- Analytics panel component renders here -->
+                </div>
+            </div>
+
+            <!-- System Tab -->
+            <div class="tab-panel" id="system-panel">
+                <div id="system-monitor-container">
+                    <!-- System monitor component renders here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sample Editable Content for Demo -->
+    <div class="demo-content" style="margin-top: 40px; padding: 20px; background: white; border-radius: 8px;">
+        <h3>Demo: Inline Editing</h3>
+        <p data-editable="text" data-content-id="demo-text-1">
+            Click this text to edit it inline. This demonstrates the inline text editing functionality.
+        </p>
+        
+        <div style="margin: 20px 0;">
+            <img src="/static/images/placeholder-product.png" alt="Demo Image" 
+                 data-editable="image" data-content-id="demo-image-1" 
+                 style="max-width: 200px; border-radius: 8px;">
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <span>Site Name: </span>
+            <span data-editable="config" data-config-key="site_name" data-config-type="text">
+                {{ store_config.name }}
+            </span>
+        </div>
+        
+        <div style="margin: 20px 0;">
+            <span>Primary Color: </span>
+            <span data-editable="config" data-config-key="primary_color" data-config-type="color" 
+                  style="display: inline-block; width: 30px; height: 30px; background-color: #4299e1; border-radius: 4px; vertical-align: middle;">
+            </span>
+        </div>
+    </div>
+
+    <!-- Sample Drag and Drop Demo -->
+    <div class="demo-content" style="margin-top: 20px; padding: 20px; background: white; border-radius: 8px;">
+        <h3>Demo: Drag and Drop</h3>
+        <div id="demo-sortable-list">
+            <div class="sortable-item" data-sort-id="item-1">
+                <div class="drag-handle">
+                    <i class="icon-drag"></i>
+                </div>
+                <div class="item-content">
+                    <h4>Draggable Item 1</h4>
+                    <p>This item can be dragged and reordered</p>
+                </div>
+            </div>
+            
+            <div class="sortable-item" data-sort-id="item-2">
+                <div class="drag-handle">
+                    <i class="icon-drag"></i>
+                </div>
+                <div class="item-content">
+                    <h4>Draggable Item 2</h4>
+                    <p>Drag the handle to reorder items</p>
+                </div>
+            </div>
+            
+            <div class="sortable-item" data-sort-id="item-3">
+                <div class="drag-handle">
+                    <i class="icon-drag"></i>
+                </div>
+                <div class="item-content">
+                    <h4>Draggable Item 3</h4>
+                    <p>Changes are saved automatically</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and panels
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabPanels.forEach(panel => panel.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding panel
+                    button.classList.add('active');
+                    document.getElementById(tabId + '-panel').classList.add('active');
+                });
+            });
+            
+            // Initialize demo drag and drop
+            if (window.SortableListManager) {
+                const demoList = document.getElementById('demo-sortable-list');
+                if (demoList) {
+                    new SortableListManager(demoList, {
+                        onSortChange: (order) => {
+                            console.log('New sort order:', order);
+                        }
+                    });
+                }
+            }
+            
+            // Mobile responsive handling
+            function handleMobileLayout() {
+                const isMobile = window.innerWidth <= 768;
+                const mobileToggle = document.querySelector('.mobile-menu-toggle');
+                
+                if (mobileToggle) {
+                    mobileToggle.style.display = isMobile ? 'block' : 'none';
+                }
+                
+                // Adjust tab navigation for mobile
+                const tabNavigation = document.querySelector('.tab-navigation');
+                if (tabNavigation) {
+                    if (isMobile) {
+                        tabNavigation.style.overflowX = 'auto';
+                        tabNavigation.style.whiteSpace = 'nowrap';
+                    } else {
+                        tabNavigation.style.overflowX = 'visible';
+                        tabNavigation.style.whiteSpace = 'normal';
+                    }
+                }
+            }
+            
+            // Initial mobile layout check
+            handleMobileLayout();
+            
+            // Handle window resize
+            window.addEventListener('resize', handleMobileLayout);
+        });
+    </script>
+
+    <style>
+        /* Tab Navigation Styles */
+        .admin-tabs {
+            margin: 30px 0 20px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tab-navigation {
+            display: flex;
+            gap: 4px;
+            padding: 0 0 0 0;
+        }
+        
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #718096;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover {
+            color: #4a5568;
+            background-color: #f7fafc;
+        }
+        
+        .tab-btn.active {
+            color: #4299e1;
+            background-color: white;
+            border-bottom: 2px solid #4299e1;
+        }
+        
+        .tab-panel {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .tab-panel.active {
+            display: block;
+        }
+        
+        /* Demo Content Styles */
+        .demo-content {
+            border: 1px solid #e2e8f0;
+        }
+        
+        .demo-content h3 {
+            color: #2d3748;
+            margin-bottom: 16px;
+        }
+        
+        .sortable-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .sortable-item:hover {
+            background: #edf2f7;
+        }
+        
+        .item-content {
+            flex: 1;
+        }
+        
+        .item-content h4 {
+            margin: 0 0 4px 0;
+            color: #2d3748;
+        }
+        
+        .item-content p {
+            margin: 0;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tab-navigation {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .tab-btn {
+                flex-shrink: 0;
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            
+            .demo-content {
+                margin-left: -20px;
+                margin-right: -20px;
+                border-radius: 0;
+            }
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-toggle {
+                display: none !important;
+            }
+        }
+    </style>
+</body>
+{% endblock %}

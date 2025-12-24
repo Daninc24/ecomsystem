@@ -1,0 +1,82 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}{{ store_config.name }} - {{ store_config.tagline }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(135deg, #ff4747 0%, #ff6b35 100%); color: white; padding: 4rem 0; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Welcome to {{ store_config.name }}</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">{{ store_config.description }}</p>
+        <a href="{{ url_for('products') }}" style="background: white; color: #ff4747; padding: 1rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; display: inline-block;">
+            Start Shopping
+        </a>
+    </div>
+</section>
+
+<!-- Featured Products -->
+{% if featured_products %}
+<section style="padding: 4rem 0;">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem;">Featured Products</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+            {% for product in featured_products %}
+            <div style="border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{{ url_for('product_detail', slug=product.slug) }}'">
+                <div style="height: 200px; background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                    {% if product.get_images() %}
+                        <img src="{{ product.get_images()[0] }}" alt="{{ product.name }}" style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                    {% else %}
+                        <span style="color: #9ca3af; font-size: 3rem;">📦</span>
+                    {% endif %}
+                </div>
+                <div style="padding: 1rem;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #1f2937;">{{ product.name }}</h3>
+                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 1rem;">{{ product.short_description or 'No description available' }}</p>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 1.2rem; font-weight: bold; color: #ff4747;">${{ "%.2f"|format(product.price) }}</span>
+                        {% if product.compare_price and product.compare_price > product.price %}
+                            <span style="text-decoration: line-through; color: #9ca3af; font-size: 0.9rem;">${{ "%.2f"|format(product.compare_price) }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Categories -->
+{% if categories %}
+<section style="padding: 4rem 0; background: #f9fafb;">
+    <div class="container">
+        <h2 style="text-align: center; margin-bottom: 3rem; font-size: 2.5rem;">Shop by Category</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+            {% for category in categories %}
+            <div style="background: white; border-radius: 0.5rem; padding: 2rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); cursor: pointer;" onclick="window.location.href='{{ url_for('products', category=category.id) }}'">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🛍️</div>
+                <h3 style="font-size: 1.2rem; color: #1f2937; margin-bottom: 0.5rem;">{{ category.name }}</h3>
+                <p style="color: #6b7280; font-size: 0.9rem;">{{ category.description or 'Explore products' }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Call to Action -->
+<section style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); color: white; padding: 4rem 0; text-align: center;">
+    <div class="container">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Start Shopping?</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">Discover amazing products from trusted sellers worldwide</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('products') }}" style="background: #ff4747; color: white; padding: 1rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold;">
+                Browse Products
+            </a>
+            <a href="{{ url_for('register') }}" style="background: transparent; color: white; padding: 1rem 2rem; border: 2px solid white; border-radius: 0.5rem; text-decoration: none; font-weight: bold;">
+                Join Free
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

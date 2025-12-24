@@ -471,8 +471,8 @@ class DynamicECommerceSystem {
             const response = await fetch('/api/dashboard/stats');
             const data = await response.json();
             
-            if (data.success) {
-                this.updateStatCards(data.stats);
+            if (data.success && data.data) {
+                this.updateStatCards(data.data);
                 this.updateRecentActivity(data.recent_activity);
             }
         } catch (error) {
@@ -481,17 +481,47 @@ class DynamicECommerceSystem {
     }
 
     updateStatCards(stats) {
+        if (!stats || typeof stats !== 'object') {
+            console.warn('Invalid stats data received:', stats);
+            return;
+        }
+        
         Object.keys(stats).forEach(key => {
             const element = document.getElementById(`stat-${key}`);
             if (element) {
-                const currentValue = parseInt(element.textContent);
-                const newValue = stats[key];
+                const currentValue = parseInt(element.textContent) || 0;
+                const newValue = stats[key] || 0;
                 
                 if (currentValue !== newValue) {
                     this.animateNumber(element, currentValue, newValue);
                 }
             }
         });
+    }
+
+    updateRecentActivity(activities) {
+        if (!activities || !Array.isArray(activities)) {
+            return;
+        }
+        
+        const activityContainer = document.getElementById('recent-activity');
+        if (!activityContainer) {
+            return;
+        }
+        
+        const activityHTML = activities.map(activity => `
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="icon-${activity.type || 'info'}"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">${activity.title || 'Activity'}</div>
+                    <div class="activity-time">${activity.time || 'Just now'}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        activityContainer.innerHTML = activityHTML;
     }
 
     animateNumber(element, start, end) {
@@ -543,6 +573,52 @@ class DynamicECommerceSystem {
                     title: {
                         display: true,
                         text: 'Monthly Sales'
+                    }
+                }
+            }
+        });
+    }
+
+    initializeProductChart() {
+        const ctx = document.getElementById('product-chart');
+        if (!ctx) return;
+        
+        // Product performance chart
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Electronics', 'Clothing', 'Home & Garden', 'Sports', 'Books'],
+                datasets: [{
+                    label: 'Products Sold',
+                    data: [65, 59, 80, 81, 56],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 205, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 205, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Product Performance'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
             }

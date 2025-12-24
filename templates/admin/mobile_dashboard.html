@@ -1,0 +1,555 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}Mobile Admin Dashboard - {{ store_config.name }}{% endblock %}
+
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1f2937">
+
+<style>
+/* Mobile-First Admin Dashboard Styles */
+.mobile-admin-container {
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg-primary);
+}
+
+.mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--primary-600);
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mobile-header h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.mobile-menu-btn, .mobile-notification-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-btn:hover, .mobile-notification-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.mobile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 8px;
+}
+
+.mobile-stat-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-light);
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.mobile-stat-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.mobile-stat-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.mobile-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.mobile-quick-actions {
+    padding: 0 16px 16px;
+    margin-bottom: 8px;
+}
+
+.mobile-quick-actions h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.mobile-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.mobile-action-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    min-height: 80px;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.mobile-action-btn:hover {
+    background: var(--primary-50);
+    border-color: var(--primary-200);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mobile-action-icon {
+    font-size: 24px;
+}
+
+.mobile-recent-section {
+    padding: 0 16px 16px;
+}
+
+.mobile-recent-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobile-recent-list {
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+}
+
+.mobile-recent-item {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mobile-recent-item:last-child {
+    border-bottom: none;
+}
+
+.mobile-recent-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--text-primary);
+}
+
+.mobile-recent-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.mobile-recent-meta {
+    text-align: right;
+    font-size: 12px;
+}
+
+.mobile-recent-value {
+    font-weight: 600;
+    color: var(--success-600);
+    margin-bottom: 2px;
+}
+
+.mobile-status {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.mobile-status.pending {
+    background: var(--warning-100);
+    color: var(--warning-700);
+}
+
+.mobile-status.completed {
+    background: var(--success-100);
+    color: var(--success-700);
+}
+
+.mobile-status.processing {
+    background: var(--primary-100);
+    color: var(--primary-700);
+}
+
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+    z-index: 1000;
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    min-width: 44px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.mobile-nav-item.active {
+    color: var(--primary-600);
+    background: var(--primary-50);
+}
+
+.mobile-nav-item:hover {
+    color: var(--primary-600);
+}
+
+.mobile-nav-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.mobile-content {
+    padding-bottom: 80px; /* Space for bottom nav */
+}
+
+.mobile-notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--error-500);
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .mobile-action-btn:hover {
+        transform: none;
+    }
+    
+    .mobile-action-btn:active {
+        transform: scale(0.98);
+        background: var(--primary-100);
+    }
+    
+    .mobile-nav-item:active {
+        background: var(--primary-100);
+    }
+}
+
+/* Small screen optimizations */
+@media (max-width: 360px) {
+    .mobile-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .mobile-actions-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .mobile-stat-card, .mobile-action-btn {
+        min-height: 60px;
+    }
+}
+
+/* Landscape orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    .mobile-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .mobile-actions-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mobile-admin-container">
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+        <h1>Admin Dashboard</h1>
+        <button class="mobile-notification-btn" onclick="showNotifications()">
+            🔔
+            {% if notification_count > 0 %}
+            <span class="mobile-notification-badge">{{ notification_count }}</span>
+            {% endif %}
+        </button>
+    </div>
+    
+    <div class="mobile-content">
+        <!-- Key Metrics -->
+        <div class="mobile-stats-grid">
+            <div class="mobile-stat-card">
+                <div class="mobile-stat-icon">👥</div>
+                <div class="mobile-stat-number">{{ total_users or 0 }}</div>
+                <div class="mobile-stat-label">Users</div>
+            </div>
+            
+            <div class="mobile-stat-card">
+                <div class="mobile-stat-icon">🛒</div>
+                <div class="mobile-stat-number">{{ total_orders or 0 }}</div>
+                <div class="mobile-stat-label">Orders</div>
+            </div>
+            
+            <div class="mobile-stat-card">
+                <div class="mobile-stat-icon">💰</div>
+                <div class="mobile-stat-number">${{ "%.0f"|format(total_revenue or 0) }}</div>
+                <div class="mobile-stat-label">Revenue</div>
+            </div>
+            
+            <div class="mobile-stat-card">
+                <div class="mobile-stat-icon">⚠️</div>
+                <div class="mobile-stat-number">{{ pending_orders or 0 }}</div>
+                <div class="mobile-stat-label">Pending</div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="mobile-quick-actions">
+            <h2>Quick Actions</h2>
+            <div class="mobile-actions-grid">
+                <a href="{{ url_for('admin_orders') }}" class="mobile-action-btn">
+                    <span class="mobile-action-icon">🛒</span>
+                    Orders
+                </a>
+                
+                <a href="{{ url_for('admin_users') }}" class="mobile-action-btn">
+                    <span class="mobile-action-icon">👥</span>
+                    Users
+                </a>
+                
+                <a href="{{ url_for('admin_products') }}" class="mobile-action-btn">
+                    <span class="mobile-action-icon">📦</span>
+                    Products
+                </a>
+                
+                <a href="{{ url_for('admin_analytics') }}" class="mobile-action-btn">
+                    <span class="mobile-action-icon">📊</span>
+                    Analytics
+                </a>
+            </div>
+        </div>
+        
+        <!-- Recent Orders -->
+        <div class="mobile-recent-section">
+            <h3>📋 Recent Orders</h3>
+            <div class="mobile-recent-list">
+                {% if recent_orders %}
+                    {% for order in recent_orders[:5] %}
+                    <div class="mobile-recent-item">
+                        <div class="mobile-recent-info">
+                            <h4>Order #{{ order.order_number or order.id }}</h4>
+                            <p>{{ order.created_at.strftime('%b %d, %Y') }}</p>
+                        </div>
+                        <div class="mobile-recent-meta">
+                            <div class="mobile-recent-value">${{ "%.2f"|format(order.total_price) }}</div>
+                            <span class="mobile-status {{ order.order_status }}">{{ order.order_status }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="mobile-recent-item">
+                        <div class="mobile-recent-info">
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">No recent orders</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Recent Users -->
+        <div class="mobile-recent-section">
+            <h3>👥 New Users</h3>
+            <div class="mobile-recent-list">
+                {% if recent_users %}
+                    {% for user in recent_users[:5] %}
+                    <div class="mobile-recent-item">
+                        <div class="mobile-recent-info">
+                            <h4>{{ user.username }}</h4>
+                            <p>{{ user.email }}</p>
+                        </div>
+                        <div class="mobile-recent-meta">
+                            <div style="font-size: 10px; color: var(--text-muted);">{{ user.created_at.strftime('%b %d') }}</div>
+                            <span class="mobile-status {{ 'completed' if user.role == 'vendor' else 'processing' }}">{{ user.role }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="mobile-recent-item">
+                        <div class="mobile-recent-info">
+                            <p style="color: var(--text-muted); text-align: center; padding: 20px;">No recent users</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="mobile-bottom-nav">
+        <a href="{{ url_for('admin_dashboard') }}" class="mobile-nav-item active">
+            <span class="mobile-nav-icon">🏠</span>
+            Dashboard
+        </a>
+        
+        <a href="{{ url_for('admin_orders') }}" class="mobile-nav-item">
+            <span class="mobile-nav-icon">🛒</span>
+            Orders
+        </a>
+        
+        <a href="{{ url_for('admin_users') }}" class="mobile-nav-item">
+            <span class="mobile-nav-icon">👥</span>
+            Users
+        </a>
+        
+        <a href="{{ url_for('admin_analytics') }}" class="mobile-nav-item">
+            <span class="mobile-nav-icon">📊</span>
+            Analytics
+        </a>
+        
+        <a href="#" class="mobile-nav-item" onclick="showMobileMenu()">
+            <span class="mobile-nav-icon">⋯</span>
+            More
+        </a>
+    </div>
+</div>
+
+<script>
+// Mobile Admin Dashboard JavaScript
+function toggleMobileMenu() {
+    // Implementation for mobile menu toggle
+    console.log('Mobile menu toggled');
+}
+
+function showNotifications() {
+    // Implementation for showing notifications
+    console.log('Notifications shown');
+}
+
+function showMobileMenu() {
+    // Implementation for showing more menu options
+    console.log('Mobile menu shown');
+}
+
+// Touch gesture handling
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+});
+
+document.addEventListener('touchend', function(e) {
+    if (!touchStartX || !touchStartY) return;
+    
+    let touchEndX = e.changedTouches[0].clientX;
+    let touchEndY = e.changedTouches[0].clientY;
+    
+    let diffX = touchStartX - touchEndX;
+    let diffY = touchStartY - touchEndY;
+    
+    // Swipe detection
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+                // Swipe left
+                console.log('Swipe left detected');
+            } else {
+                // Swipe right
+                console.log('Swipe right detected');
+            }
+        }
+    }
+    
+    touchStartX = 0;
+    touchStartY = 0;
+});
+
+// Prevent zoom on double tap for better UX
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(event) {
+    let now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false);
+
+// Handle orientation changes
+window.addEventListener('orientationchange', function() {
+    setTimeout(function() {
+        // Adjust layout after orientation change
+        window.scrollTo(0, 0);
+    }, 100);
+});
+</script>
+{% endblock %}

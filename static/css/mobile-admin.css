@@ -1,0 +1,722 @@
+/**
+ * Mobile Admin Interface Styles
+ * Optimized styles for mobile and touch devices
+ */
+
+/* ==================== MOBILE NAVIGATION ==================== */
+
+.mobile-admin-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-admin-menu.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-menu-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.mobile-menu-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: white;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-admin-menu.open .mobile-menu-content {
+    transform: translateX(0);
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+}
+
+.mobile-menu-header h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.mobile-menu-close {
+    background: none;
+    border: none;
+    color: #718096;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 1.5rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-menu-close:hover {
+    color: #4a5568;
+    background-color: #edf2f7;
+}
+
+.mobile-menu-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 0;
+}
+
+.mobile-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    color: #4a5568;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-height: 56px;
+}
+
+.mobile-nav-item:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+
+.mobile-nav-item.active {
+    background-color: #ebf8ff;
+    color: #4299e1;
+    border-right: 3px solid #4299e1;
+}
+
+.mobile-nav-item i {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+}
+
+.mobile-menu-footer {
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+}
+
+.admin-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #4299e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.875rem;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: #718096;
+}
+
+.logout-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ==================== TOUCH GESTURES ==================== */
+
+.pull-to-refresh-indicator {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #4299e1;
+    font-size: 0.875rem;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.pull-to-refresh-indicator i {
+    font-size: 1.5rem;
+}
+
+.pull-to-refresh-indicator.ready {
+    color: #48bb78;
+}
+
+.pull-to-refresh-indicator .spinning {
+    animation: spin 1s linear infinite;
+}
+
+.swipe-delete-action {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 80px;
+    background-color: #f56565;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.swipe-delete-action.ready {
+    opacity: 1;
+}
+
+.mobile-context-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.mobile-context-menu.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.context-menu-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.context-menu-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px 16px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-context-menu.show .context-menu-content {
+    transform: translateY(0);
+}
+
+.context-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.context-menu-header h4 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.context-menu-close {
+    background: none;
+    border: none;
+    color: #718096;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 1.5rem;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.context-menu-actions {
+    padding: 20px;
+}
+
+.context-action {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 16px;
+    background: none;
+    border: none;
+    color: #4a5568;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    text-align: left;
+    margin-bottom: 8px;
+    min-height: 56px;
+}
+
+.context-action:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+
+.context-action:last-child {
+    margin-bottom: 0;
+}
+
+.context-action i {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+}
+
+/* ==================== MOBILE MODALS ==================== */
+
+.mobile-optimized {
+    border-radius: 16px 16px 0 0;
+}
+
+.mobile-optimized .modal-content {
+    border-radius: 16px 16px 0 0;
+    margin: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.mobile-optimized .modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}
+
+.mobile-optimized .modal-body {
+    padding: 20px;
+}
+
+.mobile-optimized .modal-footer {
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    z-index: 10;
+}
+
+/* ==================== MOBILE FORM OPTIMIZATIONS ==================== */
+
+@media (max-width: 768px) {
+    /* Touch-friendly form controls */
+    .form-control {
+        min-height: 44px;
+        padding: 12px 16px;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .btn {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        min-height: 36px;
+        padding: 8px 16px;
+        font-size: 0.875rem;
+    }
+    
+    /* Checkbox and radio buttons */
+    input[type="checkbox"],
+    input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+    }
+    
+    /* Select dropdowns */
+    select.form-control {
+        background-size: 16px;
+        padding-right: 40px;
+    }
+    
+    /* File inputs */
+    input[type="file"] {
+        padding: 12px;
+        border: 2px dashed #cbd5e0;
+        border-radius: 8px;
+        background-color: #f7fafc;
+    }
+}
+
+/* ==================== MOBILE TABLES ==================== */
+
+@media (max-width: 768px) {
+    .analytics-table,
+    .admin-table {
+        font-size: 0.875rem;
+    }
+    
+    .analytics-table th,
+    .analytics-table td,
+    .admin-table th,
+    .admin-table td {
+        padding: 12px 8px;
+    }
+    
+    /* Stack table cells vertically on very small screens */
+    @media (max-width: 480px) {
+        .analytics-table,
+        .admin-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .analytics-table thead,
+        .admin-table thead {
+            display: none;
+        }
+        
+        .analytics-table tbody,
+        .admin-table tbody {
+            display: block;
+        }
+        
+        .analytics-table tr,
+        .admin-table tr {
+            display: block;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            padding: 16px;
+            background: white;
+        }
+        
+        .analytics-table td,
+        .admin-table td {
+            display: block;
+            text-align: left;
+            padding: 4px 0;
+            border: none;
+        }
+        
+        .analytics-table td:before,
+        .admin-table td:before {
+            content: attr(data-label) ": ";
+            font-weight: 600;
+            color: #4a5568;
+        }
+    }
+}
+
+/* ==================== MOBILE CHARTS ==================== */
+
+@media (max-width: 768px) {
+    .chart-container,
+    .metric-chart-container {
+        margin-bottom: 24px;
+    }
+    
+    .chart-grid,
+    .metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .chart-container canvas,
+    .metric-chart-container canvas {
+        max-height: 250px;
+    }
+}
+
+/* ==================== MOBILE DRAG AND DROP ==================== */
+
+@media (max-width: 768px) {
+    .drag-handle {
+        padding: 12px;
+        font-size: 1.25rem;
+        color: #4299e1;
+    }
+    
+    .dragging {
+        opacity: 0.7;
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .drag-placeholder {
+        min-height: 60px;
+        margin: 12px 0;
+        font-size: 1rem;
+    }
+}
+
+/* ==================== MOBILE NOTIFICATIONS ==================== */
+
+@media (max-width: 768px) {
+    .admin-notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .admin-notification {
+        margin-bottom: 8px;
+    }
+    
+    .admin-notification-content {
+        padding: 12px 16px;
+    }
+    
+    .admin-notification-message {
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+}
+
+/* ==================== MOBILE ACCESSIBILITY ==================== */
+
+@media (max-width: 768px) {
+    /* Ensure all interactive elements are at least 44px */
+    button,
+    .btn,
+    a,
+    input,
+    select,
+    textarea,
+    [role="button"],
+    [tabindex="0"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Increase tap targets for small elements */
+    .widget-action,
+    .toolbar-btn,
+    .context-action,
+    .mobile-nav-item {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Focus indicators for keyboard navigation */
+    button:focus,
+    .btn:focus,
+    a:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: 2px solid #4299e1;
+        outline-offset: 2px;
+    }
+}
+
+/* ==================== MOBILE ANIMATIONS ==================== */
+
+@media (max-width: 768px) {
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+    
+    /* Touch feedback */
+    .btn:active,
+    .mobile-nav-item:active,
+    .context-action:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* ==================== MOBILE LANDSCAPE ==================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .mobile-menu-content {
+        width: 320px;
+    }
+    
+    .admin-tabs .tab-navigation {
+        padding: 0 20px;
+    }
+    
+    .metric-card,
+    .dashboard-widget {
+        min-height: auto;
+    }
+    
+    .chart-container canvas,
+    .metric-chart-container canvas {
+        max-height: 200px;
+    }
+}
+
+/* ==================== MOBILE DARK MODE SUPPORT ==================== */
+
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+    .mobile-menu-content {
+        background: #1a202c;
+        color: #e2e8f0;
+    }
+    
+    .mobile-menu-header {
+        background-color: #2d3748;
+        border-bottom-color: #4a5568;
+    }
+    
+    .mobile-menu-footer {
+        background-color: #2d3748;
+        border-top-color: #4a5568;
+    }
+    
+    .mobile-nav-item {
+        color: #a0aec0;
+    }
+    
+    .mobile-nav-item:hover {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .mobile-nav-item.active {
+        background-color: #2b6cb0;
+        color: #90cdf4;
+    }
+    
+    .context-menu-content {
+        background: #1a202c;
+        color: #e2e8f0;
+    }
+    
+    .context-menu-header {
+        border-bottom-color: #4a5568;
+    }
+    
+    .context-action {
+        color: #a0aec0;
+    }
+    
+    .context-action:hover {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block;
+    }
+    
+    .desktop-only {
+        display: none;
+    }
+    
+    .mobile-hidden {
+        display: none !important;
+    }
+    
+    .mobile-full-width {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    .mobile-center {
+        text-align: center !important;
+    }
+    
+    .mobile-stack {
+        flex-direction: column !important;
+    }
+    
+    .mobile-no-padding {
+        padding: 0 !important;
+    }
+    
+    .mobile-small-padding {
+        padding: 12px !important;
+    }
+}

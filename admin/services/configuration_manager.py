@@ -1,202 +1,273 @@
 """
-Configuration Management Service
-Handles real-time site settings and configuration changes
+Configuration Management Service for SQLite
+Handles real-time site settings and configuration changes with advanced features
 """
 
-from typing import Any, Dict, Optional, List, Tuple
-from datetime import datetime, timedelta
-from bson import ObjectId
-from .base_service import BaseService
-from ..models.configuration import AdminSetting, ConfigurationCache
-from .settings_validator import SettingsValidator, ValidationResult
-from .change_notifier import ChangeNotifier
-from .configuration_cache import ConfigurationCache as CacheManager
+from typing import Any, Dict, Optional, List
+from datetime import datetime, timezone
+from models_sqlite import AdminSetting, ActivityLog, db
+import json
 
 
-class ConfigurationManager(BaseService):
-    """Service for managing configuration settings with real-time updates."""
+class ConfigurationManager:
+    """Advanced service for managing configuration settings with real-time updates."""
     
-    def __init__(self, mongo_db):
-        super().__init__(mongo_db)
-        self.cache_collection = self.db.admin_config_cache
-        
-        # Initialize components
-        self.validator = SettingsValidator()
-        self.change_notifier = ChangeNotifier()
-        self.cache_manager = CacheManager(mongo_db, default_ttl=timedelta(hours=1))
-        
-        # Legacy support for existing change listeners
-        self.change_listeners = []
-        self.cache_ttl = timedelta(hours=1)  # Default cache TTL
-    
-    def _get_collection_name(self) -> str:
-        return 'admin_settings'
+    def __init__(self, database):
+        self.db = database
+        self._cache = {}
+        self._cache_timestamp = None
     
     def get_setting(self, key: str, use_cache: bool = True) -> Any:
-        """Get a configuration setting value."""
-        # Try cache first if enabled
-        if use_cache:
-            cached_value = self.cache_manager.get(key)
-            if cached_value is not None:
-                return cached_value
+        """Get a configuration setting value with caching."""
+        if use_cache and self._is_cache_valid():
+            return self._cache.get(key)
         
-        # Get from database
-        setting_doc = self.collection.find_one({'key': key})
-        if not setting_doc:
-            return None
-        
-        setting = AdminSetting.from_dict(setting_doc)
-        
-        # Cache the value if caching is enabled
-        if use_cache:
-            self.cache_manager.set(key, setting.value)
-        
-        return setting.value
+        setting = AdminSetting.query.filter_by(key=key).first()
+        if setting:
+            value = setting.get_value()
+            self._cache[key] = value
+            return value
+        return None
     
-    def update_setting(self, key: str, value: Any, user_id: Optional[ObjectId] = None) -> bool:
-        """Update a configuration setting and broadcast changes."""
-        # Get existing setting for validation
-        existing_doc = self.collection.find_one({'key': key})
-        if not existing_doc:
-            return False
-        
-        existing_setting = AdminSetting.from_dict(existing_doc)
-        
-        # Validate the new value using the validator
-        validation_result = self.validator.validate_setting(existing_setting, value)
-        if not validation_result.is_valid:
-            raise ValueError(validation_result.error_message)
-        
-        # Store old value for change notification
-        old_value = existing_setting.value
-        
-        # Update the setting
-        success = self.update(existing_setting.id, {'value': value}, user_id)
-        
-        if success:
-            # Invalidate cache
-            self.cache_manager.invalidate(key)
+    def update_setting(self, key: str, value: Any, user_id: Optional[int] = None, 
+                      category: str = 'general', description: str = None) -> Dict[str, Any]:
+        """Update a configuration setting with validation and logging."""
+        try:
+            setting = AdminSetting.query.filter_by(key=key).first()
+            old_value = None
             
-            # Broadcast change using the new change notifier system
-            self.change_notifier.broadcast_change(key, old_value, value, str(user_id) if user_id else None)
+            if setting:
+                # Update existing setting
+                old_value = setting.get_value()
+                setting.set_value(value)
+                setting.updated_at = datetime.now(timezone.utc)
+                if user_id:
+                    setting.updated_by = user_id
+                if description:
+                    setting.description = description
+            else:
+                # Create new setting
+                setting = AdminSetting(
+                    key=key,
+                    category=category,
+                    description=description or f'Setting for {key}',
+                    data_type=self._detect_data_type(value),
+                    updated_by=user_id
+                )
+                setting.set_value(value)
+                db.session.add(setting)
             
-            # Legacy support - call legacy listeners directly
-            change_event = {
+            db.session.commit()
+            
+            # Clear cache
+            self._cache.pop(key, None)
+            
+            # Log the change
+            self._log_setting_change(key, old_value, value, user_id)
+            
+            # Broadcast change to connected clients (if WebSocket is implemented)
+            self._broadcast_setting_change(key, value)
+            
+            return {
+                'success': True,
                 'key': key,
+                'value': value,
                 'old_value': old_value,
-                'new_value': value,
-                'timestamp': datetime.utcnow()
+                'requires_restart': setting.requires_restart
             }
             
-            for listener in self.change_listeners:
-                try:
-                    listener(change_event)
-                except Exception as e:
-                    # Log error but don't fail the broadcast
-                    print(f"Error in legacy change listener: {e}")
-        
-        return success
+        except Exception as e:
+            db.session.rollback()
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
-    def validate_setting(self, key: str, value: Any) -> ValidationResult:
-        """Validate a configuration setting value."""
-        setting_doc = self.collection.find_one({'key': key})
-        if not setting_doc:
-            return ValidationResult(False, f"Setting '{key}' not found")
-        
-        setting = AdminSetting.from_dict(setting_doc)
-        return self.validator.validate_setting(setting, value)
-    
-    def broadcast_change(self, key: str, old_value: Any, new_value: Any) -> None:
-        """Broadcast configuration changes to all registered listeners."""
-        change_event = {
-            'key': key,
-            'old_value': old_value,
-            'new_value': new_value,
-            'timestamp': datetime.utcnow()
-        }
-        
-        for listener in self.change_listeners:
-            try:
-                listener(change_event)
-            except Exception as e:
-                # Log error but don't fail the broadcast
-                print(f"Error in change listener: {e}")
-    
-    def get_all_settings(self, category: Optional[str] = None) -> Dict[str, Any]:
+    def get_all_settings(self, category: str = None) -> Dict[str, Any]:
         """Get all configuration settings, optionally filtered by category."""
-        query = {}
+        query = AdminSetting.query
         if category:
-            query['category'] = category
+            query = query.filter_by(category=category)
         
-        settings_docs = self.find(query)
         settings = {}
-        
-        for doc in settings_docs:
-            setting = AdminSetting.from_dict(doc)
-            settings[setting.key] = setting.value
-        
+        for setting in query.all():
+            settings[setting.key] = {
+                'value': setting.get_value(),
+                'category': setting.category,
+                'description': setting.description,
+                'data_type': setting.data_type,
+                'is_sensitive': setting.is_sensitive,
+                'requires_restart': setting.requires_restart,
+                'updated_at': setting.updated_at.isoformat() if setting.updated_at else None
+            }
         return settings
     
-    def create_setting(self, key: str, value: Any, category: str = 'general', 
-                      description: str = '', validation_rules: Dict[str, Any] = None,
-                      is_sensitive: bool = False, user_id: Optional[ObjectId] = None) -> ObjectId:
-        """Create a new configuration setting."""
-        if validation_rules is None:
-            validation_rules = {}
-        
-        # Check if setting already exists
-        if self.collection.find_one({'key': key}):
-            raise ValueError(f"Setting '{key}' already exists")
-        
-        setting_data = {
-            'key': key,
-            'value': value,
-            'category': category,
-            'description': description,
-            'validation_rules': validation_rules,
-            'is_sensitive': is_sensitive,
-            'requires_restart': False
+    def get_settings_by_category(self, category: str) -> Dict[str, Any]:
+        """Get settings by category with metadata."""
+        settings = {}
+        for setting in AdminSetting.query.filter_by(category=category).all():
+            settings[setting.key] = {
+                'value': setting.get_value(),
+                'description': setting.description,
+                'data_type': setting.data_type,
+                'is_sensitive': setting.is_sensitive
+            }
+        return settings
+    
+    def delete_setting(self, key: str, user_id: Optional[int] = None) -> bool:
+        """Delete a configuration setting with logging."""
+        try:
+            setting = AdminSetting.query.filter_by(key=key).first()
+            if setting:
+                old_value = setting.get_value()
+                db.session.delete(setting)
+                db.session.commit()
+                
+                # Clear cache
+                self._cache.pop(key, None)
+                
+                # Log the deletion
+                self._log_setting_change(key, old_value, None, user_id, action='delete')
+                
+                return True
+            return False
+        except Exception as e:
+            db.session.rollback()
+            return False
+    
+    def validate_setting(self, key: str, value: Any) -> Dict[str, Any]:
+        """Validate a setting value before saving."""
+        validation_rules = {
+            'site_name': {'type': str, 'min_length': 1, 'max_length': 100},
+            'contact_email': {'type': str, 'pattern': r'^[^@]+@[^@]+\.[^@]+$'},
+            'products_per_page': {'type': int, 'min': 1, 'max': 100},
+            'max_file_size': {'type': int, 'min': 1024, 'max': 50 * 1024 * 1024}  # 50MB
         }
         
-        return self.create(setting_data, user_id)
+        if key not in validation_rules:
+            return {'valid': True}
+        
+        rules = validation_rules[key]
+        
+        # Type validation
+        if 'type' in rules and not isinstance(value, rules['type']):
+            return {'valid': False, 'error': f'Value must be of type {rules["type"].__name__}'}
+        
+        # String validations
+        if isinstance(value, str):
+            if 'min_length' in rules and len(value) < rules['min_length']:
+                return {'valid': False, 'error': f'Value must be at least {rules["min_length"]} characters'}
+            if 'max_length' in rules and len(value) > rules['max_length']:
+                return {'valid': False, 'error': f'Value must be at most {rules["max_length"]} characters'}
+            if 'pattern' in rules:
+                import re
+                if not re.match(rules['pattern'], value):
+                    return {'valid': False, 'error': 'Value format is invalid'}
+        
+        # Numeric validations
+        if isinstance(value, (int, float)):
+            if 'min' in rules and value < rules['min']:
+                return {'valid': False, 'error': f'Value must be at least {rules["min"]}'}
+            if 'max' in rules and value > rules['max']:
+                return {'valid': False, 'error': f'Value must be at most {rules["max"]}'}
+        
+        return {'valid': True}
     
-    def register_change_listener(self, listener_func) -> None:
-        """Register a function to be called when configuration changes."""
-        # Add to legacy listeners list only
-        self.change_listeners.append(listener_func)
+    def export_settings(self, category: str = None) -> str:
+        """Export settings to JSON format."""
+        settings = self.get_all_settings(category)
+        return json.dumps(settings, indent=2, default=str)
     
-    def register_change_listener_advanced(self, listener_id: str, callback, 
-                                        filter_keys: Optional[List[str]] = None, 
-                                        priority: int = 0) -> None:
-        """Register an advanced change listener with filtering and priority."""
-        self.change_notifier.register_listener(listener_id, callback, filter_keys, priority)
+    def import_settings(self, settings_json: str, user_id: Optional[int] = None) -> Dict[str, Any]:
+        """Import settings from JSON format."""
+        try:
+            settings = json.loads(settings_json)
+            imported = 0
+            errors = []
+            
+            for key, setting_data in settings.items():
+                if isinstance(setting_data, dict) and 'value' in setting_data:
+                    value = setting_data['value']
+                    category = setting_data.get('category', 'general')
+                    description = setting_data.get('description')
+                else:
+                    value = setting_data
+                    category = 'general'
+                    description = None
+                
+                # Validate setting
+                validation = self.validate_setting(key, value)
+                if not validation['valid']:
+                    errors.append(f"{key}: {validation['error']}")
+                    continue
+                
+                # Update setting
+                result = self.update_setting(key, value, user_id, category, description)
+                if result['success']:
+                    imported += 1
+                else:
+                    errors.append(f"{key}: {result['error']}")
+            
+            return {
+                'success': True,
+                'imported': imported,
+                'errors': errors
+            }
+            
+        except json.JSONDecodeError as e:
+            return {
+                'success': False,
+                'error': f'Invalid JSON format: {str(e)}'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
-    def unregister_change_listener(self, listener_id: str) -> bool:
-        """Unregister a change listener."""
-        return self.change_notifier.unregister_listener(listener_id)
+    def _detect_data_type(self, value: Any) -> str:
+        """Detect the data type of a value."""
+        if isinstance(value, bool):
+            return 'boolean'
+        elif isinstance(value, int):
+            return 'number'
+        elif isinstance(value, float):
+            return 'number'
+        elif isinstance(value, (dict, list)):
+            return 'json'
+        else:
+            return 'string'
     
-    def get_change_history(self, limit: Optional[int] = None, key_filter: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Get configuration change history."""
-        return self.change_notifier.get_change_history(limit, key_filter)
+    def _is_cache_valid(self) -> bool:
+        """Check if cache is still valid (5 minutes)."""
+        if not self._cache_timestamp:
+            return False
+        return (datetime.now(timezone.utc) - self._cache_timestamp).seconds < 300
     
-    def get_cache_statistics(self) -> Dict[str, Any]:
-        """Get cache performance statistics."""
-        return self.cache_manager.get_statistics()
+    def _log_setting_change(self, key: str, old_value: Any, new_value: Any, 
+                           user_id: Optional[int], action: str = 'update'):
+        """Log setting changes for audit trail."""
+        try:
+            log = ActivityLog(
+                user_id=user_id,
+                action=f'setting_{action}',
+                resource_type='admin_setting',
+                resource_id=key,
+                success=True
+            )
+            log.set_details({
+                'key': key,
+                'old_value': old_value,
+                'new_value': new_value,
+                'action': action
+            })
+            db.session.add(log)
+            db.session.commit()
+        except Exception:
+            pass  # Don't fail the main operation if logging fails
     
-    def clear_cache(self) -> int:
-        """Clear all cached configuration values."""
-        return self.cache_manager.clear()
-    
-    
-    # Legacy cache methods for backward compatibility
-    def _get_from_cache(self, key: str) -> Any:
-        """Legacy method - use cache_manager.get() instead."""
-        return self.cache_manager.get(key)
-    
-    def _cache_value(self, key: str, value: Any) -> None:
-        """Legacy method - use cache_manager.set() instead."""
-        self.cache_manager.set(key, value)
-    
-    def _invalidate_cache(self, key: str) -> None:
-        """Legacy method - use cache_manager.invalidate() instead."""
-        self.cache_manager.invalidate(key)
+    def _broadcast_setting_change(self, key: str, value: Any):
+        """Broadcast setting changes to connected clients (placeholder for WebSocket)."""
+        # This would integrate with WebSocket or Server-Sent Events
+        # For now, it's a placeholder for future real-time functionality
+        pass

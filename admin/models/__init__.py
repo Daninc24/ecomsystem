@@ -19,6 +19,10 @@ from .order import (
     Order, Refund, Dispute, ShippingIntegration, FinancialReport,
     OrderStatus, PaymentStatus, RefundStatus, DisputeStatus, ShippingStatus
 )
+from .integration import (
+    Integration, PaymentGateway, ShippingProvider, EmailService, 
+    SocialMediaAccount, APIUsageMetric, IntegrationType, IntegrationStatus
+)
 
 __all__ = [
     'BaseModel',
@@ -60,5 +64,13 @@ __all__ = [
     'PaymentStatus',
     'RefundStatus',
     'DisputeStatus',
-    'ShippingStatus'
+    'ShippingStatus',
+    'Integration',
+    'PaymentGateway',
+    'ShippingProvider',
+    'EmailService',
+    'SocialMediaAccount',
+    'APIUsageMetric',
+    'IntegrationType',
+    'IntegrationStatus'
 ]

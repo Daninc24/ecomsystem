@@ -1,0 +1,169 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}{{ product.name }} - {{ store_config.name }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section style="background: #f9fafb; padding: 1rem 0;">
+    <div class="container">
+        <nav style="font-size: 0.9rem; color: #6b7280;">
+            <a href="{{ url_for('index') }}" style="color: #6b7280; text-decoration: none;">Home</a>
+            <span> > </span>
+            <a href="{{ url_for('products') }}" style="color: #6b7280; text-decoration: none;">Products</a>
+            <span> > </span>
+            <span>{{ product.name }}</span>
+        </nav>
+    </div>
+</section>
+
+<!-- Product Detail -->
+<section style="padding: 2rem 0;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+            <!-- Product Images -->
+            <div>
+                <div style="border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; margin-bottom: 1rem;">
+                    {% if product.get_images() %}
+                        <img src="{{ product.get_images()[0] }}" alt="{{ product.name }}" 
+                             style="width: 100%; height: 400px; object-fit: cover;">
+                    {% else %}
+                        <div style="height: 400px; background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #9ca3af; font-size: 4rem;">📦</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Additional Images -->
+                {% if product.get_images()|length > 1 %}
+                <div style="display: flex; gap: 0.5rem; overflow-x: auto;">
+                    {% for image in product.get_images()[1:5] %}
+                    <img src="{{ image }}" alt="{{ product.name }}" 
+                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 0.25rem; border: 1px solid #e5e7eb; cursor: pointer;">
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Product Info -->
+            <div>
+                <h1 style="font-size: 2rem; color: #1f2937; margin-bottom: 1rem;">{{ product.name }}</h1>
+                
+                <!-- Categories -->
+                {% if product.categories %}
+                <div style="margin-bottom: 1rem;">
+                    {% for category in product.categories %}
+                    <span style="background: #f3f4f6; color: #6b7280; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.9rem; margin-right: 0.5rem;">
+                        {{ category.name }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <!-- Price -->
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <span style="font-size: 2rem; font-weight: bold; color: #ff4747;">${{ "%.2f"|format(product.price) }}</span>
+                        {% if product.compare_price and product.compare_price > product.price %}
+                            <span style="text-decoration: line-through; color: #9ca3af; font-size: 1.2rem;">${{ "%.2f"|format(product.compare_price) }}</span>
+                            <span style="background: #ff4747; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem;">
+                                {{ product.get_discount_percentage() }}% OFF
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Stock Status -->
+                    {% if product.is_in_stock() %}
+                        <span style="color: #10b981; font-weight: 500;">✓ In Stock</span>
+                        {% if product.track_inventory %}
+                            <span style="color: #6b7280; font-size: 0.9rem; margin-left: 0.5rem;">
+                                ({{ product.inventory_quantity }} available)
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: #ef4444; font-weight: 500;">✗ Out of Stock</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Product Details -->
+                {% if product.sku %}
+                <div style="margin-bottom: 1rem;">
+                    <span style="color: #6b7280; font-size: 0.9rem;">SKU: {{ product.sku }}</span>
+                </div>
+                {% endif %}
+                
+                <!-- Short Description -->
+                {% if product.short_description %}
+                <div style="margin-bottom: 2rem;">
+                    <p style="color: #374151; font-size: 1.1rem; line-height: 1.6;">{{ product.short_description }}</p>
+                </div>
+                {% endif %}
+                
+                <!-- Add to Cart -->
+                {% if product.is_in_stock() %}
+                <div style="margin-bottom: 2rem;">
+                    <a href="{{ url_for('add_to_cart', product_id=product.id) }}" 
+                       style="background: #ff4747; color: white; padding: 1rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: bold; display: inline-block; margin-right: 1rem;">
+                        🛒 Add to Cart
+                    </a>
+                    <button style="background: #374151; color: white; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: bold; cursor: pointer;">
+                        ❤️ Add to Wishlist
+                    </button>
+                </div>
+                {% endif %}
+                
+                <!-- Vendor Info -->
+                {% if product.vendor %}
+                <div style="border-top: 1px solid #e5e7eb; padding-top: 1rem;">
+                    <h4 style="color: #374151; margin-bottom: 0.5rem;">Sold by</h4>
+                    <p style="color: #6b7280;">{{ product.vendor.get_full_name() }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Product Description -->
+        {% if product.description %}
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem; margin-bottom: 3rem;">
+            <h3 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 1rem;">Product Description</h3>
+            <div style="color: #374151; line-height: 1.6;">
+                {{ product.description|safe }}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Related Products -->
+        {% if related_products %}
+        <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">
+            <h3 style="font-size: 1.5rem; color: #1f2937; margin-bottom: 2rem;">Related Products</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                {% for related in related_products %}
+                <div style="border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; cursor: pointer;" 
+                     onclick="window.location.href='{{ url_for('product_detail', slug=related.slug) }}'">
+                    <div style="height: 150px; background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                        {% if related.get_images() %}
+                            <img src="{{ related.get_images()[0] }}" alt="{{ related.name }}" style="max-width: 100%; max-height: 100%; object-fit: cover;">
+                        {% else %}
+                            <span style="color: #9ca3af; font-size: 2rem;">📦</span>
+                        {% endif %}
+                    </div>
+                    <div style="padding: 1rem;">
+                        <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: #1f2937;">{{ related.name }}</h4>
+                        <span style="font-size: 1.1rem; font-weight: bold; color: #ff4747;">${{ "%.2f"|format(related.price) }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+@media (max-width: 768px) {
+    .container > div:first-child {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+}
+</style>
+{% endblock %}

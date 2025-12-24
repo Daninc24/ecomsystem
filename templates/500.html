@@ -1,0 +1,91 @@
+{% extends "base_enhanced.html" %}
+
+{% block title %}Server Error - {{ store_config.name }}{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="container">
+        <div class="error-content">
+            <div class="error-icon">
+                <h1>500</h1>
+            </div>
+            <h2>Internal Server Error</h2>
+            <p>Something went wrong on our end. We're working to fix it!</p>
+            <div class="error-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-primary">Go Home</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.error-content {
+    max-width: 500px;
+}
+
+.error-icon h1 {
+    font-size: 8rem;
+    font-weight: bold;
+    color: var(--primary-red);
+    margin: 0;
+    line-height: 1;
+}
+
+.error-content h2 {
+    font-size: 2rem;
+    margin: 1rem 0;
+    color: var(--gray-800);
+}
+
+.error-content p {
+    font-size: 1.1rem;
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 71, 71, 0.3);
+}
+
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+}
+
+.btn-secondary:hover {
+    background: var(--gray-200);
+}
+</style>
+{% endblock %}

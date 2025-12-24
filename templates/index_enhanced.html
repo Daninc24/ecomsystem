@@ -78,13 +78,13 @@
         
         <div class="products-grid">
             {% for product in flash_deals %}
-            <div class="product-card animate-fade-in-up" onclick="window.location.href='{{ url_for('product_detail', product_id=product._id) }}'">
+            <div class="product-card animate-fade-in-up" onclick="window.location.href='{{ url_for('product_detail', slug=product.slug) }}'">
                 <div class="product-image-wrapper">
-                    <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                    <img src="{{ product.get_main_image() }}" alt="{{ product.name }}" class="product-image" loading="lazy">
                     
                     <div class="product-badges">
-                        {% if product.pricing.discount_percentage > 0 %}
-                        <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                        {% if product.get_discount_percentage() > 0 %}
+                        <span class="badge badge-discount">-{{ product.get_discount_percentage() }}%</span>
                         {% endif %}
                         {% if product.is_featured %}
                         <span class="badge badge-featured">Featured</span>
@@ -106,29 +106,29 @@
                 
                 <div class="product-info">
                     <div class="product-vendor">
-                        <span>Official Store</span>
+                        <span>{{ product.vendor.get_full_name() if product.vendor else 'Official Store' }}</span>
                         <span class="verified-badge">✓</span>
                     </div>
                     
-                    <h3 class="product-name">{{ product.basic_info.name }}</h3>
+                    <h3 class="product-name">{{ product.name }}</h3>
                     
                     <div class="product-rating">
                         <div class="stars">★★★★★</div>
-                        <span class="rating-count">({{ (product.views or 0) // 10 + 1 }})</span>
+                        <span class="rating-count">({{ (product.id * 7) % 100 + 10 }})</span>
                     </div>
                     
                     <div class="product-pricing">
-                        {% if product.pricing.discount_percentage > 0 %}
-                        <span class="product-price">${{ "%.2f"|format(product.pricing.price * (1 - product.pricing.discount_percentage / 100)) }}</span>
-                        <span class="product-original-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                        {% if product.compare_price and product.compare_price > product.price %}
+                        <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
+                        <span class="product-original-price">${{ "%.2f"|format(product.compare_price) }}</span>
                         {% else %}
-                        <span class="product-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                        <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
                         {% endif %}
                     </div>
                     
                     <div class="product-shipping">Free Shipping</div>
                     
-                    <button class="add-to-cart-btn" onclick="event.stopPropagation(); dynamicSystem.addToCart('{{ product._id }}')">
+                    <button class="add-to-cart-btn" onclick="event.stopPropagation(); window.location.href='{{ url_for('add_to_cart', product_id=product.id) }}'">
                         <span>🛒</span>
                         <span>Add to Cart</span>
                     </button>
@@ -157,13 +157,13 @@
         <div class="category-showcase-content">
             <div class="products-grid">
                 {% for product in category_data.products %}
-                <div class="product-card" onclick="window.location.href='{{ url_for('product_detail', product_id=product._id) }}'">
+                <div class="product-card" onclick="window.location.href='{{ url_for('product_detail', slug=product.slug) }}'">
                     <div class="product-image-wrapper">
-                        <img src="{{ product.media.main_image }}" alt="{{ product.basic_info.name }}" class="product-image" loading="lazy">
+                        <img src="{{ product.get_main_image() }}" alt="{{ product.name }}" class="product-image" loading="lazy">
                         
                         <div class="product-badges">
-                            {% if product.pricing.discount_percentage > 0 %}
-                            <span class="badge badge-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                            {% if product.get_discount_percentage() > 0 %}
+                            <span class="badge badge-discount">-{{ product.get_discount_percentage() }}%</span>
                             {% endif %}
                             {% if product.is_featured %}
                             <span class="badge badge-featured">Featured</span>
@@ -182,32 +182,32 @@
                     
                     <div class="product-info">
                         <div class="product-vendor">
-                            <span>Verified Seller</span>
+                            <span>{{ product.vendor.get_full_name() if product.vendor else 'Verified Seller' }}</span>
                             <span class="verified-badge">✓</span>
                         </div>
                         
-                        <h3 class="product-name">{{ product.basic_info.name }}</h3>
+                        <h3 class="product-name">{{ product.name }}</h3>
                         
                         <div class="product-rating">
                             <div class="stars">★★★★☆</div>
-                            <span class="rating-count">({{ (product.views or 0) // 5 + 1 }})</span>
+                            <span class="rating-count">({{ (product.id * 3) % 50 + 5 }})</span>
                         </div>
                         
                         <div class="product-pricing">
-                            {% if product.pricing.discount_percentage > 0 %}
-                            <span class="product-price">${{ "%.2f"|format(product.pricing.price * (1 - product.pricing.discount_percentage / 100)) }}</span>
-                            <span class="product-original-price">${{ "%.2f"|format(product.pricing.price) }}</span>
-                            <span class="product-discount">-{{ product.pricing.discount_percentage|int }}%</span>
+                            {% if product.compare_price and product.compare_price > product.price %}
+                            <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
+                            <span class="product-original-price">${{ "%.2f"|format(product.compare_price) }}</span>
+                            <span class="product-discount">-{{ product.get_discount_percentage() }}%</span>
                             {% else %}
-                            <span class="product-price">${{ "%.2f"|format(product.pricing.price) }}</span>
+                            <span class="product-price">${{ "%.2f"|format(product.price) }}</span>
                             {% endif %}
                         </div>
                         
                         <div class="product-shipping">
-                            {% if product.pricing.price >= store_config.shipping_info.free_shipping_threshold %}
+                            {% if product.price >= 50.00 %}
                             Free Shipping
                             {% else %}
-                            +${{ "%.2f"|format(store_config.shipping_info.standard_shipping_cost) }} Shipping
+                            +$9.99 Shipping
                             {% endif %}
                         </div>
                         
@@ -393,9 +393,13 @@ function updateCountdown() {
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         
-        document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-        document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-        document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+        
+        if (hoursElement) hoursElement.textContent = hours.toString().padStart(2, '0');
+        if (minutesElement) minutesElement.textContent = minutes.toString().padStart(2, '0');
+        if (secondsElement) secondsElement.textContent = seconds.toString().padStart(2, '0');
     }, 1000);
 }
 

@@ -20,6 +20,10 @@ from .permission_engine import PermissionEngine
 from .authentication_manager import AuthenticationManager
 from .vendor_approval_workflow import VendorApprovalWorkflow
 from .audit_logger import AuditLogger
+from .security_monitor import SecurityMonitor
+from .input_validator import InputValidator, ValidationError, SanitizationResult
+from .session_security_manager import SessionSecurityManager
+from .security_middleware import SecurityMiddleware
 from .product_manager import ProductManager
 from .bulk_operation_handler import BulkOperationHandler
 from .data_importer import DataImporter
@@ -30,6 +34,12 @@ from .refund_processor import RefundProcessor
 from .shipping_integrator import ShippingIntegrator
 from .dispute_manager import DisputeManager
 from .report_generator import ReportGenerator
+from .integration_manager import IntegrationManager
+from .payment_gateway_configurator import PaymentGatewayConfigurator
+from .shipping_api_manager import ShippingAPIManager
+from .email_service_manager import EmailServiceManager
+from .social_media_integrator import SocialMediaIntegrator
+from .api_usage_monitor import APIUsageMonitor
 
 __all__ = [
     'ConfigurationManager',
@@ -52,6 +62,12 @@ __all__ = [
     'AuthenticationManager',
     'VendorApprovalWorkflow',
     'AuditLogger',
+    'SecurityMonitor',
+    'InputValidator',
+    'ValidationError',
+    'SanitizationResult',
+    'SessionSecurityManager',
+    'SecurityMiddleware',
     'ProductManager',
     'BulkOperationHandler',
     'DataImporter',
@@ -61,5 +77,11 @@ __all__ = [
     'RefundProcessor',
     'ShippingIntegrator',
     'DisputeManager',
-    'ReportGenerator'
+    'ReportGenerator',
+    'IntegrationManager',
+    'PaymentGatewayConfigurator',
+    'ShippingAPIManager',
+    'EmailServiceManager',
+    'SocialMediaIntegrator',
+    'APIUsageMonitor'
 ]

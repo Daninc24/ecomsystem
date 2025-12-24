@@ -1,472 +1,601 @@
 """
-Theme Manager Service
-Handles theme customization, live preview, and theme management operations
+Theme Management Service for SQLite
+Handles theme customization and CSS generation with advanced features
 """
 
-import os
+from typing import Any, Dict, List, Optional
+from datetime import datetime, timezone
+from models_sqlite import AdminSetting, ActivityLog, db
 import json
+import os
 import hashlib
-from datetime import datetime
-from typing import Dict, Any, List, Optional, Tuple
-from bson import ObjectId
-
-from ..models.theme import ThemeConfig, ThemeBackup
-from ..models.audit import ActivityLog
-from .base_service import BaseService
-from .css_generator import CSSGenerator
-from .asset_manager import AssetManager
-from .responsive_validator import ResponsiveValidator
 
 
-class ThemeManager(BaseService):
-    """Manages theme customization with live preview capabilities."""
+class ThemeManager:
+    """Advanced service for managing themes and visual customization."""
     
-    def __init__(self, db, user_id: Optional[ObjectId] = None):
-        self.user_id = user_id
-        # Initialize BaseService with just the db
-        super().__init__(db)
-        self.css_generator = CSSGenerator()
-        self.asset_manager = AssetManager(db, user_id)
-        self.responsive_validator = ResponsiveValidator()
-        # Override collection references since we use multiple collections
-        self.collection = db.theme_configs
-        self.backup_collection = db.theme_backups
+    def __init__(self, database):
+        self.db = database
+        self.theme_cache = {}
+        self.css_cache = {}
     
-    def _get_collection_name(self) -> str:
-        """Get the MongoDB collection name for this service."""
-        return 'theme_configs'
-    
-    def get_active_theme(self) -> Optional[ThemeConfig]:
-        """Get the currently active theme configuration."""
-        theme_data = self.collection.find_one({'is_active': True})
-        if theme_data:
-            return ThemeConfig(**theme_data)
-        return None
-    
-    def get_theme_by_id(self, theme_id: ObjectId) -> Optional[ThemeConfig]:
-        """Get a theme configuration by ID."""
-        theme_data = self.collection.find_one({'_id': theme_id})
-        if theme_data:
-            return ThemeConfig(**theme_data)
-        return None
-    
-    def get_theme_by_name(self, name: str) -> Optional[ThemeConfig]:
-        """Get a theme configuration by name."""
-        theme_data = self.collection.find_one({'name': name})
-        if theme_data:
-            return ThemeConfig(**theme_data)
-        return None
-    
-    def create_theme(self, name: str, description: str = "", 
-                    settings: Optional[Dict[str, Any]] = None) -> ThemeConfig:
-        """Create a new theme configuration."""
-        if self.get_theme_by_name(name):
-            raise ValueError(f"Theme with name '{name}' already exists")
+    def get_active_theme(self) -> Dict[str, Any]:
+        """Get the currently active theme with all settings."""
+        theme_setting = AdminSetting.query.filter_by(key='active_theme').first()
+        theme_id = theme_setting.get_value() if theme_setting else 'default'
         
-        theme_config = ThemeConfig(
-            name=name,
-            description=description,
-            settings=settings or self._get_default_theme_settings(),
-            is_active=False,
-            is_default=False,
-            version="1.0.0",
-            created_by=self.user_id,
-            updated_by=self.user_id
-        )
+        if theme_id in self.theme_cache:
+            return self.theme_cache[theme_id]
         
-        # Generate initial CSS
-        theme_config.css_generated = self.css_generator.generate_css(theme_config.settings)
-        
-        # Save to database
-        result = self.collection.insert_one(theme_config.to_dict())
-        theme_config.id = result.inserted_id
-        
-        # Log the action
-        self._log_activity("theme_created", "theme", str(theme_config.id), {
-            'theme_name': name,
-            'description': description
-        })
+        # Load theme configuration
+        theme_config = self._load_theme_config(theme_id)
+        self.theme_cache[theme_id] = theme_config
         
         return theme_config
     
-    def update_theme_setting(self, theme_id: ObjectId, property_path: str, 
-                           value: Any) -> ThemeConfig:
-        """Update a specific theme setting and regenerate CSS."""
-        theme = self.get_theme_by_id(theme_id)
-        if not theme:
-            raise ValueError(f"Theme with ID {theme_id} not found")
-        
-        # Create backup before making changes
-        backup = self.backup_theme(theme_id, backup_type="automatic", 
-                                 description=f"Auto backup before updating {property_path}")
-        
-        # Update the setting
-        old_value = theme.get_setting(property_path)
-        theme.set_setting(property_path, value)
-        
-        # Validate responsive design if needed
-        if self._affects_responsive_design(property_path):
-            validation_result = self.responsive_validator.validate_setting(
-                property_path, value, theme.settings
-            )
-            if not validation_result.is_valid:
-                raise ValueError(f"Setting violates responsive design: {validation_result.error}")
-        
-        # Regenerate CSS
-        theme.css_generated = self.css_generator.generate_css(theme.settings)
-        theme.updated_at = datetime.utcnow()
-        theme.updated_by = self.user_id
-        
-        # Save to database
-        self.collection.update_one(
-            {'_id': theme_id},
-            {'$set': theme.to_dict()}
-        )
-        
-        # Log the action
-        self._log_activity("theme_setting_updated", "theme", str(theme_id), {
-            'property_path': property_path,
-            'old_value': old_value,
-            'new_value': value,
-            'backup_id': str(backup.id)
-        })
-        
-        return theme
-    
-    def apply_theme(self, theme_id: ObjectId) -> bool:
-        """Apply a theme as the active theme."""
-        theme = self.get_theme_by_id(theme_id)
-        if not theme:
-            raise ValueError(f"Theme with ID {theme_id} not found")
-        
-        # Deactivate current active theme
-        current_active = self.get_active_theme()
-        if current_active:
-            self.collection.update_one(
-                {'_id': current_active.id},
-                {'$set': {'is_active': False, 'updated_at': datetime.utcnow()}}
-            )
-        
-        # Activate the new theme
-        self.collection.update_one(
-            {'_id': theme_id},
-            {'$set': {
+    def list_themes(self) -> List[Dict[str, Any]]:
+        """List all available themes."""
+        themes = [
+            {
+                'id': 'default',
+                'name': 'MarketHub Default',
+                'description': 'Clean and modern e-commerce theme',
+                'preview_image': '/static/images/themes/default-preview.jpg',
                 'is_active': True,
-                'updated_at': datetime.utcnow(),
-                'updated_by': self.user_id
-            }}
-        )
+                'settings': self._get_default_theme_settings()
+            },
+            {
+                'id': 'dark',
+                'name': 'Dark Mode',
+                'description': 'Dark theme for better night viewing',
+                'preview_image': '/static/images/themes/dark-preview.jpg',
+                'is_active': False,
+                'settings': self._get_dark_theme_settings()
+            },
+            {
+                'id': 'minimal',
+                'name': 'Minimal',
+                'description': 'Clean and minimal design',
+                'preview_image': '/static/images/themes/minimal-preview.jpg',
+                'is_active': False,
+                'settings': self._get_minimal_theme_settings()
+            }
+        ]
         
-        # Write CSS to static files
-        self._write_theme_css(theme.css_generated)
+        # Mark the active theme
+        active_theme_id = self.get_active_theme()['id']
+        for theme in themes:
+            theme['is_active'] = theme['id'] == active_theme_id
         
-        # Log the action
-        self._log_activity("theme_applied", "theme", str(theme_id), {
-            'theme_name': theme.name,
-            'previous_theme': str(current_active.id) if current_active else None
-        })
-        
-        return True
-    
-    def backup_theme(self, theme_id: ObjectId, backup_type: str = "manual",
-                    description: str = "") -> ThemeBackup:
-        """Create a backup of a theme configuration."""
-        theme = self.get_theme_by_id(theme_id)
-        if not theme:
-            raise ValueError(f"Theme with ID {theme_id} not found")
-        
-        backup_name = f"{theme.name}_backup_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
-        
-        backup = ThemeBackup(
-            theme_id=theme_id,
-            backup_name=backup_name,
-            settings_snapshot=theme.settings.copy(),
-            css_snapshot=theme.css_generated,
-            backup_type=backup_type,
-            description=description,
-            file_size=len(json.dumps(theme.settings).encode('utf-8')),
-            created_by=self.user_id
-        )
-        
-        # Save backup to database
-        result = self.backup_collection.insert_one(backup.to_dict())
-        backup.id = result.inserted_id
-        
-        # Update theme with backup reference
-        self.collection.update_one(
-            {'_id': theme_id},
-            {'$set': {'backup_id': backup.id}}
-        )
-        
-        # Log the action
-        self._log_activity("theme_backup_created", "theme_backup", str(backup.id), {
-            'theme_id': str(theme_id),
-            'backup_type': backup_type,
-            'backup_name': backup_name
-        })
-        
-        return backup
-    
-    def restore_theme(self, backup_id: ObjectId) -> ThemeConfig:
-        """Restore a theme from a backup."""
-        backup_data = self.backup_collection.find_one({'_id': backup_id})
-        if not backup_data:
-            raise ValueError(f"Backup with ID {backup_id} not found")
-        
-        backup = ThemeBackup(**backup_data)
-        theme = self.get_theme_by_id(backup.theme_id)
-        if not theme:
-            raise ValueError(f"Original theme with ID {backup.theme_id} not found")
-        
-        # Create a backup of current state before restoring
-        current_backup = self.backup_theme(
-            backup.theme_id, 
-            backup_type="automatic",
-            description="Auto backup before restoration"
-        )
-        
-        # Restore the theme settings
-        restore_data = backup.restore_data()
-        theme.settings = restore_data['settings']
-        theme.css_generated = restore_data['css_generated']
-        theme.updated_at = datetime.utcnow()
-        theme.updated_by = self.user_id
-        
-        # Save restored theme
-        self.collection.update_one(
-            {'_id': backup.theme_id},
-            {'$set': theme.to_dict()}
-        )
-        
-        # If this was the active theme, update CSS files
-        if theme.is_active:
-            self._write_theme_css(theme.css_generated)
-        
-        # Log the action
-        self._log_activity("theme_restored", "theme", str(theme.id), {
-            'backup_id': str(backup_id),
-            'backup_name': backup.backup_name,
-            'current_backup_id': str(current_backup.id)
-        })
-        
-        return theme
-    
-    def generate_preview_css(self, theme_id: ObjectId, 
-                           temporary_settings: Optional[Dict[str, Any]] = None) -> str:
-        """Generate CSS for live preview without saving changes."""
-        theme = self.get_theme_by_id(theme_id)
-        if not theme:
-            raise ValueError(f"Theme with ID {theme_id} not found")
-        
-        # Merge temporary settings with existing settings
-        preview_settings = theme.settings.copy()
-        if temporary_settings:
-            self._deep_merge_settings(preview_settings, temporary_settings)
-        
-        # Generate CSS for preview
-        return self.css_generator.generate_css(preview_settings)
-    
-    def validate_theme_settings(self, settings: Dict[str, Any]) -> Tuple[bool, List[str]]:
-        """Validate theme settings for correctness and responsive design."""
-        errors = []
-        
-        # Validate required settings
-        required_sections = ['colors', 'typography', 'layout', 'spacing']
-        for section in required_sections:
-            if section not in settings:
-                errors.append(f"Missing required section: {section}")
-        
-        # Validate color values
-        if 'colors' in settings:
-            color_errors = self._validate_colors(settings['colors'])
-            errors.extend(color_errors)
-        
-        # Validate typography
-        if 'typography' in settings:
-            typography_errors = self._validate_typography(settings['typography'])
-            errors.extend(typography_errors)
-        
-        # Validate responsive design
-        responsive_result = self.responsive_validator.validate_theme_settings(settings)
-        if not responsive_result.is_valid:
-            errors.append(f"Responsive design validation failed: {responsive_result.error}")
-        
-        return len(errors) == 0, errors
-    
-    def get_theme_list(self) -> List[Dict[str, Any]]:
-        """Get a list of all themes with basic information."""
-        themes = []
-        for theme_data in self.collection.find({}, {
-            'name': 1, 'description': 1, 'is_active': 1, 'is_default': 1,
-            'version': 1, 'updated_at': 1, 'created_at': 1
-        }):
-            themes.append({
-                'id': str(theme_data['_id']),
-                'name': theme_data['name'],
-                'description': theme_data.get('description', ''),
-                'is_active': theme_data.get('is_active', False),
-                'is_default': theme_data.get('is_default', False),
-                'version': theme_data.get('version', '1.0.0'),
-                'updated_at': theme_data.get('updated_at'),
-                'created_at': theme_data.get('created_at')
-            })
         return themes
     
-    def delete_theme(self, theme_id: ObjectId) -> bool:
-        """Delete a theme configuration (cannot delete active or default themes)."""
-        theme = self.get_theme_by_id(theme_id)
-        if not theme:
-            raise ValueError(f"Theme with ID {theme_id} not found")
-        
-        if theme.is_active:
-            raise ValueError("Cannot delete the active theme")
-        
-        if theme.is_default:
-            raise ValueError("Cannot delete the default theme")
-        
-        # Delete associated backups
-        self.backup_collection.delete_many({'theme_id': theme_id})
-        
-        # Delete the theme
-        result = self.collection.delete_one({'_id': theme_id})
-        
-        # Log the action
-        self._log_activity("theme_deleted", "theme", str(theme_id), {
-            'theme_name': theme.name
-        })
-        
-        return result.deleted_count > 0
-    
-    def _get_default_theme_settings(self) -> Dict[str, Any]:
-        """Get default theme settings structure."""
-        return {
-            'colors': {
-                'primary': '#007bff',
-                'secondary': '#6c757d',
-                'success': '#28a745',
-                'danger': '#dc3545',
-                'warning': '#ffc107',
-                'info': '#17a2b8',
-                'light': '#f8f9fa',
-                'dark': '#343a40',
-                'background': '#ffffff',
-                'text': '#212529',
-                'link': '#007bff',
-                'border': '#dee2e6'
-            },
-            'typography': {
-                'font_family_primary': 'system-ui, -apple-system, sans-serif',
-                'font_family_secondary': 'Georgia, serif',
-                'font_size_base': '16px',
-                'font_size_small': '14px',
-                'font_size_large': '18px',
-                'font_weight_normal': '400',
-                'font_weight_bold': '700',
-                'line_height_base': '1.5',
-                'letter_spacing': '0'
-            },
-            'layout': {
-                'container_max_width': '1200px',
-                'grid_columns': '12',
-                'grid_gutter': '30px',
-                'header_height': '80px',
-                'footer_height': 'auto',
-                'sidebar_width': '250px'
-            },
-            'spacing': {
-                'padding_small': '8px',
-                'padding_medium': '16px',
-                'padding_large': '24px',
-                'margin_small': '8px',
-                'margin_medium': '16px',
-                'margin_large': '24px'
-            },
-            'borders': {
-                'radius_small': '4px',
-                'radius_medium': '8px',
-                'radius_large': '12px',
-                'width_thin': '1px',
-                'width_medium': '2px',
-                'width_thick': '4px'
-            },
-            'shadows': {
-                'small': '0 1px 3px rgba(0,0,0,0.12)',
-                'medium': '0 4px 6px rgba(0,0,0,0.1)',
-                'large': '0 10px 25px rgba(0,0,0,0.15)'
+    def update_theme_setting(self, property: str, value: str, user_id: Optional[int] = None) -> Dict[str, Any]:
+        """Update a theme setting with validation."""
+        try:
+            # Validate the property and value
+            validation = self._validate_theme_property(property, value)
+            if not validation['valid']:
+                return {
+                    'success': False,
+                    'error': validation['error']
+                }
+            
+            # Get current theme settings
+            theme = self.get_active_theme()
+            old_value = theme['settings'].get(property)
+            
+            # Update the setting
+            setting_key = f'theme_{property}'
+            setting = AdminSetting.query.filter_by(key=setting_key).first()
+            
+            if setting:
+                setting.set_value(value)
+                setting.updated_at = datetime.now(timezone.utc)
+                if user_id:
+                    setting.updated_by = user_id
+            else:
+                setting = AdminSetting(
+                    key=setting_key,
+                    category='theme',
+                    description=f'Theme setting: {property}',
+                    data_type='string',
+                    updated_by=user_id
+                )
+                setting.set_value(value)
+                db.session.add(setting)
+            
+            db.session.commit()
+            
+            # Clear caches
+            self.theme_cache.clear()
+            self.css_cache.clear()
+            
+            # Log the change
+            self._log_theme_change(property, old_value, value, user_id)
+            
+            # Generate new CSS
+            css_result = self.generate_css()
+            
+            return {
+                'success': True,
+                'property': property,
+                'value': value,
+                'old_value': old_value,
+                'css_generated': css_result['success']
             }
+            
+        except Exception as e:
+            db.session.rollback()
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def generate_css(self, theme_config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Generate CSS from theme configuration."""
+        try:
+            if not theme_config:
+                theme_config = self.get_active_theme()
+            
+            # Create CSS hash for caching
+            config_hash = hashlib.md5(json.dumps(theme_config, sort_keys=True).encode()).hexdigest()
+            
+            if config_hash in self.css_cache:
+                return {
+                    'success': True,
+                    'css': self.css_cache[config_hash],
+                    'cached': True
+                }
+            
+            settings = theme_config['settings']
+            
+            # Generate CSS variables
+            css_variables = self._generate_css_variables(settings)
+            
+            # Generate component styles
+            component_styles = self._generate_component_styles(settings)
+            
+            # Generate responsive styles
+            responsive_styles = self._generate_responsive_styles(settings)
+            
+            # Combine all CSS
+            css_content = f"""
+/* Generated Theme CSS - {datetime.now().isoformat()} */
+:root {{
+{css_variables}
+}}
+
+/* Component Styles */
+{component_styles}
+
+/* Responsive Styles */
+{responsive_styles}
+
+/* Custom CSS */
+{settings.get('custom_css', '')}
+"""
+            
+            # Cache the generated CSS
+            self.css_cache[config_hash] = css_content
+            
+            # Save CSS to file
+            css_file_path = os.path.join('static', 'css', 'theme-generated.css')
+            os.makedirs(os.path.dirname(css_file_path), exist_ok=True)
+            
+            with open(css_file_path, 'w') as f:
+                f.write(css_content)
+            
+            return {
+                'success': True,
+                'css': css_content,
+                'file_path': css_file_path,
+                'cached': False
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def preview_theme(self, theme_id: str, custom_settings: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Generate a preview of a theme with optional custom settings."""
+        try:
+            # Load base theme
+            theme_config = self._load_theme_config(theme_id)
+            
+            # Apply custom settings if provided
+            if custom_settings:
+                theme_config['settings'].update(custom_settings)
+            
+            # Generate preview CSS
+            css_result = self.generate_css(theme_config)
+            
+            if css_result['success']:
+                return {
+                    'success': True,
+                    'theme_id': theme_id,
+                    'css': css_result['css'],
+                    'preview_url': f'/theme-preview/{theme_id}'
+                }
+            else:
+                return css_result
+                
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def activate_theme(self, theme_id: str, user_id: Optional[int] = None) -> Dict[str, Any]:
+        """Activate a theme."""
+        try:
+            # Validate theme exists
+            available_themes = [theme['id'] for theme in self.list_themes()]
+            if theme_id not in available_themes:
+                return {
+                    'success': False,
+                    'error': 'Theme not found'
+                }
+            
+            # Update active theme setting
+            setting = AdminSetting.query.filter_by(key='active_theme').first()
+            old_theme = setting.get_value() if setting else 'default'
+            
+            if setting:
+                setting.set_value(theme_id)
+                setting.updated_at = datetime.now(timezone.utc)
+                if user_id:
+                    setting.updated_by = user_id
+            else:
+                setting = AdminSetting(
+                    key='active_theme',
+                    category='theme',
+                    description='Currently active theme',
+                    data_type='string',
+                    updated_by=user_id
+                )
+                setting.set_value(theme_id)
+                db.session.add(setting)
+            
+            db.session.commit()
+            
+            # Clear caches
+            self.theme_cache.clear()
+            self.css_cache.clear()
+            
+            # Generate CSS for new theme
+            css_result = self.generate_css()
+            
+            # Log theme activation
+            self._log_theme_change('active_theme', old_theme, theme_id, user_id)
+            
+            return {
+                'success': True,
+                'theme_id': theme_id,
+                'old_theme': old_theme,
+                'css_generated': css_result['success']
+            }
+            
+        except Exception as e:
+            db.session.rollback()
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def export_theme(self, theme_id: Optional[str] = None) -> Dict[str, Any]:
+        """Export theme configuration."""
+        try:
+            if not theme_id:
+                theme_config = self.get_active_theme()
+            else:
+                theme_config = self._load_theme_config(theme_id)
+            
+            export_data = {
+                'theme': theme_config,
+                'exported_at': datetime.now(timezone.utc).isoformat(),
+                'version': '1.0'
+            }
+            
+            return {
+                'success': True,
+                'data': json.dumps(export_data, indent=2)
+            }
+            
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def import_theme(self, theme_data: str, user_id: Optional[int] = None) -> Dict[str, Any]:
+        """Import theme configuration."""
+        try:
+            import_data = json.loads(theme_data)
+            theme_config = import_data.get('theme', {})
+            
+            if not theme_config or 'settings' not in theme_config:
+                return {
+                    'success': False,
+                    'error': 'Invalid theme data format'
+                }
+            
+            # Import theme settings
+            imported_count = 0
+            errors = []
+            
+            for property, value in theme_config['settings'].items():
+                result = self.update_theme_setting(property, value, user_id)
+                if result['success']:
+                    imported_count += 1
+                else:
+                    errors.append(f"{property}: {result['error']}")
+            
+            return {
+                'success': True,
+                'imported_settings': imported_count,
+                'errors': errors
+            }
+            
+        except json.JSONDecodeError as e:
+            return {
+                'success': False,
+                'error': f'Invalid JSON format: {str(e)}'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def _load_theme_config(self, theme_id: str) -> Dict[str, Any]:
+        """Load theme configuration from database and defaults."""
+        if theme_id == 'default':
+            base_settings = self._get_default_theme_settings()
+        elif theme_id == 'dark':
+            base_settings = self._get_dark_theme_settings()
+        elif theme_id == 'minimal':
+            base_settings = self._get_minimal_theme_settings()
+        else:
+            base_settings = self._get_default_theme_settings()
+        
+        # Override with database settings
+        theme_settings = AdminSetting.query.filter(AdminSetting.key.like('theme_%')).all()
+        for setting in theme_settings:
+            property_name = setting.key.replace('theme_', '')
+            base_settings[property_name] = setting.get_value()
+        
+        return {
+            'id': theme_id,
+            'name': base_settings.get('name', 'Custom Theme'),
+            'settings': base_settings,
+            'is_active': True
         }
     
-    def _affects_responsive_design(self, property_path: str) -> bool:
-        """Check if a property affects responsive design."""
-        responsive_properties = [
-            'layout.container_max_width',
-            'layout.grid_columns',
-            'layout.grid_gutter',
-            'typography.font_size_base',
-            'spacing.padding_medium',
-            'spacing.margin_medium'
+    def _get_default_theme_settings(self) -> Dict[str, Any]:
+        """Get default theme settings."""
+        return {
+            'name': 'MarketHub Default',
+            'primary_color': '#ff4747',
+            'secondary_color': '#ff6b35',
+            'accent_color': '#007bff',
+            'background_color': '#ffffff',
+            'text_color': '#333333',
+            'link_color': '#007bff',
+            'border_color': '#e5e7eb',
+            'success_color': '#10b981',
+            'warning_color': '#f59e0b',
+            'error_color': '#ef4444',
+            'font_family': 'Inter, system-ui, sans-serif',
+            'font_size_base': '16px',
+            'border_radius': '0.5rem',
+            'box_shadow': '0 1px 3px rgba(0,0,0,0.1)',
+            'header_height': '80px',
+            'footer_background': '#1f2937',
+            'custom_css': ''
+        }
+    
+    def _get_dark_theme_settings(self) -> Dict[str, Any]:
+        """Get dark theme settings."""
+        return {
+            'name': 'Dark Mode',
+            'primary_color': '#ff6b6b',
+            'secondary_color': '#4ecdc4',
+            'accent_color': '#45b7d1',
+            'background_color': '#1a1a1a',
+            'text_color': '#ffffff',
+            'link_color': '#45b7d1',
+            'border_color': '#333333',
+            'success_color': '#51cf66',
+            'warning_color': '#ffd43b',
+            'error_color': '#ff6b6b',
+            'font_family': 'Inter, system-ui, sans-serif',
+            'font_size_base': '16px',
+            'border_radius': '0.5rem',
+            'box_shadow': '0 1px 3px rgba(255,255,255,0.1)',
+            'header_height': '80px',
+            'footer_background': '#000000',
+            'custom_css': ''
+        }
+    
+    def _get_minimal_theme_settings(self) -> Dict[str, Any]:
+        """Get minimal theme settings."""
+        return {
+            'name': 'Minimal',
+            'primary_color': '#000000',
+            'secondary_color': '#666666',
+            'accent_color': '#333333',
+            'background_color': '#ffffff',
+            'text_color': '#000000',
+            'link_color': '#333333',
+            'border_color': '#cccccc',
+            'success_color': '#28a745',
+            'warning_color': '#ffc107',
+            'error_color': '#dc3545',
+            'font_family': 'Georgia, serif',
+            'font_size_base': '16px',
+            'border_radius': '0',
+            'box_shadow': 'none',
+            'header_height': '60px',
+            'footer_background': '#f8f9fa',
+            'custom_css': ''
+        }
+    
+    def _validate_theme_property(self, property: str, value: str) -> Dict[str, Any]:
+        """Validate theme property and value."""
+        # Color validation
+        color_properties = [
+            'primary_color', 'secondary_color', 'accent_color', 'background_color',
+            'text_color', 'link_color', 'border_color', 'success_color',
+            'warning_color', 'error_color', 'footer_background'
         ]
-        return property_path in responsive_properties
-    
-    def _validate_colors(self, colors: Dict[str, Any]) -> List[str]:
-        """Validate color values."""
-        errors = []
-        color_pattern = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
         
+        if property in color_properties:
+            if not self._is_valid_color(value):
+                return {
+                    'valid': False,
+                    'error': 'Invalid color format. Use hex (#ffffff) or rgb(255,255,255)'
+                }
+        
+        # Size validation
+        size_properties = ['font_size_base', 'header_height', 'border_radius']
+        if property in size_properties:
+            if not self._is_valid_size(value):
+                return {
+                    'valid': False,
+                    'error': 'Invalid size format. Use px, rem, em, or %'
+                }
+        
+        return {'valid': True}
+    
+    def _is_valid_color(self, color: str) -> bool:
+        """Validate color format."""
         import re
-        for key, value in colors.items():
-            if isinstance(value, str) and not re.match(color_pattern, value):
-                if not value.startswith('rgb') and not value.startswith('hsl'):
-                    errors.append(f"Invalid color format for {key}: {value}")
-        
-        return errors
+        # Hex color
+        if re.match(r'^#[0-9a-fA-F]{6}$', color):
+            return True
+        # RGB color
+        if re.match(r'^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$', color):
+            return True
+        # RGBA color
+        if re.match(r'^rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)$', color):
+            return True
+        return False
     
-    def _validate_typography(self, typography: Dict[str, Any]) -> List[str]:
-        """Validate typography settings."""
-        errors = []
-        
-        # Validate font sizes
-        size_keys = ['font_size_base', 'font_size_small', 'font_size_large']
-        for key in size_keys:
-            if key in typography:
-                value = typography[key]
-                if isinstance(value, str) and not (value.endswith('px') or value.endswith('rem') or value.endswith('em')):
-                    errors.append(f"Invalid font size unit for {key}: {value}")
-        
-        return errors
+    def _is_valid_size(self, size: str) -> bool:
+        """Validate size format."""
+        import re
+        return bool(re.match(r'^\d+(\.\d+)?(px|rem|em|%|vh|vw)$', size))
     
-    def _deep_merge_settings(self, target: Dict[str, Any], source: Dict[str, Any]) -> None:
-        """Deep merge source settings into target settings."""
-        for key, value in source.items():
-            if key in target and isinstance(target[key], dict) and isinstance(value, dict):
-                self._deep_merge_settings(target[key], value)
-            else:
-                target[key] = value
+    def _generate_css_variables(self, settings: Dict[str, Any]) -> str:
+        """Generate CSS custom properties."""
+        variables = []
+        for key, value in settings.items():
+            if key != 'custom_css' and key != 'name':
+                css_var = key.replace('_', '-')
+                variables.append(f"  --{css_var}: {value};")
+        return '\n'.join(variables)
     
-    def _write_theme_css(self, css_content: str) -> None:
-        """Write generated CSS to static files."""
-        css_file_path = os.path.join('static', 'css', 'dynamic-styles.css')
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(css_file_path), exist_ok=True)
-        
-        # Write CSS content
-        with open(css_file_path, 'w', encoding='utf-8') as f:
-            f.write(css_content)
+    def _generate_component_styles(self, settings: Dict[str, Any]) -> str:
+        """Generate component-specific styles."""
+        return f"""
+/* Header Styles */
+.header {{
+    height: var(--header-height);
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+}}
+
+/* Button Styles */
+.btn-primary {{
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}}
+
+.btn-secondary {{
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    color: white;
+    border-radius: var(--border-radius);
+}}
+
+/* Card Styles */
+.card {{
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}}
+
+/* Footer Styles */
+.footer {{
+    background-color: var(--footer-background);
+    color: var(--text-color);
+}}
+
+/* Typography */
+body {{
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    color: var(--text-color);
+    background-color: var(--background-color);
+}}
+
+a {{
+    color: var(--link-color);
+}}
+
+/* Status Colors */
+.text-success {{ color: var(--success-color); }}
+.text-warning {{ color: var(--warning-color); }}
+.text-error {{ color: var(--error-color); }}
+"""
     
-    def _log_activity(self, action: str, resource_type: str, resource_id: str, 
-                     details: Dict[str, Any]) -> None:
-        """Log theme management activity."""
-        if hasattr(self.db, 'activity_logs'):
-            activity_log = ActivityLog(
-                user_id=self.user_id,
-                action=action,
-                resource_type=resource_type,
-                resource_id=resource_id,
-                details=details,
-                ip_address="127.0.0.1",  # This should come from request context
-                user_agent="Admin System",  # This should come from request context
-                success=True,
-                severity="info"
+    def _generate_responsive_styles(self, settings: Dict[str, Any]) -> str:
+        """Generate responsive styles."""
+        return """
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .header {
+        height: calc(var(--header-height) * 0.8);
+    }
+    
+    body {
+        font-size: calc(var(--font-size-base) * 0.9);
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: calc(var(--header-height) * 0.7);
+    }
+    
+    body {
+        font-size: calc(var(--font-size-base) * 0.85);
+    }
+}
+"""
+    
+    def _log_theme_change(self, property: str, old_value: Any, new_value: Any, user_id: Optional[int]):
+        """Log theme changes."""
+        try:
+            log = ActivityLog(
+                user_id=user_id,
+                action='theme_update',
+                resource_type='theme',
+                resource_id=property,
+                success=True
             )
-            self.db.activity_logs.insert_one(activity_log.to_dict())
+            log.set_details({
+                'property': property,
+                'old_value': old_value,
+                'new_value': new_value
+            })
+            db.session.add(log)
+            db.session.commit()
+        except Exception:
+            pass
