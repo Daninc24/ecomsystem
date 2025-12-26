@@ -7,6 +7,7 @@ from flask_login import login_required, current_user
 from models_sqlite import Product, Category, db
 from datetime import datetime
 import functools
+import os
 
 product_bp = Blueprint('product_api', __name__, url_prefix='/products')
 
@@ -38,6 +39,9 @@ def product_info():
                 'get': '/api/admin/products/<id>',
                 'update': '/api/admin/products/<id> (PUT)',
                 'delete': '/api/admin/products/<id> (DELETE)',
+                'upload_image': '/api/admin/products/<id>/images (POST)',
+                'delete_image': '/api/admin/products/<id>/images/<image_url> (DELETE)',
+                'reorder_images': '/api/admin/products/<id>/images/reorder (POST)',
                 'categories': '/api/admin/products/categories',
                 'create_category': '/api/admin/products/categories (POST)',
                 'reorder': '/api/admin/products/reorder (POST)',
@@ -84,6 +88,10 @@ def create_product():
             weight=float(data.get('weight', 0)) if data.get('weight') else None,
             dimensions=data.get('dimensions', '')
         )
+        
+        # Handle images
+        if 'images' in data and isinstance(data['images'], list):
+            product.set_images(data['images'])
         
         # Handle categories
         if 'category_ids' in data:
@@ -167,6 +175,180 @@ def get_product(product_id):
         }), 500
 
 
+@product_bp.route('/<int:product_id>/images', methods=['POST'])
+@login_required
+@admin_required
+def upload_product_image(product_id):
+    """Upload image for a product."""
+    try:
+        product = Product.query.get_or_404(product_id)
+        
+        if 'image' not in request.files:
+            return jsonify({
+                'success': False,
+                'error': 'No image file provided'
+            }), 400
+        
+        file = request.files['image']
+        
+        if file.filename == '':
+            return jsonify({
+                'success': False,
+                'error': 'No file selected'
+            }), 400
+        
+        # Check file type
+        allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+        if not ('.' in file.filename and 
+                file.filename.rsplit('.', 1)[1].lower() in allowed_extensions):
+            return jsonify({
+                'success': False,
+                'error': 'Invalid file type. Allowed: PNG, JPG, JPEG, GIF, WEBP'
+            }), 400
+        
+        import os
+        import uuid
+        
+        # Generate a unique filename
+        file_extension = file.filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"product_{product_id}_{uuid.uuid4().hex}.{file_extension}"
+        
+        # Create uploads directory if it doesn't exist
+        upload_dir = os.path.join('static', 'uploads', 'products')
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Save the file
+        file_path = os.path.join(upload_dir, unique_filename)
+        file.save(file_path)
+        
+        # Add to product images
+        current_images = product.get_images()
+        file_url = f"/static/uploads/products/{unique_filename}"
+        current_images.append(file_url)
+        product.set_images(current_images)
+        
+        product.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'data': {
+                'image_url': file_url,
+                'filename': unique_filename,
+                'product_id': product_id,
+                'total_images': len(current_images)
+            },
+            'message': 'Image uploaded successfully'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@product_bp.route('/<int:product_id>/images/<path:image_url>', methods=['DELETE'])
+@login_required
+@admin_required
+def delete_product_image(product_id, image_url):
+    """Delete a specific image from a product."""
+    try:
+        product = Product.query.get_or_404(product_id)
+        
+        # Decode the image URL
+        import urllib.parse
+        image_url = urllib.parse.unquote(image_url)
+        
+        current_images = product.get_images()
+        
+        if image_url not in current_images:
+            return jsonify({
+                'success': False,
+                'error': 'Image not found'
+            }), 404
+        
+        # Remove from list
+        current_images.remove(image_url)
+        product.set_images(current_images)
+        
+        # Try to delete the physical file
+        try:
+            if image_url.startswith('/static/uploads/'):
+                file_path = image_url[1:]  # Remove leading slash
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+        except Exception as e:
+            current_app.logger.warning(f"Could not delete physical file {image_url}: {e}")
+        
+        product.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Image deleted successfully',
+            'data': {
+                'remaining_images': current_images,
+                'total_images': len(current_images)
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@product_bp.route('/<int:product_id>/images/reorder', methods=['POST'])
+@login_required
+@admin_required
+def reorder_product_images(product_id):
+    """Reorder product images."""
+    try:
+        product = Product.query.get_or_404(product_id)
+        data = request.get_json()
+        
+        if not data or 'image_urls' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'Image URLs array is required'
+            }), 400
+        
+        new_order = data['image_urls']
+        current_images = product.get_images()
+        
+        # Validate that all provided URLs exist in current images
+        for url in new_order:
+            if url not in current_images:
+                return jsonify({
+                    'success': False,
+                    'error': f'Image URL not found: {url}'
+                }), 400
+        
+        # Update the order
+        product.set_images(new_order)
+        product.updated_at = datetime.utcnow()
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Images reordered successfully',
+            'data': {
+                'images': new_order
+            }
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 @product_bp.route('/<int:product_id>', methods=['PUT'])
 @login_required
 @admin_required
@@ -197,6 +379,13 @@ def update_product(product_id):
                     setattr(product, field, int(data[field]))
                 else:
                     setattr(product, field, data[field])
+        
+        # Handle images
+        if 'images' in data:
+            if isinstance(data['images'], list):
+                product.set_images(data['images'])
+            else:
+                current_app.logger.warning(f"Invalid images format for product {product_id}: {data['images']}")
         
         # Handle categories
         if 'category_ids' in data:

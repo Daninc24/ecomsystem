@@ -118,10 +118,17 @@ class BaseInlineEditor {
             const success = await this.saveContent(newContent);
             
             if (success) {
+                // Update the element content immediately
+                this.setContent(newContent);
                 this.originalContent = newContent;
                 this.hasUnsavedChanges = false;
                 this.showNotification('Content saved successfully', 'success');
                 this.deactivate();
+                
+                // Trigger a custom event for other components to react
+                this.element.dispatchEvent(new CustomEvent('contentUpdated', {
+                    detail: { contentId: this.contentId, content: newContent }
+                }));
             } else {
                 this.showNotification('Failed to save content', 'error');
             }

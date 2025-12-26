@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Inline Editing</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; }
+        .editable { border: 2px dashed #ccc; padding: 10px; margin: 10px 0; }
+        .editable:hover { border-color: #007bff; }
+        .editing { border-color: #28a745 !important; background: #f8f9fa; }
+        .btn { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .log { background: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; }
+        .error { border-left-color: #dc3545; }
+        .success { border-left-color: #28a745; }
+    </style>
+</head>
+<body>
+    <h1>Debug Inline Editing</h1>
+    
+    <div class="test-section">
+        <h2>Authentication Status</h2>
+        <p>Current User: {{ current_user.email if current_user.is_authenticated else 'Not logged in' }}</p>
+        <p>Is Admin: {{ current_user.has_role('admin') if current_user.is_authenticated else 'N/A' }}</p>
+    </div>
+
+    <div class="test-section">
+        <h2>API Tests</h2>
+        <button class="btn btn-primary" onclick="testAPI()">Test API Connection</button>
+        <button class="btn btn-primary" onclick="testImageUpdate()">Test Image Update</button>
+        <button class="btn btn-primary" onclick="testTextUpdate()">Test Text Update</button>
+        <div id="api-log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Simple Inline Editing Test</h2>
+        <div class="editable" data-editable="text" data-content-id="debug-text-1">
+            Click to edit this text
+        </div>
+        <img src="/static/images/placeholder-product.png" 
+             alt="Debug Image" 
+             data-editable="image" 
+             data-content-id="debug-image-1" 
+             style="max-width: 200px; border-radius: 8px;" />
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('api-log');
+            const entry = document.createElement('div');
+            entry.className = `log ${type}`;
+            entry.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            logDiv.appendChild(entry);
+            console.log(message);
+        }
+
+        async function testAPI() {
+            log('Testing API connection...');
+            try {
+                const response = await fetch('/api/admin/content/test-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        test: 'API connection test',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                log(`Response status: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`API Response: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    const text = await response.text();
+                    log(`API Error: ${text}`, 'error');
+                }
+            } catch (error) {
+                log(`Network Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testImageUpdate() {
+            log('Testing image update...');
+            try {
+                const response = await fetch('/api/admin/content/update-image-simple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        content_id: 'debug-image-test',
+                        src: '/static/images/test.jpg',
+                        alt: 'Test image alt text'
+                    })
+                });
+
+                log(`Image update response status: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`Image Update Success: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    const text = await response.text();
+                    log(`Image Update Error: ${text}`, 'error');
+                }
+            } catch (error) {
+                log(`Image Update Network Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTextUpdate() {
+            log('Testing text update...');
+            try {
+                const response = await fetch('/api/admin/content/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        content_id: 'debug-text-test',
+                        content: 'This is test content updated at ' + new Date().toLocaleTimeString(),
+                        type: 'text'
+                    })
+                });
+
+                log(`Text update response status: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`Text Update Success: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    const text = await response.text();
+                    log(`Text Update Error: ${text}`, 'error');
+                }
+            } catch (error) {
+                log(`Text Update Network Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Simple inline editing implementation for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            const editableElements = document.querySelectorAll('[data-editable]');
+            
+            editableElements.forEach(element => {
+                element.addEventListener('click', function() {
+                    if (element.dataset.editable === 'text') {
+                        element.contentEditable = true;
+                        element.classList.add('editing');
+                        element.focus();
+                        
+                        element.addEventListener('blur', async function() {
+                            element.contentEditable = false;
+                            element.classList.remove('editing');
+                            
+                            const newContent = element.textContent;
+                            log(`Saving text content: "${newContent}"`);
+                            
+                            try {
+                                const response = await fetch('/api/admin/content/update', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    credentials: 'include',
+                                    body: JSON.stringify({
+                                        content_id: element.dataset.contentId,
+                                        content: newContent,
+                                        type: 'text'
+                                    })
+                                });
+                                
+                                if (response.ok) {
+                                    const data = await response.json();
+                                    log(`Text saved successfully: ${JSON.stringify(data)}`, 'success');
+                                } else {
+                                    const text = await response.text();
+                                    log(`Failed to save text: ${text}`, 'error');
+                                }
+                            } catch (error) {
+                                log(`Error saving text: ${error.message}`, 'error');
+                            }
+                        }, { once: true });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

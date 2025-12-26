@@ -281,6 +281,39 @@ def register_blueprints(app):
                              stats=stats,
                              recent_orders=recent_orders,
                              recent_activity=recent_activity)
+    
+    # Admin test page for inline editing and product management
+    @app.route('/admin/test')
+    @login_required
+    def admin_test():
+        """Admin test page for inline editing and product management"""
+        if not current_user.has_role('admin'):
+            flash('Access denied', 'error')
+            return redirect(url_for('index'))
+        
+        return render_template('admin_test.html')
+    
+    # Debug page for inline editing issues
+    @app.route('/admin/debug')
+    @login_required
+    def admin_debug():
+        """Debug page for inline editing issues"""
+        if not current_user.has_role('admin'):
+            flash('Access denied', 'error')
+            return redirect(url_for('index'))
+        
+        return render_template('debug_inline_editing.html')
+    
+    # Product management test page
+    @app.route('/admin/products-test')
+    @login_required
+    def admin_products_test():
+        """Product management test page"""
+        if not current_user.has_role('admin'):
+            flash('Access denied', 'error')
+            return redirect(url_for('index'))
+        
+        return render_template('product_management_test.html')
 
     @app.route('/preview')
     def theme_preview():

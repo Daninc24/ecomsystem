@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Test - Inline Editing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-frontend.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; }
+        .editable { border: 2px dashed #ccc; padding: 10px; margin: 10px 0; }
+        .editable:hover { border-color: #007bff; }
+        .editing { border-color: #28a745 !important; background: #f8f9fa; }
+        .product-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .product-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        .btn { padding: 8px 16px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-success { background: #28a745; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Admin Test Page - Inline Editing & Product Management</h1>
+    
+    <div class="test-section">
+        <h2>Inline Text Editing Test</h2>
+        <p>Click on the text below to edit it inline:</p>
+        <div class="editable" data-editable="text" data-content-id="test-text-1">
+            This is editable text. Click to edit!
+        </div>
+        <div class="editable" data-editable="rich-text" data-content-id="test-rich-1">
+            <strong>This is rich text</strong> with <em>formatting</em>. Click to edit!
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Image Editing Test</h2>
+        <p>Click on the image to edit it:</p>
+        <img src="/static/images/placeholder-product.png" 
+             alt="Test Image" 
+             data-editable="image" 
+             data-content-id="test-image-1" 
+             style="max-width: 200px; border-radius: 8px;" />
+    </div>
+
+    <div class="test-section">
+        <h2>Product Management Test</h2>
+        <button class="btn btn-success" onclick="loadProducts()">Load Products</button>
+        <button class="btn btn-primary" onclick="createTestProduct()">Create Test Product</button>
+        
+        <div id="product-list" class="product-list" style="margin-top: 20px;">
+            <!-- Products will be loaded here -->
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Configuration Test</h2>
+        <p>Site Name: <span class="editable" data-editable="config" data-content-id="site_name" data-config-key="site_name">Loading...</span></p>
+        <p>Contact Email: <span class="editable" data-editable="config" data-content-id="contact_email" data-config-key="contact_email">Loading...</span></p>
+    </div>
+
+    <!-- Include admin JavaScript files -->
+    <script src="{{ url_for('static', filename='js/admin-inline-editing.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/admin-components.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dynamic-system.js') }}"></script>
+
+    <script>
+        // Initialize inline editing
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing admin test page...');
+            
+            // Initialize inline editing system
+            if (window.InlineEditingManager) {
+                window.editingManager = new InlineEditingManager();
+                console.log('Inline editing manager initialized');
+            }
+            
+            // Load initial configuration values
+            loadConfigValues();
+        });
+
+        // Product management functions
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/admin/products/', {
+                    credentials: 'include'
+                });
+                
+                if (response.status === 302 || response.headers.get('content-type')?.includes('text/html')) {
+                    alert('Please log in to access admin features');
+                    return;
+                }
+                
+                const data = await response.json();
+                if (data.success) {
+                    displayProducts(data.data.products);
+                } else {
+                    alert('Failed to load products: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                alert('Error loading products');
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('product-list');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <h4>${product.name}</h4>
+                    <p>Price: $${product.price}</p>
+                    <p>SKU: ${product.sku || 'N/A'}</p>
+                    <p>Status: ${product.is_active ? 'Active' : 'Inactive'}</p>
+                    <button class="btn btn-primary" onclick="editProduct(${product.id})">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteProduct(${product.id})">Delete</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function createTestProduct() {
+            const productData = {
+                name: 'Test Product ' + Date.now(),
+                price: 29.99,
+                description: 'This is a test product created via API',
+                sku: 'TEST-' + Date.now(),
+                inventory_quantity: 10,
+                is_active: true
+            };
+
+            try {
+                const response = await fetch('/api/admin/products/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.status === 302 || response.headers.get('content-type')?.includes('text/html')) {
+                    alert('Please log in to access admin features');
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Product created successfully!');
+                    loadProducts(); // Reload products
+                } else {
+                    alert('Failed to create product: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error creating product:', error);
+                alert('Error creating product');
+            }
+        }
+
+        async function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/admin/products/${productId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+
+                if (response.status === 302 || response.headers.get('content-type')?.includes('text/html')) {
+                    alert('Please log in to access admin features');
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Product deleted successfully!');
+                    loadProducts(); // Reload products
+                } else {
+                    alert('Failed to delete product: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                alert('Error deleting product');
+            }
+        }
+
+        async function editProduct(productId) {
+            // For now, just show an alert
+            // In a real implementation, you'd open an edit modal
+            alert(`Edit product ${productId} - This would open an edit form`);
+        }
+
+        async function loadConfigValues() {
+            try {
+                const response = await fetch('/api/admin/configuration/settings', {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        // Update config values
+                        const siteNameEl = document.querySelector('[data-config-key="site_name"]');
+                        const contactEmailEl = document.querySelector('[data-config-key="contact_email"]');
+                        
+                        if (siteNameEl && data.data.site_name) {
+                            siteNameEl.textContent = data.data.site_name.value;
+                        }
+                        if (contactEmailEl && data.data.contact_email) {
+                            contactEmailEl.textContent = data.data.contact_email.value;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading config values:', error);
+            }
+        }
+
+        // Listen for content updates
+        document.addEventListener('contentUpdated', function(event) {
+            console.log('Content updated:', event.detail);
+            // You can add additional logic here to handle content updates
+        });
+    </script>
+</body>
+</html>
